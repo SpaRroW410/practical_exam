@@ -1,0 +1,74 @@
+[
+  {
+    "id": "clinical-1",
+    "category": "Clinical",
+    "image": "images/clinical/clinical.svg",
+    "question": "A 42-year-old man presents with fever, productive cough, and pleuritic chest pain. Which investigation is most useful initially?",
+    "options": ["Chest X-ray", "CT scan of chest", "Sputum culture", "Serum PCR"],
+    "correctIndex": 0,
+    "explanation": "A chest X-ray is usually the first-line imaging study in suspected pneumonia to confirm the diagnosis and assess severity."
+  },
+  {
+    "id": "clinical-2",
+    "category": "Clinical",
+    "image": "images/clinical/clinical.svg",
+    "question": "Which finding is most suggestive of acute appendicitis?",
+    "options": ["Rebound tenderness at McBurney point", "Bilateral wheeze", "Nystagmus", "Pitting edema"],
+    "correctIndex": 0,
+    "explanation": "Localized tenderness and rebound tenderness at McBurney point are classic for acute appendicitis."
+  },
+  {
+    "id": "epi-1",
+    "category": "Epidemiology",
+    "image": "images/epidemiology/epidemiology.svg",
+    "question": "The number of new cases of a disease in a population over a stated period is called:",
+    "options": ["Incidence", "Prevalence", "Mortality", "Risk ratio"],
+    "correctIndex": 0,
+    "explanation": "Incidence measures new cases occurring within a specified period."
+  },
+  {
+    "id": "epi-2",
+    "category": "Epidemiology",
+    "image": "images/epidemiology/epidemiology.svg",
+    "question": "A study that compares exposure histories of diseased and non-diseased individuals is a:",
+    "options": ["Case-control study", "Cohort study", "Randomized trial", "Ecological study"],
+    "correctIndex": 0,
+    "explanation": "Case-control studies compare diseased and non-diseased people to identify prior exposures."
+  },
+  {
+    "id": "biostats-1",
+    "category": "Biostatistics",
+    "image": "images/biostatistics/biostatistics.svg",
+    "question": "The mean is most affected by:",
+    "options": ["Outliers", "Sample size", "Median", "Mode"],
+    "correctIndex": 0,
+    "explanation": "The mean is highly sensitive to extreme values or outliers."
+  },
+  {
+    "id": "biostats-2",
+    "category": "Biostatistics",
+    "image": "images/biostatistics/biostatistics.svg",
+    "question": "A p-value less than 0.05 usually indicates:",
+    "options": ["Statistical significance", "Clinical certainty", "No association", "Perfect correlation"],
+    "correctIndex": 0,
+    "explanation": "A p-value below 0.05 often suggests that the observed result is unlikely due to chance alone."
+  },
+  {
+    "id": "ospe-1",
+    "category": "OSPE",
+    "image": "images/ospe/ospe.svg",
+    "question": "In OSPE, the best approach to handle a station is to:",
+    "options": ["Read instructions carefully and manage time", "Skip difficult stations", "Discuss with peers", "Spend all time on one task"],
+    "correctIndex": 0,
+    "explanation": "Good OSPE performance depends on reading instructions carefully and pacing your time well."
+  },
+  {
+    "id": "spotter-1",
+    "category": "Spotter",
+    "image": "images/spotter/spotter.svg",
+    "question": "A spotter station usually evaluates:",
+    "options": ["Recognition and identification of specimens", "Only paperwork", "Long essay writing", "Mathematical calculations"],
+    "correctIndex": 0,
+    "explanation": "Spotter stations are designed to test recognition and identification of common specimens and images."
+  }
+]

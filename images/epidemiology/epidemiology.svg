@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300">
+  <rect width="600" height="300" fill="#fef3c7" rx="24"/>
+  <path d="M90 220 C150 120, 260 100, 320 180 S460 250, 510 100" stroke="#d97706" stroke-width="8" fill="none"/>
+  <circle cx="180" cy="150" r="28" fill="#dc2626"/>
+  <circle cx="320" cy="180" r="28" fill="#2563eb"/>
+  <circle cx="450" cy="110" r="28" fill="#16a34a"/>
+  <text x="300" y="260" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="24" fill="#14213d">Epidemiology chart</text>
+</svg>
