@@ -1,78 +1,48 @@
-import { renderQuestion, renderCategoryList, renderResults, updateStats, updateTimer } from './ui.js';
-import { startTimer, stopTimer, resetTimer } from './timer.js';
+import { loadQuestions, buildSelectionMap } from './data.js';
+import { renderHomeScreen, renderExamScreen } from './render.js';
+import { setScreenVisibility, updateTimer } from './ui.js';
+import { startTimer, formatTime } from './timer.js';
 import { initializeNavigation } from './navigation.js';
-import { showLoader, hideLoader } from './loader.js';
 
-let questions = [];
-let currentIndex = 0;
-let selectedAnswers = [];
-let isSubmitted = false;
-let navigationController = null;
+const sectionConfig = [
+  { id: 'clinical', label: 'Clinical Case' },
+  { id: 'epidemiology', label: 'Epidemiology' },
+  { id: 'biostatistics', label: 'Biostatistics' },
+  { id: 'ospe', label: 'OSPE' },
+  { id: 'spotter', label: 'Spotter' },
+];
 
-async function loadQuestions() {
-  showLoader();
+const state = {
+  sections: sectionConfig,
+  selected: {},
+  questions: [],
+};
+
+async function init() {
   try {
-    const response = await fetch('./data/questions.json');
-    if (!response.ok) {
-      throw new Error('Unable to load questions.');
-    }
-    questions = await response.json();
-    selectedAnswers = new Array(questions.length).fill(null);
-    navigationController = initializeNavigation({
-      questionCount: questions.length,
-      onSelectAnswer: selectAnswer,
-      onGoToQuestion: goToQuestion,
-      onFinishExam: finishExam,
-      onRestartExam: restartExam,
-    });
-    renderCategoryList(questions);
-    renderQuestion(questions[currentIndex], currentIndex, selectedAnswers[currentIndex]);
-    updateStats(questions, selectedAnswers);
-    hideLoader();
-    startTimer(15 * 60, (timeLeft) => {
-      updateTimer(timeLeft);
-      if (timeLeft === 0) {
-        finishExam();
-      }
-    });
+    const questions = await loadQuestions();
+    state.questions = questions;
+    state.selected = Object.fromEntries(sectionConfig.map((section) => [section.id, 1]));
+    buildSelectionMap(questions);
+    renderHomeScreen(state);
+    setScreenVisibility(true, false);
+    initializeNavigation({ onStartExam: startExam });
   } catch (error) {
-    hideLoader();
-    document.getElementById('questionCard').innerHTML = `<p>${error.message}</p>`;
+    document.getElementById('setup-screen').innerHTML = `<div class="card"><p>${error.message}</p></div>`;
   }
 }
 
-function selectAnswer(index, answerIndex) {
-  if (isSubmitted) return;
-  currentIndex = index;
-  selectedAnswers[currentIndex] = answerIndex;
-  renderQuestion(questions[currentIndex], currentIndex, selectedAnswers[currentIndex]);
-  updateStats(questions, selectedAnswers);
-}
+function startExam() {
+  sectionConfig.forEach((section) => {
+    const select = document.getElementById(section.id);
+    state.selected[section.id] = Number(select?.value || 1);
+  });
 
-function goToQuestion(index) {
-  if (index < 0 || index >= questions.length) return;
-  currentIndex = index;
-  renderQuestion(questions[currentIndex], currentIndex, selectedAnswers[currentIndex]);
-}
-
-function finishExam() {
-  isSubmitted = true;
-  stopTimer();
-  renderResults(questions, selectedAnswers);
-}
-
-function restartExam() {
-  currentIndex = 0;
-  selectedAnswers = new Array(questions.length).fill(null);
-  isSubmitted = false;
-  resetTimer(15 * 60);
-  renderQuestion(questions[currentIndex], currentIndex, selectedAnswers[currentIndex]);
-  updateStats(questions, selectedAnswers);
-  renderResults(null, null, true);
-}
-
-function init() {
-  loadQuestions();
+  renderExamScreen(state);
+  setScreenVisibility(false, true);
+  startTimer((seconds) => {
+    updateTimer(formatTime(seconds));
+  });
 }
 
 init();

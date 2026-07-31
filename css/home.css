@@ -1,0 +1,23 @@
+.home-screen {
+  display: grid;
+  gap: 16px;
+}
+
+.selector {
+  display: grid;
+  gap: 6px;
+}
+
+.selector select {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.start-btn {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: white;
+}

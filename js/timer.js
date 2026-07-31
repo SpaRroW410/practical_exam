@@ -1,16 +1,17 @@
-let timerId = null;
-let remainingTime = 0;
+import { timerDuration } from './config.js';
 
-export function startTimer(duration, onTick) {
-  remainingTime = duration;
-  if (timerId) clearInterval(timerId);
+let timerId = null;
+let remainingTime = timerDuration;
+
+export function startTimer(onTick) {
+  stopTimer();
+  remainingTime = timerDuration;
   onTick(remainingTime);
   timerId = setInterval(() => {
     remainingTime -= 1;
     onTick(remainingTime);
     if (remainingTime <= 0) {
-      clearInterval(timerId);
-      timerId = null;
+      stopTimer();
     }
   }, 1000);
 }
@@ -22,8 +23,8 @@ export function stopTimer() {
   }
 }
 
-export function resetTimer(duration) {
-  stopTimer();
-  remainingTime = duration;
-  document.getElementById('timer').textContent = '15:00';
+export function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
+  const secs = (seconds % 60).toString().padStart(2, '0');
+  return `${minutes}:${secs}`;
 }

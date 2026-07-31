@@ -1,0 +1,16 @@
+.exam-screen {
+  display: grid;
+  gap: 16px;
+}
+
+.exam-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.exam-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  background: #fbfdff;
+}
