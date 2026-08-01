@@ -1,0 +1,185 @@
+:root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --text: #1f1f1f;
+    --heading: #111111;
+    --secondary: #666666;
+    --border: #d9d9d9;
+    --primary: #1565c0;
+    --success: #2e7d32;
+    --warning: #ef6c00;
+    --danger: #c62828;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 22px;
+    line-height: 1.6;
+}
+
+/* Header */
+#app-header {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 2px solid var(--border);
+    background: white;
+}
+
+#app-header h1 {
+    font-size: 34px;
+    margin: 0;
+    color: var(--heading);
+}
+
+#app-header h2 {
+    margin-top: 6px;
+    font-size: 22px;
+    color: var(--secondary);
+    font-weight: 400;
+}
+
+/* Timer Panel */
+.exam-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 30px;
+    border-bottom: 1px solid var(--border);
+    background: white;
+}
+
+/* Timer Box */
+.timer-box {
+    min-width: 180px;
+    text-align: center;
+}
+
+/* Label */
+.timer-label {
+    font-size: 15px;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Overall Timer */
+#overallTimer {
+    font-size: 34px;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* Section Timer */
+#sectionTimer {
+    font-size: 34px;
+    color: var(--success);
+    font-weight: 700;
+}
+
+/* Warning */
+.timer-warning {
+    color: var(--danger) !important;
+}
+
+/* Section Header */
+.section-header {
+    max-width: 900px;
+    margin: 60px auto;
+    text-align: center;
+}
+
+.section-header h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+}
+
+/* Scenario */
+.scenario {
+    font-size: 22px;
+    color: #444;
+    line-height: 1.8;
+}
+
+/* Question */
+.question {
+    margin: 28px 0;
+    padding-left: 20px;
+    border-left: 5px solid var(--primary);
+    font-size: 23px;
+}
+
+/* Marks */
+.marks {
+    color: #888;
+    float: right;
+}
+
+/* Spotter Layout */
+.spotter-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* Image */
+.spotter-image {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: white;
+}
+
+/* Placeholder */
+.spotter-placeholder {
+    height: 420px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #cccccc;
+    color: #999;
+}
+
+/* Buttons */
+button {
+    padding: 14px 28px;
+    font-size: 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+#nextButton {
+    background: var(--primary);
+    color: white;
+}
+
+#previousButton {
+    background: #f2f2f2;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+/* Summary */
+.summary-card {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 40px;
+}
+
+/* Timer font style */
+#overallTimer,
+#sectionTimer {
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 34px;
+    font-weight: bold;
+}

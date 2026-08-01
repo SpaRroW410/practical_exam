@@ -1,48 +1,151 @@
-import { loadQuestions, buildSelectionMap } from './data.js';
-import { renderHomeScreen, renderExamScreen } from './render.js';
-import { setScreenVisibility, updateTimer } from './ui.js';
-import { startTimer, formatTime } from './timer.js';
-import { initializeNavigation } from './navigation.js';
+// ============================================================
+// Community Medicine Examination System
+// Main Application
+// Version 1.0
+// ============================================================
 
-const sectionConfig = [
-  { id: 'clinical', label: 'Clinical Case' },
-  { id: 'epidemiology', label: 'Epidemiology' },
-  { id: 'biostatistics', label: 'Biostatistics' },
-  { id: 'ospe', label: 'OSPE' },
-  { id: 'spotter', label: 'Spotter' },
-];
 
-const state = {
-  sections: sectionConfig,
-  selected: {},
-  questions: [],
-};
+// ------------------------------------------------------------
+// Application Startup
+// ------------------------------------------------------------
 
-async function init() {
-  try {
-    const questions = await loadQuestions();
-    state.questions = questions;
-    state.selected = Object.fromEntries(sectionConfig.map((section) => [section.id, 1]));
-    buildSelectionMap(questions);
-    renderHomeScreen(state);
-    setScreenVisibility(true, false);
-    initializeNavigation({ onStartExam: startExam });
-  } catch (error) {
-    document.getElementById('setup-screen').innerHTML = `<div class="card"><p>${error.message}</p></div>`;
-  }
+document.addEventListener("DOMContentLoaded", initializeApplication);
+
+
+// ------------------------------------------------------------
+// Initialize
+// ------------------------------------------------------------
+
+async function initializeApplication() {
+
+    try {
+
+        // Load JSON files
+        await loadApplicationData();
+
+        // Render Home Screen
+        renderHome();
+
+        console.log("Application Ready");
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert(error.message);
+
+    }
+
 }
 
-function startExam() {
-  sectionConfig.forEach((section) => {
-    const select = document.getElementById(section.id);
-    state.selected[section.id] = Number(select?.value || 1);
-  });
 
-  renderExamScreen(state);
-  setScreenVisibility(false, true);
-  startTimer((seconds) => {
-    updateTimer(formatTime(seconds));
-  });
+// ------------------------------------------------------------
+// Start Examination
+// ------------------------------------------------------------
+
+function startExam(){
+
+    // -----------------------------
+    // Examination Level
+    // -----------------------------
+
+    appState.examLevel =
+        document.getElementById("examLevel").value;
+
+
+    // -----------------------------
+    // Selected Questions
+    // -----------------------------
+
+    appState.exam.clinical =
+        Number(document.getElementById("clinical").value);
+
+    appState.exam.epidemiology =
+        Number(document.getElementById("epidemiology").value);
+
+    appState.exam.biostatistics =
+        Number(document.getElementById("biostatistics").value);
+
+    appState.exam.ospe =
+        Number(document.getElementById("ospe").value);
+
+    appState.exam.spotter =
+        Number(document.getElementById("spotter").value);
+
+
+    // -----------------------------
+    // Reset Navigation
+    // -----------------------------
+
+    appState.currentSection = 0;
+
+
+    // -----------------------------
+    // Reset Timers
+    // -----------------------------
+
+    appState.timer.overall = 0;
+
+    appState.timer.section = 0;
+
+    appState.timer.running = false;
+
+
+    // -----------------------------
+    // Display First Section
+    // -----------------------------
+
+    renderCurrentSection();
+
 }
 
-init();
+
+// ------------------------------------------------------------
+// Render Current Section
+// ------------------------------------------------------------
+
+function renderCurrentSection(){
+
+    switch(currentSectionName()){
+
+        case "clinical":
+
+            renderClinical();
+
+            break;
+
+        case "epidemiology":
+
+            renderEpidemiology();
+
+            break;
+
+        case "biostatistics":
+
+            renderBiostatistics();
+
+            break;
+
+        case "ospe":
+
+            renderOSPE();
+
+            break;
+
+        case "spotter":
+
+            renderSpotter();
+
+            break;
+
+        case "summary":
+
+            renderSummary();
+
+            break;
+
+    }
+
+}
