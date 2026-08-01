@@ -87,25 +87,53 @@ function renderHome() {
         .getElementById("startExam")
         .addEventListener("click", startExam);
 
+    document
+        .getElementById("examLevel")
+        .addEventListener("change", function(){
+
+            appState.examLevel = this.value;
+
+            populateQuestionDropdowns();
+
+        });
+
+}
+
+// ------------------------------------------------------------
+// Sections with per-question UG/PG filtering.
+// Spotter keeps its own separate UG/PG mechanism
+// (settings.UG_Spotter_Slides / PG_Spotter_Slides).
+// ------------------------------------------------------------
+
+const FILTERED_SECTIONS = [
+
+    "clinical",
+
+    "epidemiology",
+
+    "biostatistics",
+
+    "ospe"
+
+];
+
+function getEligibleQuestions(section) {
+
+    return appData.questions[section].filter(
+
+        q =>
+
+            q.Item_Type === "Question" &&
+
+            (!isUG() || q.Difficulty !== "Difficult")
+
+    );
+
 }
 
 function populateQuestionDropdowns() {
 
-    const sections = [
-
-        "clinical",
-
-        "epidemiology",
-
-        "biostatistics",
-
-        "ospe",
-
-        "spotter"
-
-    ];
-
-    sections.forEach(function(section){
+    FILTERED_SECTIONS.forEach(function(section){
 
         const select =
             document.getElementById(section);
@@ -114,8 +142,30 @@ function populateQuestionDropdowns() {
 
         select.innerHTML = "";
 
+        getEligibleQuestions(section).forEach(function(question){
+
+            const option =
+                document.createElement("option");
+
+            option.value = question.Question_No;
+
+            option.textContent = question.Question_No;
+
+            select.appendChild(option);
+
+        });
+
+    });
+
+    const spotterSelect =
+        document.getElementById("spotter");
+
+    if(spotterSelect){
+
+        spotterSelect.innerHTML = "";
+
         const total =
-            appData.questions[section].length;
+            appData.questions.spotter.length;
 
         for(let i=1;i<=total;i++){
 
@@ -126,10 +176,10 @@ function populateQuestionDropdowns() {
 
             option.textContent = i;
 
-            select.appendChild(option);
+            spotterSelect.appendChild(option);
 
         }
 
-    });
+    }
 
 }
