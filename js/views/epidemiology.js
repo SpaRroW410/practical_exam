@@ -40,9 +40,7 @@ function showEpidemiologyHeader() {
 
                 <div class="scenario">
 
-                    ${header.Scenario_or_Stem
-                        .replace(/\r\n/g,"<br>")
-                        .replace(/\|/g,"<br>")}
+                    ${renderSectionInfo("epidemiology", header)}
 
                 </div>
 
@@ -97,6 +95,8 @@ function showEpidemiologyQuestion() {
 
     }
 
+    const marks = getDisplayMarks(question);
+
     let html = `
 
         ${renderTimerHeader()}
@@ -129,7 +129,7 @@ function showEpidemiologyQuestion() {
 
                 <span class="marks">
 
-                    (${question.Marks_A})
+                    (${marks.A})
 
                 </span>
 
@@ -143,7 +143,7 @@ function showEpidemiologyQuestion() {
 
                 <span class="marks">
 
-                    (${question.Marks_B})
+                    (${marks.B})
 
                 </span>
 
@@ -163,7 +163,7 @@ function showEpidemiologyQuestion() {
 
                 <span class="marks">
 
-                    (${question.Marks_C})
+                    (${marks.C})
 
                 </span>
 

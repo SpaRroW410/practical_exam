@@ -40,9 +40,7 @@ function showOSPEHeader() {
 
                 <div class="scenario">
 
-                    ${header.Scenario_or_Stem
-                        .replace(/\r\n/g,"<br>")
-                        .replace(/\|/g,"<br>")}
+                    ${renderSectionInfo("ospe", header)}
 
                 </div>
 
@@ -90,6 +88,8 @@ function showOSPEQuestion() {
 
     }
 
+    const marks = getDisplayMarks(question);
+
     let html = `
 
         ${renderTimerHeader()}
@@ -122,7 +122,7 @@ function showOSPEQuestion() {
 
                 <span class="marks">
 
-                    (${question.Marks_A})
+                    (${marks.A})
 
                 </span>
 
@@ -136,7 +136,7 @@ function showOSPEQuestion() {
 
                 <span class="marks">
 
-                    (${question.Marks_B})
+                    (${marks.B})
 
                 </span>
 
@@ -162,7 +162,7 @@ function showOSPEQuestion() {
 
                 <span class="marks">
 
-                    (${question.Marks_C})
+                    (${marks.C})
 
                 </span>
 

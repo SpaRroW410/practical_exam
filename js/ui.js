@@ -140,6 +140,67 @@ function renderTimerHeader() {
 
 
 // ------------------------------------------------------------
+// Display Marks (UG sees A+B only, redistributed to the full
+// section total; PG sees the curated A/B/C split)
+// ------------------------------------------------------------
+
+function getDisplayMarks(question) {
+
+    if (isPG()) {
+
+        return {
+            A: question.Marks_A,
+            B: question.Marks_B,
+            C: question.Marks_C
+        };
+
+    }
+
+    const half = question.Total_Marks / 2;
+
+    return {
+        A: half,
+        B: half,
+        C: null
+    };
+
+}
+
+
+// ------------------------------------------------------------
+// Section Info (time + total marks), computed live instead of
+// a static placeholder string
+// ------------------------------------------------------------
+
+const SECTION_TIME_SETTING = {
+
+    clinical: "Clinical_Time_Min",
+
+    epidemiology: "Epidemiology_Time_Min",
+
+    biostatistics: "Biostatistics_Time_Min",
+
+    ospe: "OSPE_Time_Min"
+
+};
+
+function renderSectionInfo(section, header) {
+
+    const timeMin =
+        appData.settings[SECTION_TIME_SETTING[section]];
+
+    return `
+
+        Time: ${timeMin} Minutes<br>
+        Total Marks: ${header.Total_Marks} Marks<br>
+        Instructions: Answer all sub-questions carefully.
+
+    `;
+
+}
+
+
+// ------------------------------------------------------------
 // Build Navigation
 // ------------------------------------------------------------
 

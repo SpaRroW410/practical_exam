@@ -195,6 +195,17 @@ function showSpotterHeader() {
 
                     Seconds
 
+                    <br><br>
+
+                    Total Marks :
+
+                    ${
+
+                        spotterSlides.length *
+                        (isPG() ? 3 : 2)
+
+                    }
+
                 </div>
 
             </div>

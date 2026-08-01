@@ -40,9 +40,7 @@ function showClinicalHeader() {
 
                 <div class="scenario">
 
-                    ${header.Scenario_or_Stem
-                        .replace(/\r\n/g, "<br>")
-                        .replace(/\|/g, "<br>")}
+                    ${renderSectionInfo("clinical", header)}
 
                 </div>
 
@@ -94,6 +92,8 @@ function showClinicalQuestion() {
 
     }
 
+    const marks = getDisplayMarks(question);
+
     let html = `
 
         ${renderTimerHeader()}
@@ -126,7 +126,7 @@ function showClinicalQuestion() {
 
                 <span class="marks">
 
-                    (${question.Marks_A})
+                    (${marks.A})
 
                 </span>
 
@@ -140,7 +140,7 @@ function showClinicalQuestion() {
 
                 <span class="marks">
 
-                    (${question.Marks_B})
+                    (${marks.B})
 
                 </span>
 
@@ -166,7 +166,7 @@ function showClinicalQuestion() {
 
                 <span class="marks">
 
-                    (${question.Marks_C})
+                    (${marks.C})
 
                 </span>
 
