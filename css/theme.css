@@ -1,7 +1,7 @@
 :root {
-    --bg: #ffffff;
-    --surface: #ffffff;
-    --text: #1f1f1f;
+    --font-family: "Times New Roman", Times, Georgia, serif;
+    --bg: #f5f7fa;
+    --text: #222222;
     --heading: #111111;
     --secondary: #666666;
     --border: #d9d9d9;
@@ -9,15 +9,14 @@
     --success: #2e7d32;
     --warning: #ef6c00;
     --danger: #c62828;
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --max-width: 1200px;
+    --radius: 10px;
+    --transition: 0.25s;
 }
 
 body {
-    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-    background: var(--bg);
-    color: var(--text);
     font-size: 22px;
-    line-height: 1.6;
 }
 
 /* Header */

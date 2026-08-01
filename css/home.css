@@ -40,7 +40,7 @@
 
 .home-title h2{
 
-    color:var(--primary-color);
+    color:var(--primary);
 
     margin-bottom:8px;
 
@@ -82,7 +82,7 @@
 
     padding:16px;
 
-    background:var(--primary-color);
+    background:var(--primary);
 
     color:white;
 

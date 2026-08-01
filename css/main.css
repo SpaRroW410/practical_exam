@@ -8,42 +8,8 @@
    CSS VARIABLES
 ------------------------------ */
 
-:root {
-
-    /* Colors */
-
-    --primary-color: #0f4c81;
-    --secondary-color: #1976d2;
-
-    --background-color: #f5f7fa;
-
-    --surface-color: #ffffff;
-
-    --text-color: #222222;
-
-    --border-color: #d9d9d9;
-
-    --success-color: #2e7d32;
-
-    --warning-color: #f57c00;
-
-    --danger-color: #d32f2f;
-
-    /* Typography */
-
-    --font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-
-    /* Layout */
-
-    --max-width: 1200px;
-
-    --radius: 10px;
-
-    --shadow: 0 2px 8px rgba(0,0,0,0.08);
-
-    --transition: 0.25s;
-
-}
+/* Canonical theme variables now live in css/theme.css's :root block
+   (loaded before this file) so there's a single source of truth. */
 
 
 /* -----------------------------
@@ -67,9 +33,9 @@
 
 body{
 
-    background:var(--background-color);
+    background:var(--bg);
 
-    color:var(--text-color);
+    color:var(--text);
 
     font-family:var(--font-family);
 
@@ -109,7 +75,7 @@ body{
 
     padding:25px;
 
-    border-bottom:1px solid var(--border-color);
+    border-bottom:1px solid var(--border);
 
     box-shadow:var(--shadow);
 
@@ -117,7 +83,7 @@ body{
 
 #app-header h1{
 
-    color:var(--primary-color);
+    color:var(--primary);
 
     font-size:2rem;
 
@@ -161,7 +127,7 @@ body{
 
     color:#777;
 
-    border-top:1px solid var(--border-color);
+    border-top:1px solid var(--border);
 
 }
 
@@ -211,7 +177,7 @@ select{
 
     padding:12px;
 
-    border:1px solid var(--border-color);
+    border:1px solid var(--border);
 
     border-radius:var(--radius);
 
