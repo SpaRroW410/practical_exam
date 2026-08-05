@@ -94,17 +94,11 @@ function showBiostatisticsQuestion() {
 
         <section class="exam-screen">
 
-            <h2>
+            <h2 style="text-align:center;">
 
-                Biostatistics Question ${question.Question_No}
+                Biostatistics Question
 
             </h2>
-
-            <h3>
-
-                ${question.Title}
-
-            </h3>
 
             <div class="scenario">
 

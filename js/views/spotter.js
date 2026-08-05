@@ -407,9 +407,9 @@ function showSpotterSlide() {
 
             </div>
 
-            <h2>
+            <h2 style="text-align:center;">
 
-                ${slide.Title}
+                Spotter ${currentSpotterIndex + 1}
 
             </h2>
 

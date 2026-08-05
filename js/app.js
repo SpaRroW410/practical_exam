@@ -23,8 +23,8 @@ async function initializeApplication() {
         // Load JSON files
         await loadApplicationData();
 
-        // Render Home Screen
-        renderHome();
+        // Render Access Screen (gates entry to Home Screen)
+        renderPasswordScreen();
 
         console.log("Application Ready");
 
@@ -91,6 +91,13 @@ function startExam(){
     appState.timer.section = 0;
 
     appState.timer.running = false;
+
+
+    // -----------------------------
+    // Start Overall Timer
+    // -----------------------------
+
+    startOverallTimer();
 
 
     // -----------------------------

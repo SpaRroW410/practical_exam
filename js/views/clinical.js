@@ -100,17 +100,11 @@ function showClinicalQuestion() {
 
         <section class="exam-screen">
 
-            <h2>
+            <h2 style="text-align:center;">
 
-                Clinical Case ${question.Question_No}
+                Clinical Case
 
             </h2>
-
-            <h3>
-
-                ${question.Title}
-
-            </h3>
 
             <div class="scenario">
 

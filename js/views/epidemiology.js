@@ -103,17 +103,11 @@ function showEpidemiologyQuestion() {
 
         <section class="exam-screen">
 
-            <h2>
+            <h2 style="text-align:center;">
 
-                Epidemiology Question ${question.Question_No}
+                Epidemiology Question
 
             </h2>
-
-            <h3>
-
-                ${question.Title}
-
-            </h3>
 
             <div class="scenario">
 

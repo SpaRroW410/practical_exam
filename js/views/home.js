@@ -68,6 +68,15 @@ function renderHome() {
                 </div>
 
                 <button
+                    id="randomSet"
+                    class="start-button"
+                    style="background:#5a6b7d; margin-bottom:10px;">
+
+                    RANDOM SET
+
+                </button>
+
+                <button
                     id="startExam"
                     class="start-button">
 
@@ -82,6 +91,10 @@ function renderHome() {
     `);
 
     populateQuestionDropdowns();
+
+    document
+        .getElementById("randomSet")
+        .addEventListener("click", randomizeSelections);
 
     document
         .getElementById("startExam")
@@ -164,8 +177,17 @@ function populateQuestionDropdowns() {
 
         spotterSelect.innerHTML = "";
 
-        const total =
-            appData.questions.spotter.length;
+        const setNumbers = new Set(
+
+            appData.questions.spotter
+
+                .filter(x => x.Item_Type === "Spotter_Slide")
+
+                .map(x => x.Set_No)
+
+        );
+
+        const total = setNumbers.size;
 
         for(let i=1;i<=total;i++){
 
@@ -179,6 +201,39 @@ function populateQuestionDropdowns() {
             spotterSelect.appendChild(option);
 
         }
+
+    }
+
+}
+
+// ------------------------------------------------------------
+// Random Set
+// Picks a random valid option in every dropdown except
+// Examination Level, which stays a manual choice.
+// ------------------------------------------------------------
+
+function randomizeSelections() {
+
+    FILTERED_SECTIONS.forEach(function(section){
+
+        const select =
+            document.getElementById(section);
+
+        if(!select || select.options.length === 0)
+            return;
+
+        select.selectedIndex =
+            Math.floor(Math.random() * select.options.length);
+
+    });
+
+    const spotterSelect =
+        document.getElementById("spotter");
+
+    if(spotterSelect && spotterSelect.options.length > 0){
+
+        spotterSelect.selectedIndex =
+            Math.floor(Math.random() * spotterSelect.options.length);
 
     }
 

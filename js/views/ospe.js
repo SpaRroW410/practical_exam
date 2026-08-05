@@ -96,17 +96,11 @@ function showOSPEQuestion() {
 
         <section class="exam-screen">
 
-            <h2>
+            <h2 style="text-align:center;">
 
-                OSPE Station ${question.Question_No}
+                OSPE Station
 
             </h2>
-
-            <h3>
-
-                ${question.Title}
-
-            </h3>
 
             <div class="scenario">
 
