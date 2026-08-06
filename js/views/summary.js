@@ -1,6 +1,3 @@
-
-Summary · JS
-
 // ============================================================
 // Community Medicine Examination System
 // Summary Screen
@@ -156,16 +153,9 @@ function renderSummary() {
                     </button>
 
                     <button
-                        id="restartExam">
-
-                        Restart Examination
-
-                    </button>
-
-                    <button
                         id="closeExam">
 
-                        Exit
+                        End Exam
 
                     </button>
 
@@ -182,64 +172,36 @@ function renderSummary() {
         .onclick = printExamToPDF;
 
     document
-        .getElementById("restartExam")
-        .onclick = restartExam;
-
-    document
         .getElementById("closeExam")
         .onclick = function () {
 
-            location.reload();
+            window.close();
+
+            // Browsers only allow script-driven window.close()
+            // on a tab/window that was itself opened by script;
+            // for a normally-navigated tab it's silently ignored,
+            // so fall back to telling the examiner to close it.
+
+            setTimeout(function () {
+
+                renderPage(`
+
+                    <section class="home-screen">
+
+                        <div class="home-card">
+
+                            <h2>Examination Ended</h2>
+
+                            <p>You may now close this window/tab.</p>
+
+                        </div>
+
+                    </section>
+
+                `);
+
+            }, 200);
 
         };
 
 }
-
-
-
-// ============================================================
-// Restart
-// ============================================================
-
-function restartExam() {
-
-    resetTimers();
-
-    appState.currentSection = 0;
-
-    renderHome();
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

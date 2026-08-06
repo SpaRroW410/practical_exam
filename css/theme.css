@@ -10,13 +10,12 @@
     --warning: #ef6c00;
     --danger: #c62828;
     --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --max-width: 1200px;
     --radius: 10px;
     --transition: 0.25s;
 }
 
 body {
-    font-size: 22px;
+    font-size: 28px;
 }
 
 /* Header */
@@ -28,14 +27,14 @@ body {
 }
 
 #app-header h1 {
-    font-size: 34px;
+    font-size: 44px;
     margin: 0;
     color: var(--heading);
 }
 
 #app-header h2 {
     margin-top: 6px;
-    font-size: 22px;
+    font-size: 26px;
     color: var(--secondary);
     font-weight: 400;
 }
@@ -58,7 +57,7 @@ body {
 
 /* Label */
 .timer-label {
-    font-size: 15px;
+    font-size: 18px;
     color: #777;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -66,14 +65,14 @@ body {
 
 /* Overall Timer */
 #overallTimer {
-    font-size: 34px;
+    font-size: 42px;
     color: var(--primary);
     font-weight: 700;
 }
 
 /* Section Timer */
 #sectionTimer {
-    font-size: 34px;
+    font-size: 42px;
     color: var(--success);
     font-weight: 700;
 }
@@ -91,13 +90,13 @@ body {
 }
 
 .section-header h2 {
-    font-size: 36px;
+    font-size: 46px;
     margin-bottom: 30px;
 }
 
 /* Scenario */
 .scenario {
-    font-size: 22px;
+    font-size: 28px;
     color: #444;
     line-height: 1.8;
 }
@@ -107,7 +106,7 @@ body {
     margin: 28px 0;
     padding-left: 20px;
     border-left: 5px solid var(--primary);
-    font-size: 23px;
+    font-size: 28px;
 }
 
 /* Marks */
@@ -144,7 +143,7 @@ body {
 /* Buttons */
 button {
     padding: 14px 28px;
-    font-size: 20px;
+    font-size: 24px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -179,6 +178,6 @@ button:hover {
 #overallTimer,
 #sectionTimer {
     font-family: "Consolas", "Courier New", monospace;
-    font-size: 34px;
+    font-size: 42px;
     font-weight: bold;
 }
