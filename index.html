@@ -1,3 +1,6 @@
+
+
+Index · HTML
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,6 +20,69 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/exam.css">
+
+    <!-- Print / PDF export styles (self-contained, does not
+         depend on the CSS files above) -->
+    <style>
+
+        #print-area {
+            display: none;
+        }
+
+        .print-section {
+            page-break-inside: avoid;
+            margin-bottom: 24px;
+        }
+
+        .print-spotter-station {
+            page-break-inside: avoid;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .print-question-item {
+            margin: 8px 0;
+        }
+
+        .print-marks {
+            font-style: italic;
+            color: #555;
+        }
+
+        .print-image img {
+            max-width: 320px;
+            display: block;
+            margin: 8px 0;
+        }
+
+        .print-image-caption {
+            font-size: 0.85em;
+            color: #555;
+        }
+
+        @media print {
+
+            body * {
+                visibility: hidden;
+            }
+
+            #print-area,
+            #print-area * {
+                visibility: visible;
+            }
+
+            #print-area {
+                display: block;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -58,6 +124,9 @@
 
     </div>
 
+    <!-- Hidden container populated only when printing -->
+    <div id="print-area"></div>
+
 
     <!-- =====================================================
          JAVASCRIPT
@@ -77,9 +146,43 @@
     <script src="js/views/ospe.js"></script>
     <script src="js/views/spotter.js"></script>
     <script src="js/views/summary.js"></script>
+    <script src="js/print.js"></script>
 
     <script src="js/app.js"></script>
 
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

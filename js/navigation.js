@@ -90,6 +90,12 @@ function attachNavigationEvents() {
 
 }
 
+window.nextSection = nextSection;
+window.previousSection = previousSection;
+window.isFirstSection = isFirstSection;
+window.isLastSection = isLastSection;
+window.attachNavigationEvents = attachNavigationEvents;
+
 
 // ------------------------------------------------------------
 // Keyboard Navigation
@@ -101,6 +107,17 @@ document.addEventListener("keydown", function (event) {
         return;
 
     if (event.key === "ArrowRight") {
+
+        // Reserve screen has no nextButton — allow manual
+        // advance to Summary before the timer runs out.
+
+        if (typeof reserveMode !== "undefined" && reserveMode) {
+
+            finishSpotter();
+
+            return;
+
+        }
 
         const btn = document.getElementById("nextButton");
 
@@ -119,3 +136,36 @@ document.addEventListener("keydown", function (event) {
     }
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

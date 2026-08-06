@@ -1,4 +1,6 @@
 
+Summary · JS
+
 // ============================================================
 // Community Medicine Examination System
 // Summary Screen
@@ -147,6 +149,13 @@ function renderSummary() {
                 <div class="summary-buttons">
 
                     <button
+                        id="printExam">
+
+                        Print / Save PDF
+
+                    </button>
+
+                    <button
                         id="restartExam">
 
                         Restart Examination
@@ -167,6 +176,10 @@ function renderSummary() {
         </section>
 
     `);
+
+    document
+        .getElementById("printExam")
+        .onclick = printExamToPDF;
 
     document
         .getElementById("restartExam")
@@ -197,3 +210,36 @@ function restartExam() {
     renderHome();
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

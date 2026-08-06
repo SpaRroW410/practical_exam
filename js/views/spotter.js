@@ -1,3 +1,5 @@
+
+Spotter · JS
 // ============================================================
 // Community Medicine Examination System
 // Spotter Renderer
@@ -563,7 +565,7 @@ function showReserveScreen() {
 
                 <p>
 
-                    Please wait for the next section.
+                    Remain seated and wait for your paper to be collected.
 
                 </p>
 
@@ -624,3 +626,36 @@ function resetSpotter() {
     spotterTimerStarted = false;
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

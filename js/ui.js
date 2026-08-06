@@ -108,7 +108,7 @@ function renderTimerHeader() {
                     id="overallTimer"
                     class="timer-value">
 
-                    00:00
+                    ${formatTime(appState.timer.overall)}
 
                 </div>
 
