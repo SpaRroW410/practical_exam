@@ -1,5 +1,3 @@
-
-Spotter · JS
 // ============================================================
 // Community Medicine Examination System
 // Spotter Renderer
@@ -626,36 +624,3 @@ function resetSpotter() {
     spotterTimerStarted = false;
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
