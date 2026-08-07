@@ -40,62 +40,139 @@ function printExamToPDF() {
 
 function buildPrintableExamHTML() {
 
-    let html = `
+    let html = "";
 
-        <div class="print-header">
+    html += buildPrintableSummaryPage();
 
-            <h1>Community Medicine — Examination Paper</h1>
+    html += buildPrintPage(
+        buildStandardSectionBlock(
+            "clinical",
+            "Clinical Case",
+            appState.exam.clinical
+        ) +
+        buildStandardSectionBlock(
+            "epidemiology",
+            "Epidemiology",
+            appState.exam.epidemiology
+        )
+    );
 
-            <p>
+    html += buildPrintPage(
+        buildStandardSectionBlock(
+            "biostatistics",
+            "Biostatistics",
+            appState.exam.biostatistics
+        ) +
+        buildStandardSectionBlock(
+            "ospe",
+            "OSPE",
+            appState.exam.ospe
+        )
+    );
 
-                Examination Level:
-                ${appState.examLevel === "PG" ? "Postgraduate" : "Undergraduate"}
+    html += buildSpotterPages();
 
-                <br>
+    return html;
 
-                Generated: ${new Date().toLocaleString()}
+}
 
-            </p>
+
+function buildPrintPage(content) {
+
+    return `
+
+        <div class="print-page">
+
+            ${content}
 
         </div>
 
     `;
 
-    html += buildStandardSectionBlock(
+}
 
-        "clinical",
-        "Clinical Case",
-        appState.exam.clinical
 
-    );
+function buildPrintableSummaryPage() {
 
-    html += buildStandardSectionBlock(
+    const clinicalQuestion = getQuestion("clinical", appState.exam.clinical);
+    const epiQuestion = getQuestion("epidemiology", appState.exam.epidemiology);
+    const biostatQuestion = getQuestion("biostatistics", appState.exam.biostatistics);
+    const ospeQuestion = getQuestion("ospe", appState.exam.ospe);
 
-        "epidemiology",
-        "Epidemiology",
-        appState.exam.epidemiology
+    const selectedQuestions = `
+        <ul>
+            <li>Clinical Case: ${clinicalQuestion ? clinicalQuestion.Question_No : "N/A"}</li>
+            <li>Epidemiology: ${epiQuestion ? epiQuestion.Question_No : "N/A"}</li>
+            <li>Biostatistics: ${biostatQuestion ? biostatQuestion.Question_No : "N/A"}</li>
+            <li>OSPE: ${ospeQuestion ? ospeQuestion.Question_No : "N/A"}</li>
+            <li>Spotter Set: ${appState.exam.spotter}</li>
+        </ul>
+    `;
 
-    );
+    const totalTime = typeof formatTime === "function"
+        ? formatTime(appState.timer.overall)
+        : appState.timer.overall;
 
-    html += buildStandardSectionBlock(
+    const summaryContent = `
 
-        "biostatistics",
-        "Biostatistics",
-        appState.exam.biostatistics
+        <div class="print-section">
 
-    );
+            <h2>Exam Summary</h2>
 
-    html += buildStandardSectionBlock(
+            <div class="print-summary-meta">
 
-        "ospe",
-        "OSPE",
-        appState.exam.ospe
+                <p><strong>Exam Level:</strong> ${appState.examLevel === "PG" ? "Postgraduate" : "Undergraduate"}</p>
+                <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+                <p><strong>Total Time:</strong> ${totalTime}</p>
 
-    );
+                <h3>Selected Questions</h3>
+                ${selectedQuestions}
 
-    html += buildSpotterSectionBlock();
+            </div>
 
-    return html;
+        </div>
+
+    `;
+
+    return buildPrintPage(summaryContent);
+
+}
+
+
+function buildAnswerKeyBlock(item) {
+
+    if (!item) {
+        return "";
+    }
+
+    const answers = [];
+
+    if (item.Answer_Key_A) {
+        answers.push(`<div><strong>Answer Key A:</strong> ${item.Answer_Key_A}</div>`);
+    }
+
+    if (item.Answer_Key_B) {
+        answers.push(`<div><strong>Answer Key B:</strong> ${item.Answer_Key_B}</div>`);
+    }
+
+    if (item.Answer_Key_C) {
+        answers.push(`<div><strong>Answer Key C:</strong> ${item.Answer_Key_C}</div>`);
+    }
+
+    if (answers.length === 0) {
+        return "";
+    }
+
+    return `
+
+        <div class="print-answer-key">
+
+            <strong>Answer Key</strong>
+            ${answers.join("")}
+
+        </div>
+
+    `;
 
 }
 
@@ -190,6 +267,8 @@ function buildStandardSectionBlock(sectionKey, sectionLabel, questionNo) {
 
     }
 
+    html += buildAnswerKeyBlock(question);
+
     if (question.Image_File && question.Image_File !== "") {
 
         html += `
@@ -219,98 +298,117 @@ function buildStandardSectionBlock(sectionKey, sectionLabel, questionNo) {
 }
 
 
-// ------------------------------------------------------------
-// Spotter Section — all stations in the selected set
-// ------------------------------------------------------------
-
-function buildSpotterSectionBlock() {
-
-    // Recompute the exact set of slides shown during the
-    // exam (respects the UG/PG station sequence), using the
-    // same logic as the live exam view.
+function buildSpotterPages() {
 
     loadSpotterSlides();
 
-    let html = `
+    if (!spotterSlides.length) {
+        return buildPrintPage(`
 
-        <div class="print-section">
+            <div class="print-section">
 
-            <h2>Spotter Set ${appState.exam.spotter}</h2>
+                <h2>Spotter Set ${appState.exam.spotter}</h2>
+                <p>No spotter stations found for this set.</p>
 
-            <p>Number of Stations: ${spotterSlides.length}</p>
+            </div>
 
-    `;
+        `);
+    }
 
-    spotterSlides.forEach(function (slide, index) {
+    const pageSize = 4;
+    const pageCount = Math.ceil(spotterSlides.length / pageSize);
+    let html = "";
 
-        html += `
+    for (let pageIndex = 0; pageIndex < pageCount; pageIndex++) {
 
-            <div class="print-spotter-station">
+        const pageSlides = spotterSlides.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+        let pageContent = `
 
-                <h3>Spotter ${index + 1}</h3>
+            <div class="print-section">
 
-                <div class="print-question-item">
+                <h2>Spotter Set ${appState.exam.spotter}</h2>
+                <p>Number of Stations: ${spotterSlides.length}</p>
+                <p>Page ${pageIndex + 1} of ${pageCount}</p>
 
-                    <strong>A.</strong>
-                    ${slide.Sub_Question_A ?? ""}
-                    <span class="print-marks">(${slide.Marks_A})</span>
-
-                </div>
-
-                <div class="print-question-item">
-
-                    <strong>B.</strong>
-                    ${slide.Sub_Question_B ?? ""}
-                    <span class="print-marks">(${slide.Marks_B})</span>
-
-                </div>
+            </div>
 
         `;
 
-        if (isPG() && slide.Sub_Question_C) {
+        pageSlides.forEach(function (slide, index) {
 
-            html += `
+            pageContent += `
 
-                <div class="print-question-item">
+                <div class="print-spotter-station">
 
-                    <strong>C.</strong>
-                    ${slide.Sub_Question_C}
-                    <span class="print-marks">(${slide.Marks_C})</span>
+                    <h3>Spotter ${pageIndex * pageSize + index + 1}</h3>
 
-                </div>
+                    <div class="print-question-item">
 
-            `;
-
-        }
-
-        if (slide.Image_File && slide.Image_File !== "") {
-
-            html += `
-
-                <div class="print-image">
-
-                    <img
-                        src="images/spotter/${slide.Image_File}"
-                        alt="Spotter Image">
-
-                    <div class="print-image-caption">
-
-                        ${slide.Image_Caption ?? ""}
+                        <strong>A.</strong>
+                        ${slide.Sub_Question_A ?? ""}
+                        <span class="print-marks">(${slide.Marks_A})</span>
 
                     </div>
 
-                </div>
+                    <div class="print-question-item">
+
+                        <strong>B.</strong>
+                        ${slide.Sub_Question_B ?? ""}
+                        <span class="print-marks">(${slide.Marks_B})</span>
+
+                    </div>
 
             `;
 
-        }
+            if (isPG() && slide.Sub_Question_C) {
 
-        html += `</div>`;
+                pageContent += `
 
-    });
+                    <div class="print-question-item">
 
-    html += `</div>`;
+                        <strong>C.</strong>
+                        ${slide.Sub_Question_C}
+                        <span class="print-marks">(${slide.Marks_C})</span>
+
+                    </div>
+
+                `;
+
+            }
+
+            pageContent += buildAnswerKeyBlock(slide);
+
+            if (slide.Image_File && slide.Image_File !== "") {
+
+                pageContent += `
+
+                    <div class="print-image">
+
+                        <img
+                            src="images/spotter/${slide.Image_File}"
+                            alt="Spotter Image">
+
+                        <div class="print-image-caption">
+
+                            ${slide.Image_Caption ?? ""}
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+
+            pageContent += `</div>`;
+
+        });
+
+        html += buildPrintPage(pageContent);
+
+    }
 
     return html;
 
 }
+

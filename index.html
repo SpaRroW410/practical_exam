@@ -47,6 +47,23 @@
             color: #555;
         }
 
+        .print-answer-key {
+            margin: 12px 0 0 0;
+            padding: 10px 12px;
+            border-left: 4px solid #4a90e2;
+            background: #f7fbff;
+            color: #333;
+        }
+
+        .print-answer-key strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .print-answer-key div {
+            margin: 4px 0;
+        }
+
         .print-image img {
             max-width: 320px;
             display: block;
@@ -56,6 +73,15 @@
         .print-image-caption {
             font-size: 0.85em;
             color: #555;
+        }
+
+        .print-page {
+            page-break-after: always;
+            page-break-inside: avoid;
+        }
+
+        .print-page:last-child {
+            page-break-after: auto;
         }
 
         @media print {

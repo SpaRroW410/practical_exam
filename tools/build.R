@@ -44,17 +44,26 @@ settings <- read_excel(workbook, sheet = "Settings")
 # Convert to Lists
 #-------------------------------------------------------------
 
+ensure_answer_keys <- function(df) {
+  answer_keys <- c("Answer_Key_A", "Answer_Key_B", "Answer_Key_C")
+  missing_keys <- setdiff(answer_keys, names(df))
+  for (key in missing_keys) {
+    df[[key]] <- NA
+  }
+  df
+}
+
 questions <- list(
 
-    clinical = as.data.frame(clinical),
+    clinical = ensure_answer_keys(as.data.frame(clinical)),
 
-    epidemiology = as.data.frame(epidemiology),
+    epidemiology = ensure_answer_keys(as.data.frame(epidemiology)),
 
-    biostatistics = as.data.frame(biostatistics),
+    biostatistics = ensure_answer_keys(as.data.frame(biostatistics)),
 
-    ospe = as.data.frame(ospe),
+    ospe = ensure_answer_keys(as.data.frame(ospe)),
 
-    spotter = as.data.frame(spotter)
+    spotter = ensure_answer_keys(as.data.frame(spotter))
 
 )
 
