@@ -144,6 +144,25 @@ function getEligibleQuestions(section) {
 
 }
 
+// ------------------------------------------------------------
+// Spotter sets are filtered by the SET's header Difficulty
+// (not per individual spotter slide).
+// ------------------------------------------------------------
+
+function getEligibleSpotterSetNumbers() {
+
+    return appData.questions.spotter
+
+        .filter(x => x.Item_Type === "Section_Header")
+
+        .filter(h => !isUG() || h.Difficulty !== "Difficult")
+
+        .map(h => Number(String(h.Set_No).replace(/[^\d]/g, "")))
+
+        .sort((a, b) => a - b);
+
+}
+
 function populateQuestionDropdowns() {
 
     FILTERED_SECTIONS.forEach(function(section){
@@ -177,30 +196,18 @@ function populateQuestionDropdowns() {
 
         spotterSelect.innerHTML = "";
 
-        const setNumbers = new Set(
-
-            appData.questions.spotter
-
-                .filter(x => x.Item_Type === "Spotter_Slide")
-
-                .map(x => x.Set_No)
-
-        );
-
-        const total = setNumbers.size;
-
-        for(let i=1;i<=total;i++){
+        getEligibleSpotterSetNumbers().forEach(function(setNo){
 
             const option =
                 document.createElement("option");
 
-            option.value = i;
+            option.value = setNo;
 
-            option.textContent = i;
+            option.textContent = setNo;
 
             spotterSelect.appendChild(option);
 
-        }
+        });
 
     }
 
