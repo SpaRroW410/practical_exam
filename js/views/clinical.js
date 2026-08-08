@@ -100,7 +100,7 @@ function showClinicalQuestion() {
 
         <section class="exam-screen">
 
-            <h2 style="text-align:center;">
+            <h2 class="question-title">
 
                 Clinical Case
 

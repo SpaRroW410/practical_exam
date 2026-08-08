@@ -357,15 +357,19 @@ function showSpotterSlide() {
 
         imageHTML = `
 
-            <img
+            <div class="spotter-image-wrap">
 
-                src="images/spotter/${slide.Image_File}"
+                <img
 
-                alt="Spotter Image"
+                    src="images/spotter/${slide.Image_File}"
 
-                class="spotter-image"
+                    alt="Spotter Image"
 
-            >
+                    class="spotter-image"
+
+                >
+
+            </div>
 
         `;
 
@@ -375,9 +379,13 @@ function showSpotterSlide() {
 
         imageHTML = `
 
-            <div class="spotter-placeholder">
+            <div class="spotter-image-wrap">
 
-                No Image
+                <div class="spotter-placeholder">
+
+                    No Image
+
+                </div>
 
             </div>
 
@@ -407,7 +415,7 @@ function showSpotterSlide() {
 
             </div>
 
-            <h2 style="text-align:center;">
+            <h2 class="question-title">
 
                 Spotter ${currentSpotterIndex + 1}
 

@@ -1,4 +1,10 @@
 .exam-screen {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 16px;
+  height: 100%;
+}
+
+.navigation {
+  flex-shrink: 0;
 }

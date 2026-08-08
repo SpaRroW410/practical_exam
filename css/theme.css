@@ -87,6 +87,7 @@ body {
     max-width: 900px;
     margin: 60px auto;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .section-header h2 {
@@ -94,11 +95,27 @@ body {
     margin-bottom: 30px;
 }
 
+/* Question/Slide Title */
+.question-title {
+    text-align: center;
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+/* Spotter Progress */
+.spotter-progress {
+    text-align: center;
+    font-size: 26px;
+    color: #666;
+    flex-shrink: 0;
+}
+
 /* Scenario */
 .scenario {
-    font-size: 28px;
+    font-size: 18px;
     color: #444;
     line-height: 1.8;
+    flex-shrink: 0;
 }
 
 /* Question */
@@ -106,7 +123,8 @@ body {
     margin: 28px 0;
     padding-left: 20px;
     border-left: 5px solid var(--primary);
-    font-size: 28px;
+    font-size: 18px;
+    flex-shrink: 0;
 }
 
 /* Marks */
@@ -115,19 +133,38 @@ body {
     float: right;
 }
 
-/* Spotter Layout */
+/* Spotter Layout: fills whatever's left in .exam-screen after the
+   progress line/title; the image wrap fills whatever's left within it
+   after Sub-Question A/B/(C). */
 .spotter-layout {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    flex: 1;
+    min-height: 0;
+}
+
+.spotter-layout > .question {
+    flex-shrink: 0;
+}
+
+/* Image Wrap: a flex-grown box with a definite height (from flex-grow);
+   the image/placeholder inside sizes itself against that box without
+   itself being a flex-basis:0 item, so its own aspect ratio drives its
+   size (no distortion, no letterboxed empty space). */
+.spotter-image-wrap {
+    flex: 1;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
 /* Image */
 .spotter-image {
-    display: block;
-    margin: 0 auto;
     max-width: 100%;
-    max-height: 55vh;
+    max-height: 100%;
     width: auto;
     height: auto;
     object-fit: contain;
@@ -138,25 +175,33 @@ body {
 /* Placeholder */
 .spotter-placeholder {
     width: 100%;
+    height: 100%;
     max-width: 500px;
-    height: 300px;
     display: flex;
     justify-content: center;
     align-items: center;
     border: 2px dashed #cccccc;
     color: #999;
-    margin: 0 auto;
 }
 
-/* Question Image (Clinical/Epidemiology/Biostatistics/OSPE) */
+/* Question Image (Clinical/Epidemiology/Biostatistics/OSPE): fills
+   whatever's left in .exam-screen after the surrounding text; the img
+   inside sizes itself against that box via its own aspect ratio. */
 .question-image {
+    flex: 1;
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     margin: 12px 0;
+    overflow: hidden;
 }
 
 .question-image img {
     max-width: 100%;
-    max-height: 32vh;
+    max-height: 100%;
     width: auto;
     height: auto;
     object-fit: contain;
@@ -164,6 +209,7 @@ body {
 }
 
 .image-caption {
+    flex-shrink: 0;
     font-size: 18px;
     color: #666;
     margin-top: 6px;
