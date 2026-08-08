@@ -136,6 +136,36 @@ function showBiostatisticsQuestion() {
 
     }
 
+    if (
+
+        question.Image_File &&
+
+        question.Image_File !== ""
+
+    ) {
+
+        html += `
+
+            <div class="question-image">
+
+                <img
+
+                    src="images/biostatistics/${question.Image_File}"
+
+                    alt="Biostatistics Image">
+
+                <div class="image-caption">
+
+                    ${question.Image_Caption ?? ""}
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
     html += `
 
             <div class="question">
@@ -189,36 +219,6 @@ function showBiostatisticsQuestion() {
                     (${marks.C})
 
                 </span>
-
-            </div>
-
-        `;
-
-    }
-
-    if (
-
-        question.Image_File &&
-
-        question.Image_File !== ""
-
-    ) {
-
-        html += `
-
-            <div class="question-image">
-
-                <img
-
-                    src="images/biostatistics/${question.Image_File}"
-
-                    alt="Biostatistics Image">
-
-                <div class="image-caption">
-
-                    ${question.Image_Caption ?? ""}
-
-                </div>
 
             </div>
 

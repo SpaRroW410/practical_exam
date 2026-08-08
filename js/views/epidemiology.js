@@ -115,6 +115,34 @@ function showEpidemiologyQuestion() {
 
             </div>
 
+    `;
+
+    if (question.Image_File) {
+
+        html += `
+
+            <div class="question-image">
+
+                <img
+
+                    src="images/epidemiology/${question.Image_File}"
+
+                    alt="Epidemiology Image">
+
+                <div class="image-caption">
+
+                    ${question.Image_Caption ?? ""}
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+    html += `
+
             <div class="question">
 
                 <strong>A.</strong>
@@ -160,30 +188,6 @@ function showEpidemiologyQuestion() {
                     (${marks.C})
 
                 </span>
-
-            </div>
-
-        `;
-
-    }
-
-    if (question.Image_File) {
-
-        html += `
-
-            <div class="question-image">
-
-                <img
-
-                    src="images/epidemiology/${question.Image_File}"
-
-                    alt="Epidemiology Image">
-
-                <div class="image-caption">
-
-                    ${question.Image_Caption ?? ""}
-
-                </div>
 
             </div>
 

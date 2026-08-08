@@ -112,6 +112,40 @@ function showClinicalQuestion() {
 
             </div>
 
+    `;
+
+    if (
+
+        question.Image_File &&
+
+        question.Image_File !== ""
+
+    ) {
+
+        html += `
+
+            <div class="question-image">
+
+                <img
+
+                    src="images/clinical/${question.Image_File}"
+
+                    alt="Clinical Image">
+
+                <div class="image-caption">
+
+                    ${question.Image_Caption ?? ""}
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+    html += `
+
             <div class="question">
 
                 <strong>A.</strong>
@@ -163,36 +197,6 @@ function showClinicalQuestion() {
                     (${marks.C})
 
                 </span>
-
-            </div>
-
-        `;
-
-    }
-
-    if (
-
-        question.Image_File &&
-
-        question.Image_File !== ""
-
-    ) {
-
-        html += `
-
-            <div class="question-image">
-
-                <img
-
-                    src="images/clinical/${question.Image_File}"
-
-                    alt="Clinical Image">
-
-                <div class="image-caption">
-
-                    ${question.Image_Caption ?? ""}
-
-                </div>
 
             </div>
 

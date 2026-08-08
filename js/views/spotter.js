@@ -415,45 +415,37 @@ function showSpotterSlide() {
 
             <div class="spotter-layout">
 
-                <div class="spotter-left">
+                ${imageHTML}
 
-                    <div class="question">
+                <div class="question">
 
-                        <strong>A.</strong>
+                    <strong>A.</strong>
 
-                        ${slide.Sub_Question_A}
+                    ${slide.Sub_Question_A}
 
-                        <span class="marks">
+                    <span class="marks">
 
-                            (${slide.Marks_A})
+                        (${slide.Marks_A})
 
-                        </span>
-
-                    </div>
-
-                    <div class="question">
-
-                        <strong>B.</strong>
-
-                        ${slide.Sub_Question_B}
-
-                        <span class="marks">
-
-                            (${slide.Marks_B})
-
-                        </span>
-
-                    </div>
-
-                    ${questionC}
+                    </span>
 
                 </div>
 
-                <div class="spotter-right">
+                <div class="question">
 
-                    ${imageHTML}
+                    <strong>B.</strong>
+
+                    ${slide.Sub_Question_B}
+
+                    <span class="marks">
+
+                        (${slide.Marks_B})
+
+                    </span>
 
                 </div>
+
+                ${questionC}
 
             </div>
 

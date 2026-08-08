@@ -108,6 +108,40 @@ function showOSPEQuestion() {
 
             </div>
 
+    `;
+
+    if (
+
+        question.Image_File &&
+
+        question.Image_File !== ""
+
+    ) {
+
+        html += `
+
+            <div class="question-image">
+
+                <img
+
+                    src="images/ospe/${question.Image_File}"
+
+                    alt="OSPE Image">
+
+                <div class="image-caption">
+
+                    ${question.Image_Caption ?? ""}
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+    html += `
+
             <div class="question">
 
                 <strong>A.</strong>
@@ -159,36 +193,6 @@ function showOSPEQuestion() {
                     (${marks.C})
 
                 </span>
-
-            </div>
-
-        `;
-
-    }
-
-    if (
-
-        question.Image_File &&
-
-        question.Image_File !== ""
-
-    ) {
-
-        html += `
-
-            <div class="question-image">
-
-                <img
-
-                    src="images/ospe/${question.Image_File}"
-
-                    alt="OSPE Image">
-
-                <div class="image-caption">
-
-                    ${question.Image_Caption ?? ""}
-
-                </div>
 
             </div>
 
