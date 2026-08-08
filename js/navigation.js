@@ -1,3 +1,4 @@
+
 // ============================================================
 // Community Medicine Examination System
 // Navigation
@@ -90,12 +91,6 @@ function attachNavigationEvents() {
 
 }
 
-window.nextSection = nextSection;
-window.previousSection = previousSection;
-window.isFirstSection = isFirstSection;
-window.isLastSection = isLastSection;
-window.attachNavigationEvents = attachNavigationEvents;
-
 
 // ------------------------------------------------------------
 // Keyboard Navigation
@@ -136,3 +131,36 @@ document.addEventListener("keydown", function (event) {
     }
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
