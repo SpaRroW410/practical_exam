@@ -22,7 +22,11 @@ function getAppContainer() {
 
 function renderPage(html) {
 
-    getAppContainer().innerHTML = html;
+    const container = getAppContainer();
+
+    container.innerHTML = html;
+
+    container.scrollTop = 0;
 
 }
 
