@@ -133,6 +133,13 @@ body {
     float: right;
 }
 
+/* Spotter Image Preload Status */
+.spotter-preload-status {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #777;
+}
+
 /* Spotter Layout: fills whatever's left in .exam-screen after the
    progress line/title; the image wrap fills whatever's left within it
    after Sub-Question A/B/(C). */

@@ -118,6 +118,59 @@ function loadSpotterSlides() {
 
 
 // ============================================================
+// Preload Images
+// ============================================================
+//
+// Each station's image previously only started downloading once its
+// timer had already begun. Preloading the whole set while the info
+// screen is showing means the timer never eats into image-load time.
+
+function preloadSpotterImages(slides, onProgress, onComplete) {
+
+    const imageSlides = slides.filter(
+        s => s.Image_File && s.Image_File !== ""
+    );
+
+    if (imageSlides.length === 0) {
+
+        onComplete();
+
+        return;
+
+    }
+
+    let settledCount = 0;
+
+    function markSettled() {
+
+        settledCount++;
+
+        onProgress(settledCount, imageSlides.length);
+
+        if (settledCount >= imageSlides.length) {
+
+            onComplete();
+
+        }
+
+    }
+
+    imageSlides.forEach(function(slide){
+
+        const img = new Image();
+
+        img.onload = markSettled;
+
+        img.onerror = markSettled;
+
+        img.src = "images/spotter/" + slide.Image_File;
+
+    });
+
+}
+
+
+// ============================================================
 // Header Screen
 // ============================================================
 
@@ -137,6 +190,11 @@ function showSpotterHeader() {
     pauseSectionTimer();
 
     updateSectionTimer("");
+
+
+    const imageCount = spotterSlides.filter(
+        s => s.Image_File && s.Image_File !== ""
+    ).length;
 
 
     renderPage(`
@@ -208,13 +266,23 @@ function showSpotterHeader() {
 
                 </div>
 
+                ${
+
+                    imageCount > 0
+
+                    ? `<div id="spotterPreloadStatus" class="spotter-preload-status">Loading images... 0/${imageCount}</div>`
+
+                    : ""
+
+                }
+
             </div>
 
             ${renderNavigationButtons(
 
                 true,
 
-                true
+                imageCount === 0
 
             )}
 
@@ -242,6 +310,53 @@ function showSpotterHeader() {
             showSpotterSlide();
 
         };
+
+
+    if (imageCount > 0) {
+
+        preloadSpotterImages(
+
+            spotterSlides,
+
+            function(loaded, total){
+
+                const status =
+                    document.getElementById("spotterPreloadStatus");
+
+                if (status) {
+
+                    status.textContent =
+                        "Loading images... " + loaded + "/" + total;
+
+                }
+
+            },
+
+            function(){
+
+                const status =
+                    document.getElementById("spotterPreloadStatus");
+
+                if (status) {
+
+                    status.textContent = "Images ready.";
+
+                }
+
+                const nextButton =
+                    document.getElementById("nextButton");
+
+                if (nextButton) {
+
+                    nextButton.disabled = false;
+
+                }
+
+            }
+
+        );
+
+    }
 
 }
 
