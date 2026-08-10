@@ -82,13 +82,23 @@ function showBiostatisticsQuestion() {
 
     const marks = getDisplayMarks(question);
 
+    const hasImage = Boolean(
+
+        question.Image_File &&
+
+        question.Image_File !== ""
+
+    );
+
     let html = `
 
         <section class="exam-screen">
 
+            ${hasImage ? `<div class="question-top">` : ""}
+
             <div class="scenario">
 
-                ${question.Scenario_or_Stem}
+                ${nl2br(question.Scenario_or_Stem)}
 
             </div>
 
@@ -111,21 +121,13 @@ function showBiostatisticsQuestion() {
             <div class="plot-instruction">
 
                 <strong>Plot Instruction:</strong>
-                ${question.Plot_Instruction}
+                ${nl2br(question.Plot_Instruction)}
 
             </div>
 
         `;
 
     }
-
-    const hasImage = Boolean(
-
-        question.Image_File &&
-
-        question.Image_File !== ""
-
-    );
 
     if (hasImage) {
 
@@ -141,9 +143,11 @@ function showBiostatisticsQuestion() {
 
                 <div class="image-caption">
 
-                    ${question.Image_Caption ?? ""}
+                    ${nl2br(question.Image_Caption ?? "")}
 
                 </div>
+
+            </div>
 
             </div>
 
@@ -159,7 +163,7 @@ function showBiostatisticsQuestion() {
 
                     <strong>A.</strong>
 
-                    ${question.Sub_Question_A}
+                    ${nl2br(question.Sub_Question_A)}
 
                     <span class="marks">
 
@@ -173,7 +177,7 @@ function showBiostatisticsQuestion() {
 
                     <strong>B.</strong>
 
-                    ${question.Sub_Question_B}
+                    ${nl2br(question.Sub_Question_B)}
 
                     <span class="marks">
 
@@ -199,7 +203,7 @@ function showBiostatisticsQuestion() {
 
                     <strong>C.</strong>
 
-                    ${question.Sub_Question_C}
+                    ${nl2br(question.Sub_Question_C)}
 
                     <span class="marks">
 
@@ -233,11 +237,7 @@ function showBiostatisticsQuestion() {
 
     attachNavigationEvents();
 
-    fitQuestionLayout(
-
-        hasImage ? document.querySelector(".question-image") : null
-
-    );
+    fitTwoBandLayout(hasImage);
 
     if (!biostatisticsTimerStarted) {
 

@@ -148,18 +148,18 @@ function buildAnswerKeyBlock(item) {
     const answers = [];
 
     if (item.Answer_Key_A) {
-        answers.push(`<div><strong>Answer Key A:</strong> ${item.Answer_Key_A}</div>`);
+        answers.push(`<div><strong>Answer Key A:</strong> ${nl2br(item.Answer_Key_A)}</div>`);
     }
 
     if (item.Answer_Key_B) {
-        answers.push(`<div><strong>Answer Key B:</strong> ${item.Answer_Key_B}</div>`);
+        answers.push(`<div><strong>Answer Key B:</strong> ${nl2br(item.Answer_Key_B)}</div>`);
     }
 
     // Sub-question C is PG-only (see the isPG() gates on the question
     // and spotter blocks), so printing its answer key for UG would give
     // away the answer to a question that was never asked.
     if (isPG() && item.Answer_Key_C) {
-        answers.push(`<div><strong>Answer Key C:</strong> ${item.Answer_Key_C}</div>`);
+        answers.push(`<div><strong>Answer Key C:</strong> ${nl2br(item.Answer_Key_C)}</div>`);
     }
 
     if (answers.length === 0) {
@@ -213,7 +213,7 @@ function buildStandardSectionBlock(sectionKey, sectionLabel, questionNo) {
 
             <div class="print-scenario">
 
-                ${question.Scenario_or_Stem ?? ""}
+                ${nl2br(question.Scenario_or_Stem ?? "")}
 
             </div>
 
@@ -226,7 +226,7 @@ function buildStandardSectionBlock(sectionKey, sectionLabel, questionNo) {
             <div class="print-plot-instruction">
 
                 <strong>Plot Instruction:</strong>
-                ${question.Plot_Instruction}
+                ${nl2br(question.Plot_Instruction)}
 
             </div>
 
@@ -239,7 +239,7 @@ function buildStandardSectionBlock(sectionKey, sectionLabel, questionNo) {
             <div class="print-question-item">
 
                 <strong>A.</strong>
-                ${question.Sub_Question_A ?? ""}
+                ${nl2br(question.Sub_Question_A ?? "")}
                 <span class="print-marks">(${marks.A})</span>
 
             </div>
@@ -247,7 +247,7 @@ function buildStandardSectionBlock(sectionKey, sectionLabel, questionNo) {
             <div class="print-question-item">
 
                 <strong>B.</strong>
-                ${question.Sub_Question_B ?? ""}
+                ${nl2br(question.Sub_Question_B ?? "")}
                 <span class="print-marks">(${marks.B})</span>
 
             </div>
@@ -261,7 +261,7 @@ function buildStandardSectionBlock(sectionKey, sectionLabel, questionNo) {
             <div class="print-question-item">
 
                 <strong>C.</strong>
-                ${question.Sub_Question_C}
+                ${nl2br(question.Sub_Question_C)}
                 <span class="print-marks">(${marks.C})</span>
 
             </div>
@@ -284,7 +284,7 @@ function buildStandardSectionBlock(sectionKey, sectionLabel, questionNo) {
 
                 <div class="print-image-caption">
 
-                    ${question.Image_Caption ?? ""}
+                    ${nl2br(question.Image_Caption ?? "")}
 
                 </div>
 
@@ -348,7 +348,7 @@ function buildSpotterPages() {
                     <div class="print-question-item">
 
                         <strong>A.</strong>
-                        ${slide.Sub_Question_A ?? ""}
+                        ${nl2br(slide.Sub_Question_A ?? "")}
                         <span class="print-marks">(${slide.Marks_A})</span>
 
                     </div>
@@ -356,7 +356,7 @@ function buildSpotterPages() {
                     <div class="print-question-item">
 
                         <strong>B.</strong>
-                        ${slide.Sub_Question_B ?? ""}
+                        ${nl2br(slide.Sub_Question_B ?? "")}
                         <span class="print-marks">(${slide.Marks_B})</span>
 
                     </div>
@@ -370,7 +370,7 @@ function buildSpotterPages() {
                     <div class="print-question-item">
 
                         <strong>C.</strong>
-                        ${slide.Sub_Question_C}
+                        ${nl2br(slide.Sub_Question_C)}
                         <span class="print-marks">(${slide.Marks_C})</span>
 
                     </div>
@@ -393,7 +393,7 @@ function buildSpotterPages() {
 
                         <div class="print-image-caption">
 
-                            ${slide.Image_Caption ?? ""}
+                            ${nl2br(slide.Image_Caption ?? "")}
 
                         </div>
 

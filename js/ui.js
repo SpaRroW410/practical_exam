@@ -95,6 +95,23 @@ function showError(message) {
 
 
 // ------------------------------------------------------------
+// Newlines To Line Breaks
+//
+// Alt+Enter in the Excel question bank survives into questions.json as
+// \r\n, but HTML collapses whitespace — so numbered sub-parts would run
+// together into one sentence without this.
+// ------------------------------------------------------------
+
+function nl2br(text) {
+
+    if (text === null || text === undefined) return "";
+
+    return String(text).replace(/\r\n|\r|\n/g, "<br>");
+
+}
+
+
+// ------------------------------------------------------------
 // Header Modes
 //
 // One bar for the whole app: branding on the home/access/summary
@@ -342,13 +359,17 @@ function fitImageToRemainingSpace(container, imageWrap) {
 // growing does not shrink it, so text is simply grown up to 44px.
 //
 // `measureContainer` is the box the text must fit inside; it defaults to
-// .exam-screen, but Spotter passes its left column so that column's own
-// bounds drive the fit rather than the whole screen's.
+// .exam-screen. Figure-bearing questions call this twice with the two
+// bands of their 60:40 split, so the sub-questions size themselves
+// independently of the scenario instead of sharing one size; Spotter
+// passes its left column.
+//
+// `maxOverride` raises or lowers the ceiling for a given band.
 // ------------------------------------------------------------
 
 const MIN_TEXT_SIZE = 24;
 
-function fitQuestionLayout(imageWrap, measureContainer) {
+function fitQuestionLayout(imageWrap, measureContainer, maxOverride) {
 
     const examScreen =
         measureContainer || document.querySelector(".exam-screen");
@@ -363,7 +384,8 @@ function fitQuestionLayout(imageWrap, measureContainer) {
 
     if (targets.length === 0) return;
 
-    const maxSize = imageWrap ? 24 : 44;
+    const maxSize =
+        maxOverride || (imageWrap ? 24 : 44);
 
     function fits(size) {
 
@@ -422,6 +444,49 @@ function fitQuestionLayout(imageWrap, measureContainer) {
         fitImageToRemainingSpace(imageWrap.parentElement, imageWrap);
 
     }
+
+}
+
+
+// ------------------------------------------------------------
+// Two-Band Question Layout
+//
+// With a figure, the screen is split 60:40 — scenario + figure on top,
+// sub-questions below — and each band is sized independently so the
+// sub-questions grow to fill their share instead of being squeezed to
+// the same size as the scenario. Without a figure the question flows as
+// one band, as before.
+// ------------------------------------------------------------
+
+function fitTwoBandLayout(hasImage) {
+
+    if (!hasImage) {
+
+        fitQuestionLayout(null);
+
+        return;
+
+    }
+
+    fitQuestionLayout(
+
+        document.querySelector(".question-image"),
+
+        document.querySelector(".question-top"),
+
+        28
+
+    );
+
+    fitQuestionLayout(
+
+        null,
+
+        document.querySelector(".question-subquestions"),
+
+        44
+
+    );
 
 }
 

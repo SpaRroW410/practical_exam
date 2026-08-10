@@ -410,7 +410,7 @@ function showSpotterSlide() {
 
             <strong>A.</strong>
 
-            ${slide.Sub_Question_A}
+            ${nl2br(slide.Sub_Question_A)}
 
             <span class="marks">
 
@@ -428,7 +428,7 @@ function showSpotterSlide() {
 
             <strong>B.</strong>
 
-            ${slide.Sub_Question_B}
+            ${nl2br(slide.Sub_Question_B)}
 
             <span class="marks">
 
@@ -458,7 +458,7 @@ function showSpotterSlide() {
 
                 <strong>C.</strong>
 
-                ${slide.Sub_Question_C}
+                ${nl2br(slide.Sub_Question_C)}
 
                 <span class="marks">
 
@@ -570,7 +570,9 @@ function showSpotterSlide() {
 
         null,
 
-        document.querySelector(".spotter-layout .question-subquestions")
+        document.querySelector(".spotter-layout .question-subquestions"),
+
+        64
 
     );
 
