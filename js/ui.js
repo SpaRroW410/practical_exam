@@ -360,7 +360,7 @@ function fitImageToRemainingSpace(container, imageWrap) {
 //
 // `measureContainer` is the box the text must fit inside; it defaults to
 // .exam-screen. Figure-bearing questions call this twice with the two
-// bands of their 60:40 split, so the sub-questions size themselves
+// bands of their 65:35 split, so the sub-questions size themselves
 // independently of the scenario instead of sharing one size; Spotter
 // passes its left column.
 //
@@ -451,7 +451,7 @@ function fitQuestionLayout(imageWrap, measureContainer, maxOverride) {
 // ------------------------------------------------------------
 // Two-Band Question Layout
 //
-// With a figure, the screen is split 60:40 — scenario + figure on top,
+// With a figure, the screen is split 65:35 — scenario + figure on top,
 // sub-questions below — and each band is sized independently so the
 // sub-questions grow to fill their share instead of being squeezed to
 // the same size as the scenario. Without a figure the question flows as
@@ -474,7 +474,7 @@ function fitTwoBandLayout(hasImage) {
 
         document.querySelector(".question-top"),
 
-        28
+        32
 
     );
 
