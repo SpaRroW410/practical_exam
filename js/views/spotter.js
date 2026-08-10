@@ -572,9 +572,7 @@ function showSpotterSlide() {
 
     attachNavigationEvents();
 
-    fitImageToRemainingSpace(
-
-        document.querySelector(".spotter-layout"),
+    fitQuestionLayout(
 
         document.querySelector(".spotter-image-wrap")
 

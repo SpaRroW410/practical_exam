@@ -235,7 +235,15 @@ function fitImageToRemainingSpace(container, imageWrap) {
 
         if (child !== imageWrap) {
 
-            siblingsHeight += child.getBoundingClientRect().height;
+            const childStyle = getComputedStyle(child);
+
+            siblingsHeight +=
+
+                child.getBoundingClientRect().height +
+
+                (parseFloat(childStyle.marginTop) || 0) +
+
+                (parseFloat(childStyle.marginBottom) || 0);
 
         }
 
@@ -258,30 +266,37 @@ function fitImageToRemainingSpace(container, imageWrap) {
 
 
 // ------------------------------------------------------------
-// Fit Question Text
+// Fit Question Layout
 //
-// For questions with no image, .scenario/.question otherwise sit at a
-// fixed size regardless of how much (or little) room is left on screen.
-// Binary-searches for the largest font-size in [MIN,MAX] at which the
-// text still fits .exam-screen without overflowing.
+// .scenario/.question/.plot-instruction otherwise sit at a fixed size
+// regardless of how much (or little) room is left on screen. When
+// `imageWrap` is given, text and image compete for the same space, so
+// text is sized first (binary-searched in [MIN_TEXT_SIZE,24], checked
+// against the image held at its normal minimum) and only then is the
+// image given whatever's actually left via fitImageToRemainingSpace —
+// sizing them independently left cases where text alone (at a fixed
+// 24px) already didn't fit, so the image got crushed to its floor and
+// the page still overflowed regardless. With no image, text is
+// binary-searched up to 44px to fill the screen.
 // ------------------------------------------------------------
 
-function fitQuestionText(hasImage) {
+const MIN_TEXT_SIZE = 22;
 
-    if (hasImage) return;
+function fitQuestionLayout(imageWrap) {
 
     const examScreen = document.querySelector(".exam-screen");
 
     if (!examScreen) return;
 
-    const targets =
-        examScreen.querySelectorAll(".scenario, .question");
+    const targets = examScreen.querySelectorAll(
+
+        ".scenario, .question, .plot-instruction"
+
+    );
 
     if (targets.length === 0) return;
 
-    const MIN_SIZE = 18;
-
-    const MAX_SIZE = 44;
+    const maxSize = imageWrap ? 24 : 44;
 
     function fits(size) {
 
@@ -291,39 +306,55 @@ function fitQuestionText(hasImage) {
 
         });
 
+        if (imageWrap) {
+
+            imageWrap.style.flex = "0 0 auto";
+
+            imageWrap.style.height = "60px";
+
+        }
+
         return examScreen.scrollHeight <= examScreen.clientHeight;
 
     }
 
-    if (!fits(MIN_SIZE)) return;
+    let best = MIN_TEXT_SIZE;
 
-    let lo = MIN_SIZE;
+    if (fits(MIN_TEXT_SIZE)) {
 
-    let hi = MAX_SIZE;
+        let lo = MIN_TEXT_SIZE;
 
-    let best = MIN_SIZE;
+        let hi = maxSize;
 
-    for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 6 && lo <= hi; i++) {
 
-        const mid = Math.round((lo + hi) / 2);
+            const mid = Math.round((lo + hi) / 2);
 
-        if (fits(mid)) {
+            if (fits(mid)) {
 
-            best = mid;
+                best = mid;
 
-            lo = mid + 1;
+                lo = mid + 1;
 
-        }
+            }
 
-        else {
+            else {
 
-            hi = mid - 1;
+                hi = mid - 1;
+
+            }
 
         }
 
     }
 
     fits(best);
+
+    if (imageWrap) {
+
+        fitImageToRemainingSpace(imageWrap.parentElement, imageWrap);
+
+    }
 
 }
 

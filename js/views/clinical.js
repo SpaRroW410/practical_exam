@@ -218,23 +218,11 @@ function showClinicalQuestion() {
 
     attachNavigationEvents();
 
-    if (hasImage) {
+    fitQuestionLayout(
 
-        fitImageToRemainingSpace(
+        hasImage ? document.querySelector(".question-image") : null
 
-            document.querySelector(".exam-screen"),
-
-            document.querySelector(".question-image")
-
-        );
-
-    }
-
-    else {
-
-        fitQuestionText(false);
-
-    }
+    );
 
     // ---------------------------------------
     // Timer
