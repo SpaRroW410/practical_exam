@@ -155,7 +155,10 @@ function buildAnswerKeyBlock(item) {
         answers.push(`<div><strong>Answer Key B:</strong> ${item.Answer_Key_B}</div>`);
     }
 
-    if (item.Answer_Key_C) {
+    // Sub-question C is PG-only (see the isPG() gates on the question
+    // and spotter blocks), so printing its answer key for UG would give
+    // away the answer to a question that was never asked.
+    if (isPG() && item.Answer_Key_C) {
         answers.push(`<div><strong>Answer Key C:</strong> ${item.Answer_Key_C}</div>`);
     }
 
