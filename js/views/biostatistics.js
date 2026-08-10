@@ -25,11 +25,9 @@ function showBiostatisticsHeader() {
 
     pauseSectionTimer();
 
-    updateSectionTimer("");
+    updateSectionTimer("00:00");
 
     renderPage(`
-
-        ${renderTimerHeader(header.Title)}
 
         <section class="exam-screen">
 
@@ -44,6 +42,8 @@ function showBiostatisticsHeader() {
         </section>
 
     `);
+
+    setExamHeader(header.Title);
 
     attachNavigationEvents();
 
@@ -84,8 +84,6 @@ function showBiostatisticsQuestion() {
 
     let html = `
 
-        ${renderTimerHeader("Biostatistics Question")}
-
         <section class="exam-screen">
 
             <div class="scenario">
@@ -112,13 +110,8 @@ function showBiostatisticsQuestion() {
 
             <div class="plot-instruction">
 
-                <strong>Plot Instruction</strong>
-
-                <div class="plot-instruction-content">
-
-                    ${question.Plot_Instruction}
-
-                </div>
+                <strong>Plot Instruction:</strong>
+                ${question.Plot_Instruction}
 
             </div>
 
@@ -235,6 +228,8 @@ function showBiostatisticsQuestion() {
     `;
 
     renderPage(html);
+
+    setExamHeader("Biostatistics Question");
 
     attachNavigationEvents();
 

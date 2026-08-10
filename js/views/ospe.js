@@ -26,11 +26,9 @@ function showOSPEHeader() {
 
     pauseSectionTimer();
 
-    updateSectionTimer("");
+    updateSectionTimer("00:00");
 
     renderPage(`
-
-        ${renderTimerHeader(header.Title)}
 
         <section class="exam-screen">
 
@@ -45,6 +43,8 @@ function showOSPEHeader() {
         </section>
 
     `);
+
+    setExamHeader(header.Title);
 
     attachNavigationEvents();
 
@@ -85,8 +85,6 @@ function showOSPEQuestion() {
     const marks = getDisplayMarks(question);
 
     let html = `
-
-        ${renderTimerHeader("OSPE Station")}
 
         <section class="exam-screen">
 
@@ -207,6 +205,8 @@ function showOSPEQuestion() {
     `;
 
     renderPage(html);
+
+    setExamHeader("OSPE Station");
 
     attachNavigationEvents();
 

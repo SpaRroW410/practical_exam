@@ -26,11 +26,9 @@ function showClinicalHeader() {
     // Pause timer if returning from question
     pauseSectionTimer();
 
-    updateSectionTimer("");
+    updateSectionTimer("00:00");
 
     renderPage(`
-
-        ${renderTimerHeader(header.Title)}
 
         <section class="exam-screen">
 
@@ -48,6 +46,8 @@ function showClinicalHeader() {
         </section>
 
     `);
+
+    setExamHeader(header.Title);
 
     attachNavigationEvents();
 
@@ -97,8 +97,6 @@ function showClinicalQuestion() {
     );
 
     let html = `
-
-        ${renderTimerHeader("Clinical Case")}
 
         <section class="exam-screen">
 
@@ -211,6 +209,8 @@ function showClinicalQuestion() {
     `;
 
     renderPage(html);
+
+    setExamHeader("Clinical Case");
 
     attachNavigationEvents();
 

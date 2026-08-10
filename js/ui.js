@@ -28,6 +28,10 @@ function renderPage(html) {
 
     container.scrollTop = 0;
 
+    // Default to branding; exam views re-assert exam mode immediately
+    // after, so a home-type screen can never inherit a stale exam bar.
+    setBrandHeader();
+
 }
 
 
@@ -91,66 +95,51 @@ function showError(message) {
 
 
 // ------------------------------------------------------------
-// Build Timer Header
+// Header Modes
+//
+// One bar for the whole app: branding on the home/access/summary
+// screens, section title + timers during the exam. The timer elements
+// live permanently in #app-header rather than being re-created on every
+// render, so their values survive screen changes.
 // ------------------------------------------------------------
 
-function renderTimerHeader(title = "") {
+function setExamHeader(title) {
 
-    const titleMarkup = title
+    const header = document.getElementById("app-header");
 
-        ? `<div class="exam-header-title">${title}</div>`
+    if (header) {
 
-        : `<div class="exam-header-title exam-header-title--empty"></div>`;
+        header.classList.add("exam-mode");
 
-    return `
+    }
 
-        <div class="exam-header">
+    const examTitle = document.getElementById("examTitle");
 
-            ${titleMarkup}
+    if (examTitle) {
 
-            <div class="exam-header-timers">
+        examTitle.textContent = title || "";
 
-                <div class="timer-box">
+    }
 
-                    <div class="timer-label">
+}
 
-                        Overall Timer
+function setBrandHeader() {
 
-                    </div>
+    const header = document.getElementById("app-header");
 
-                    <div
-                        id="overallTimer"
-                        class="timer-value">
+    if (header) {
 
-                        ${formatTime(appState.timer.overall)}
+        header.classList.remove("exam-mode");
 
-                    </div>
+    }
 
-                </div>
+    const examTitle = document.getElementById("examTitle");
 
-                <div class="timer-box">
+    if (examTitle) {
 
-                    <div class="timer-label">
+        examTitle.textContent = "";
 
-                        Section Timer
-
-                    </div>
-
-                    <div
-                        id="sectionTimer"
-                        class="timer-value">
-
-                        00:00
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
+    }
 
 }
 
@@ -339,22 +328,30 @@ function fitImageToRemainingSpace(container, imageWrap) {
 // Fit Question Layout
 //
 // .scenario/.question/.plot-instruction otherwise sit at a fixed size
-// regardless of how much (or little) room is left on screen. When
-// `imageWrap` is given, text and image compete for the same space, so
-// text is sized first (binary-searched in [MIN_TEXT_SIZE,24], checked
-// against the image held at its normal minimum) and only then is the
-// image given whatever's actually left via fitImageToRemainingSpace —
-// sizing them independently left cases where text alone (at a fixed
-// 24px) already didn't fit, so the image got crushed to its floor and
-// the page still overflowed regardless. With no image, text is
-// binary-searched up to 44px to fill the screen.
+// regardless of how much (or little) room is left on screen.
+//
+// `imageWrap` is passed only when the image is STACKED above/below the
+// text and so competes with it for the same vertical space: text is
+// sized first (binary-searched in [MIN_TEXT_SIZE,24] with the image held
+// at its floor), then the image takes what's actually left. Sizing them
+// independently left cases where text alone already didn't fit, so the
+// image got crushed to its floor and the page still overflowed.
+//
+// Pass no imageWrap when the image sits in its own column (Spotter's
+// 50/50) — there the grid gives the image a definite height and text
+// growing does not shrink it, so text is simply grown up to 44px.
+//
+// `measureContainer` is the box the text must fit inside; it defaults to
+// .exam-screen, but Spotter passes its left column so that column's own
+// bounds drive the fit rather than the whole screen's.
 // ------------------------------------------------------------
 
-const MIN_TEXT_SIZE = 22;
+const MIN_TEXT_SIZE = 24;
 
-function fitQuestionLayout(imageWrap) {
+function fitQuestionLayout(imageWrap, measureContainer) {
 
-    const examScreen = document.querySelector(".exam-screen");
+    const examScreen =
+        measureContainer || document.querySelector(".exam-screen");
 
     if (!examScreen) return;
 

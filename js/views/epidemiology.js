@@ -26,11 +26,9 @@ function showEpidemiologyHeader() {
 
     pauseSectionTimer();
 
-    updateSectionTimer("");
+    updateSectionTimer("00:00");
 
     renderPage(`
-
-        ${renderTimerHeader(header.Title)}
 
         <section class="exam-screen">
 
@@ -45,6 +43,8 @@ function showEpidemiologyHeader() {
         </section>
 
     `);
+
+    setExamHeader(header.Title);
 
     attachNavigationEvents();
 
@@ -94,8 +94,6 @@ function showEpidemiologyQuestion() {
     const hasImage = Boolean(question.Image_File);
 
     let html = `
-
-        ${renderTimerHeader("Epidemiology Question")}
 
         <section class="exam-screen">
 
@@ -202,6 +200,8 @@ function showEpidemiologyQuestion() {
     `;
 
     renderPage(html);
+
+    setExamHeader("Epidemiology Question");
 
     attachNavigationEvents();
 

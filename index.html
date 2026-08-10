@@ -124,11 +124,40 @@
 
         <!-- Header -->
 
+        <!-- Single bar: branding on home/summary screens, section title
+             + timers during the exam (toggled by .exam-mode) -->
+
         <header id="app-header">
 
-            <h1>Community Medicine</h1>
+            <div class="app-brand">
 
-            <h2>Examination Presentation System</h2>
+                <h1>Community Medicine</h1>
+
+                <h2>Examination Presentation System</h2>
+
+            </div>
+
+            <div class="app-exam-title" id="examTitle"></div>
+
+            <div class="app-timers">
+
+                <div class="timer-box">
+
+                    <div class="timer-label">Overall Timer</div>
+
+                    <div id="overallTimer" class="timer-value">00:00</div>
+
+                </div>
+
+                <div class="timer-box">
+
+                    <div class="timer-label">Section Timer</div>
+
+                    <div id="sectionTimer" class="timer-value">00:00</div>
+
+                </div>
+
+            </div>
 
         </header>
 
