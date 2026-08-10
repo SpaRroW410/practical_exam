@@ -48,6 +48,15 @@ body {
     padding: 18px 30px;
     border-bottom: 1px solid var(--border);
     background: white;
+    flex-shrink: 0;
+}
+
+/* #app-content is a flex column, so its non-exam children need pinning
+   to their natural height (letting the page scroll) rather than being
+   compressed to fit. */
+.home-screen,
+.summary-screen {
+    flex-shrink: 0;
 }
 
 .exam-header-title {

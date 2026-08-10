@@ -10,15 +10,13 @@
 
     align-items:center;
 
-    min-height:70vh;
-
 }
 
 .home-card{
 
     width:100%;
 
-    max-width:650px;
+    max-width:1100px;
 
     background:white;
 
@@ -52,11 +50,32 @@
 
 }
 
-.selector{
+.selector-grid{
 
-    margin-bottom:22px;
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:20px;
 
 }
+
+.selector{
+
+    padding:18px;
+
+    border-radius:10px;
+
+    border:1px solid transparent;
+
+}
+
+.selector:nth-child(1){ background:#e8f0fe; border-color:#c6dafc; }
+.selector:nth-child(2){ background:#e6f4ea; border-color:#c3e6cd; }
+.selector:nth-child(3){ background:#fef7e0; border-color:#fce8a6; }
+.selector:nth-child(4){ background:#fce8e6; border-color:#f7cbc7; }
+.selector:nth-child(5){ background:#f3e8fd; border-color:#e0c9f7; }
+.selector:nth-child(6){ background:#e0f7fa; border-color:#b8e9ef; }
 
 .selector label{
 
@@ -74,11 +93,21 @@
 
 }
 
+.home-actions{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:16px;
+
+    margin-top:30px;
+
+}
+
 .start-button{
 
     width:100%;
-
-    margin-top:30px;
 
     padding:16px;
 
@@ -104,11 +133,111 @@
 
 }
 
+#randomSet{
+
+    background:#5a6b7d;
+
+}
+
+#randomSet:hover{
+
+    background:#44525f;
+
+}
+
 @media(max-width:768px){
 
     .home-card{
 
         padding:25px;
+
+    }
+
+    .selector-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .home-actions{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+/* Short screens (e.g. 1366x768): compact the card so the whole setup
+   stays on one screen without scrolling. */
+@media(max-height:820px){
+
+    .home-card{
+
+        padding:24px;
+
+    }
+
+    .home-card h2{
+
+        margin-bottom:4px;
+
+    }
+
+    .home-card > p{
+
+        margin-bottom:16px;
+
+    }
+
+    .selector-grid{
+
+        gap:14px;
+
+    }
+
+    .selector{
+
+        padding:12px;
+
+    }
+
+    .home-actions{
+
+        margin-top:18px;
+
+    }
+
+    .start-button{
+
+        padding:12px;
+
+    }
+
+}
+
+@media(max-height:740px){
+
+    .home-card{
+
+        padding:18px;
+
+    }
+
+    .selector-grid{
+
+        gap:10px;
+
+    }
+
+    .selector{
+
+        padding:10px;
+
+    }
+
+    .home-actions{
+
+        margin-top:12px;
 
     }
 

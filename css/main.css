@@ -112,6 +112,10 @@ body{
 
     overflow-y:auto;
 
+    display:flex;
+
+    flex-direction:column;
+
 }
 
 
@@ -222,6 +226,18 @@ select{
     #app-content{
 
         padding:20px;
+
+    }
+
+}
+
+/* Short screens: reclaim vertical padding so content fits without
+   scrolling. */
+@media (max-height:820px){
+
+    #app-content{
+
+        padding:16px 35px;
 
     }
 

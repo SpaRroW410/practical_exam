@@ -16,73 +16,80 @@ function renderHome() {
 
                 <p>Select one question from each section.</p>
 
-                <div class="selector">
+                <div class="selector-grid">
 
-                    <label>Examination Level</label>
+                    <div class="selector">
 
-                    <select id="examLevel">
-                        <option value="UG">Undergraduate</option>
-                        <option value="PG">Postgraduate</option>
-                    </select>
+                        <label>Examination Level</label>
+
+                        <select id="examLevel">
+                            <option value="UG">Undergraduate</option>
+                            <option value="PG">Postgraduate</option>
+                        </select>
+
+                    </div>
+
+                    <div class="selector">
+
+                        <label>Clinical Case</label>
+
+                        <select id="clinical"></select>
+
+                    </div>
+
+                    <div class="selector">
+
+                        <label>Epidemiology</label>
+
+                        <select id="epidemiology"></select>
+
+                    </div>
+
+                    <div class="selector">
+
+                        <label>Biostatistics</label>
+
+                        <select id="biostatistics"></select>
+
+                    </div>
+
+                    <div class="selector">
+
+                        <label>OSPE</label>
+
+                        <select id="ospe"></select>
+
+                    </div>
+
+                    <div class="selector">
+
+                        <label>Spotter Set</label>
+
+                        <select id="spotter"></select>
+
+                    </div>
 
                 </div>
 
-                <div class="selector">
+                <div class="home-actions">
 
-                    <label>Clinical Case</label>
+                    <button
+                        id="randomSet"
+                        class="start-button">
 
-                    <select id="clinical"></select>
+                        RANDOM SET
 
-                </div>
+                    </button>
 
-                <div class="selector">
+                    <button
+                        id="startExam"
+                        class="start-button">
 
-                    <label>Epidemiology</label>
+                        START EXAM
 
-                    <select id="epidemiology"></select>
-
-                </div>
-
-                <div class="selector">
-
-                    <label>Biostatistics</label>
-
-                    <select id="biostatistics"></select>
+                    </button>
 
                 </div>
-
-                <div class="selector">
-
-                    <label>OSPE</label>
-
-                    <select id="ospe"></select>
-
-                </div>
-
-                <div class="selector">
-
-                    <label>Spotter Set</label>
-
-                    <select id="spotter"></select>
-
-                </div>
-
-                <button
-                    id="randomSet"
-                    class="start-button"
-                    style="background:#5a6b7d; margin-bottom:10px;">
-
-                    RANDOM SET
-
-                </button>
-
-                <button
-                    id="startExam"
-                    class="start-button">
-
-                    START EXAM
-
-                </button>
 
             </div>
 

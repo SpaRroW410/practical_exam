@@ -1,8 +1,12 @@
+/* Fills what's left of #app-content after the timer bar. A height:100%
+   here instead resolves against the full parent, ignoring the bar above
+   it, and overflows the page by exactly the bar's height. */
 .exam-screen {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
 }
 
 .navigation {
