@@ -70,12 +70,12 @@
 
 }
 
-.selector:nth-child(1){ background:#e8f0fe; border-color:#c6dafc; }
-.selector:nth-child(2){ background:#e6f4ea; border-color:#c3e6cd; }
-.selector:nth-child(3){ background:#fef7e0; border-color:#fce8a6; }
-.selector:nth-child(4){ background:#fce8e6; border-color:#f7cbc7; }
-.selector:nth-child(5){ background:#f3e8fd; border-color:#e0c9f7; }
-.selector:nth-child(6){ background:#e0f7fa; border-color:#b8e9ef; }
+.selector:nth-child(1){ background:var(--pastel-1); border-color:var(--pastel-border-1); }
+.selector:nth-child(2){ background:var(--pastel-2); border-color:var(--pastel-border-2); }
+.selector:nth-child(3){ background:var(--pastel-3); border-color:var(--pastel-border-3); }
+.selector:nth-child(4){ background:var(--pastel-4); border-color:var(--pastel-border-4); }
+.selector:nth-child(5){ background:var(--pastel-5); border-color:var(--pastel-border-5); }
+.selector:nth-child(6){ background:var(--pastel-6); border-color:var(--pastel-border-6); }
 
 .selector label{
 

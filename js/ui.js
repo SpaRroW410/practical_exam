@@ -200,18 +200,88 @@ const SECTION_TIME_SETTING = {
 
 };
 
+// ------------------------------------------------------------
+// Info Tiles — one big, room-readable number per stat.
+// The same rule lays out 2 tiles (section headers) and 5 (Spotter).
+// ------------------------------------------------------------
+
+function renderInfoTiles(tiles) {
+
+    return `
+
+        <div class="info-tiles">
+
+            ${tiles.map(function(tile){
+
+                return `
+
+                    <div class="info-tile">
+
+                        <div class="info-label">${tile.label}</div>
+
+                        <div class="info-value">${tile.value}</div>
+
+                        <div class="info-unit">${tile.unit || ""}</div>
+
+                    </div>
+
+                `;
+
+            }).join("")}
+
+        </div>
+
+    `;
+
+}
+
+
+// ------------------------------------------------------------
+// Instruction Callout
+// ------------------------------------------------------------
+
+function renderInstructionNote(text) {
+
+    return `
+
+        <div class="instruction-note">
+
+            <div class="instruction-note-title">Instructions</div>
+
+            <div class="instruction-note-body">${text}</div>
+
+        </div>
+
+    `;
+
+}
+
+
 function renderSectionInfo(section, header) {
 
     const timeMin =
         appData.settings[SECTION_TIME_SETTING[section]];
 
-    return `
+    // Sourced from the question bank so instructions stay editable in
+    // the Excel file; the callout supplies its own heading, so a
+    // leading "Instructions:" in the data would read twice.
+    const instruction =
 
-        Time: ${timeMin} Minutes<br>
-        Total Marks: ${header.Total_Marks} Marks<br>
-        Instructions: Answer all sub-questions carefully.
+        String(header.Scenario_or_Stem || "")
 
-    `;
+            .replace(/^\s*Instructions?\s*:\s*/i, "")
+
+            .trim()
+
+        || "Answer all sub-questions carefully.";
+
+    return renderInfoTiles([
+
+        { label: "Time",        value: timeMin,            unit: "Minutes" },
+
+        { label: "Total Marks", value: header.Total_Marks, unit: "Marks"   }
+
+    ]) + renderInstructionNote(instruction);
 
 }
 

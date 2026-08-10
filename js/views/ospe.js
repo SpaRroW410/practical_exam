@@ -36,11 +36,7 @@ function showOSPEHeader() {
 
             <div class="section-header">
 
-                <div class="scenario">
-
-                    ${renderSectionInfo("ospe", header)}
-
-                </div>
+                ${renderSectionInfo("ospe", header)}
 
             </div>
 

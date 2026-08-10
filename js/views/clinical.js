@@ -36,11 +36,7 @@ function showClinicalHeader() {
 
             <div class="section-header">
 
-                <div class="scenario">
-
-                    ${renderSectionInfo("clinical", header)}
-
-                </div>
+                ${renderSectionInfo("clinical", header)}
 
             </div>
 

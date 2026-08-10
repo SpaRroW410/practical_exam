@@ -205,60 +205,47 @@ function showSpotterHeader() {
 
             <div class="section-header">
 
-                <div class="scenario">
+                ${renderInfoTiles([
 
-                    Spotter Set :
-                    ${appState.exam.spotter}
+                    {
+                        label: "Spotter Set",
+                        value: appState.exam.spotter
+                    },
 
-                    <br><br>
+                    {
+                        label: "Stations",
+                        value: spotterSlides.length
+                    },
 
-                    Number of Stations :
-                    ${spotterSlides.length}
+                    {
+                        label: "Time / Station",
+                        value: isPG()
+                            ? appData.settings.Spotter_Time_PG_Sec
+                            : appData.settings.Spotter_Time_UG_Sec,
+                        unit: "Seconds"
+                    },
 
-                    <br><br>
+                    {
+                        label: "Reserve Time",
+                        value: appData.settings.Reserve_Time_Sec,
+                        unit: "Seconds"
+                    },
 
-                    Time per Station :
-
-                    ${
-
-                        isPG()
-
-                        ?
-
-                        appData.settings.Spotter_Time_PG_Sec
-
-                        :
-
-                        appData.settings.Spotter_Time_UG_Sec
-
+                    {
+                        label: "Total Marks",
+                        value: spotterSlides.length * (isPG() ? 3 : 2),
+                        unit: "Marks"
                     }
 
-                    Seconds
+                ])}
 
-                    <br><br>
+                ${renderInstructionNote(
 
-                    Reserve Time :
+                    header.Scenario_or_Stem
 
-                    ${
+                    || "Each station is timed. The slide advances automatically when the station timer ends."
 
-                        appData.settings.Reserve_Time_Sec
-
-                    }
-
-                    Seconds
-
-                    <br><br>
-
-                    Total Marks :
-
-                    ${
-
-                        spotterSlides.length *
-                        (isPG() ? 3 : 2)
-
-                    }
-
-                </div>
+                )}
 
                 ${
 

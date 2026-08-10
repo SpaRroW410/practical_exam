@@ -35,11 +35,7 @@ function showBiostatisticsHeader() {
 
             <div class="section-header">
 
-                <div class="scenario">
-
-                    ${renderSectionInfo("biostatistics", header)}
-
-                </div>
+                ${renderSectionInfo("biostatistics", header)}
 
             </div>
 

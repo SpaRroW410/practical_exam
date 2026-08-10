@@ -36,11 +36,7 @@ function showEpidemiologyHeader() {
 
             <div class="section-header">
 
-                <div class="scenario">
-
-                    ${renderSectionInfo("epidemiology", header)}
-
-                </div>
+                ${renderSectionInfo("epidemiology", header)}
 
             </div>
 
