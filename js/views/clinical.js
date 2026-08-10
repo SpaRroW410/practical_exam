@@ -26,11 +26,9 @@ function showClinicalHeader() {
     // Pause timer if returning from question
     pauseSectionTimer();
 
-    updateSectionTimer("");
+    updateSectionTimer("00:00");
 
     renderPage(`
-
-        ${renderTimerHeader(header.Title)}
 
         <section class="exam-screen">
 
@@ -48,6 +46,8 @@ function showClinicalHeader() {
         </section>
 
     `);
+
+    setExamHeader(header.Title);
 
     attachNavigationEvents();
 
@@ -98,13 +98,13 @@ function showClinicalQuestion() {
 
     let html = `
 
-        ${renderTimerHeader("Clinical Case")}
-
         <section class="exam-screen">
+
+            ${hasImage ? `<div class="question-top">` : ""}
 
             <div class="scenario">
 
-                ${question.Scenario_or_Stem}
+                ${nl2br(question.Scenario_or_Stem)}
 
             </div>
 
@@ -124,9 +124,11 @@ function showClinicalQuestion() {
 
                 <div class="image-caption">
 
-                    ${question.Image_Caption ?? ""}
+                    ${nl2br(question.Image_Caption ?? "")}
 
                 </div>
+
+            </div>
 
             </div>
 
@@ -142,7 +144,7 @@ function showClinicalQuestion() {
 
                     <strong>A.</strong>
 
-                    ${question.Sub_Question_A}
+                    ${nl2br(question.Sub_Question_A)}
 
                     <span class="marks">
 
@@ -156,7 +158,7 @@ function showClinicalQuestion() {
 
                     <strong>B.</strong>
 
-                    ${question.Sub_Question_B}
+                    ${nl2br(question.Sub_Question_B)}
 
                     <span class="marks">
 
@@ -182,7 +184,7 @@ function showClinicalQuestion() {
 
                     <strong>C.</strong>
 
-                    ${question.Sub_Question_C}
+                    ${nl2br(question.Sub_Question_C)}
 
                     <span class="marks">
 
@@ -212,13 +214,11 @@ function showClinicalQuestion() {
 
     renderPage(html);
 
+    setExamHeader("Clinical Case");
+
     attachNavigationEvents();
 
-    fitQuestionLayout(
-
-        hasImage ? document.querySelector(".question-image") : null
-
-    );
+    fitTwoBandLayout(hasImage);
 
     // ---------------------------------------
     // Timer

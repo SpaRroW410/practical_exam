@@ -26,11 +26,9 @@ function showEpidemiologyHeader() {
 
     pauseSectionTimer();
 
-    updateSectionTimer("");
+    updateSectionTimer("00:00");
 
     renderPage(`
-
-        ${renderTimerHeader(header.Title)}
 
         <section class="exam-screen">
 
@@ -45,6 +43,8 @@ function showEpidemiologyHeader() {
         </section>
 
     `);
+
+    setExamHeader(header.Title);
 
     attachNavigationEvents();
 
@@ -95,13 +95,13 @@ function showEpidemiologyQuestion() {
 
     let html = `
 
-        ${renderTimerHeader("Epidemiology Question")}
-
         <section class="exam-screen">
+
+            ${hasImage ? `<div class="question-top">` : ""}
 
             <div class="scenario">
 
-                ${question.Scenario_or_Stem}
+                ${nl2br(question.Scenario_or_Stem)}
 
             </div>
 
@@ -121,9 +121,11 @@ function showEpidemiologyQuestion() {
 
                 <div class="image-caption">
 
-                    ${question.Image_Caption ?? ""}
+                    ${nl2br(question.Image_Caption ?? "")}
 
                 </div>
+
+            </div>
 
             </div>
 
@@ -139,7 +141,7 @@ function showEpidemiologyQuestion() {
 
                     <strong>A.</strong>
 
-                    ${question.Sub_Question_A}
+                    ${nl2br(question.Sub_Question_A)}
 
                     <span class="marks">
 
@@ -153,7 +155,7 @@ function showEpidemiologyQuestion() {
 
                     <strong>B.</strong>
 
-                    ${question.Sub_Question_B}
+                    ${nl2br(question.Sub_Question_B)}
 
                     <span class="marks">
 
@@ -173,7 +175,7 @@ function showEpidemiologyQuestion() {
 
                     <strong>C.</strong>
 
-                    ${question.Sub_Question_C}
+                    ${nl2br(question.Sub_Question_C)}
 
                     <span class="marks">
 
@@ -203,13 +205,11 @@ function showEpidemiologyQuestion() {
 
     renderPage(html);
 
+    setExamHeader("Epidemiology Question");
+
     attachNavigationEvents();
 
-    fitQuestionLayout(
-
-        hasImage ? document.querySelector(".question-image") : null
-
-    );
+    fitTwoBandLayout(hasImage);
 
     if (!epidemiologyTimerStarted) {
 

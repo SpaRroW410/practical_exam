@@ -25,11 +25,9 @@ function showBiostatisticsHeader() {
 
     pauseSectionTimer();
 
-    updateSectionTimer("");
+    updateSectionTimer("00:00");
 
     renderPage(`
-
-        ${renderTimerHeader(header.Title)}
 
         <section class="exam-screen">
 
@@ -44,6 +42,8 @@ function showBiostatisticsHeader() {
         </section>
 
     `);
+
+    setExamHeader(header.Title);
 
     attachNavigationEvents();
 
@@ -82,15 +82,23 @@ function showBiostatisticsQuestion() {
 
     const marks = getDisplayMarks(question);
 
-    let html = `
+    const hasImage = Boolean(
 
-        ${renderTimerHeader("Biostatistics Question")}
+        question.Image_File &&
+
+        question.Image_File !== ""
+
+    );
+
+    let html = `
 
         <section class="exam-screen">
 
+            ${hasImage ? `<div class="question-top">` : ""}
+
             <div class="scenario">
 
-                ${question.Scenario_or_Stem}
+                ${nl2br(question.Scenario_or_Stem)}
 
             </div>
 
@@ -112,27 +120,14 @@ function showBiostatisticsQuestion() {
 
             <div class="plot-instruction">
 
-                <strong>Plot Instruction</strong>
-
-                <div class="plot-instruction-content">
-
-                    ${question.Plot_Instruction}
-
-                </div>
+                <strong>Plot Instruction:</strong>
+                ${nl2br(question.Plot_Instruction)}
 
             </div>
 
         `;
 
     }
-
-    const hasImage = Boolean(
-
-        question.Image_File &&
-
-        question.Image_File !== ""
-
-    );
 
     if (hasImage) {
 
@@ -148,9 +143,11 @@ function showBiostatisticsQuestion() {
 
                 <div class="image-caption">
 
-                    ${question.Image_Caption ?? ""}
+                    ${nl2br(question.Image_Caption ?? "")}
 
                 </div>
+
+            </div>
 
             </div>
 
@@ -166,7 +163,7 @@ function showBiostatisticsQuestion() {
 
                     <strong>A.</strong>
 
-                    ${question.Sub_Question_A}
+                    ${nl2br(question.Sub_Question_A)}
 
                     <span class="marks">
 
@@ -180,7 +177,7 @@ function showBiostatisticsQuestion() {
 
                     <strong>B.</strong>
 
-                    ${question.Sub_Question_B}
+                    ${nl2br(question.Sub_Question_B)}
 
                     <span class="marks">
 
@@ -206,7 +203,7 @@ function showBiostatisticsQuestion() {
 
                     <strong>C.</strong>
 
-                    ${question.Sub_Question_C}
+                    ${nl2br(question.Sub_Question_C)}
 
                     <span class="marks">
 
@@ -236,13 +233,11 @@ function showBiostatisticsQuestion() {
 
     renderPage(html);
 
+    setExamHeader("Biostatistics Question");
+
     attachNavigationEvents();
 
-    fitQuestionLayout(
-
-        hasImage ? document.querySelector(".question-image") : null
-
-    );
+    fitTwoBandLayout(hasImage);
 
     if (!biostatisticsTimerStarted) {
 

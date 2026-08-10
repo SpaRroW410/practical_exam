@@ -189,7 +189,7 @@ function showSpotterHeader() {
 
     pauseSectionTimer();
 
-    updateSectionTimer("");
+    updateSectionTimer("00:00");
 
 
     const imageCount = spotterSlides.filter(
@@ -198,8 +198,6 @@ function showSpotterHeader() {
 
 
     renderPage(`
-
-        ${renderTimerHeader(header.Title)}
 
         <section class="exam-screen">
 
@@ -270,6 +268,9 @@ function showSpotterHeader() {
         </section>
 
     `);
+
+
+    setExamHeader(header.Title);
 
 
     attachNavigationEvents();
@@ -409,7 +410,7 @@ function showSpotterSlide() {
 
             <strong>A.</strong>
 
-            ${slide.Sub_Question_A}
+            ${nl2br(slide.Sub_Question_A)}
 
             <span class="marks">
 
@@ -427,7 +428,7 @@ function showSpotterSlide() {
 
             <strong>B.</strong>
 
-            ${slide.Sub_Question_B}
+            ${nl2br(slide.Sub_Question_B)}
 
             <span class="marks">
 
@@ -457,7 +458,7 @@ function showSpotterSlide() {
 
                 <strong>C.</strong>
 
-                ${slide.Sub_Question_C}
+                ${nl2br(slide.Sub_Question_C)}
 
                 <span class="marks">
 
@@ -531,13 +532,9 @@ function showSpotterSlide() {
 
     renderPage(`
 
-        ${renderTimerHeader(`Spotter ${currentSpotterIndex + 1} of ${spotterSlides.length}`)}
-
         <section class="exam-screen">
 
             <div class="spotter-layout">
-
-                ${imageHTML}
 
                 <div class="question-subquestions">
 
@@ -549,6 +546,8 @@ function showSpotterSlide() {
 
                 </div>
 
+                ${imageHTML}
+
             </div>
 
             ${renderNavigationButtons(true,true)}
@@ -557,11 +556,23 @@ function showSpotterSlide() {
 
     `);
 
+    setExamHeader(
+
+        `Spotter ${currentSpotterIndex + 1} of ${spotterSlides.length}`
+
+    );
+
     attachNavigationEvents();
 
+    // No imageWrap: the image has its own grid column, so growing the
+    // text does not steal its space. Fit against the question column.
     fitQuestionLayout(
 
-        document.querySelector(".spotter-image-wrap")
+        null,
+
+        document.querySelector(".spotter-layout .question-subquestions"),
+
+        64
 
     );
 
@@ -649,8 +660,6 @@ function showReserveScreen() {
 
     renderPage(`
 
-        ${renderTimerHeader()}
-
         <section class="exam-screen reserve-screen">
 
             <div class="reserve-container">
@@ -672,6 +681,8 @@ function showReserveScreen() {
         </section>
 
     `);
+
+    setExamHeader("");
 
     startSectionTimer(
 

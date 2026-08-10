@@ -28,6 +28,10 @@ function renderPage(html) {
 
     container.scrollTop = 0;
 
+    // Default to branding; exam views re-assert exam mode immediately
+    // after, so a home-type screen can never inherit a stale exam bar.
+    setBrandHeader();
+
 }
 
 
@@ -91,66 +95,68 @@ function showError(message) {
 
 
 // ------------------------------------------------------------
-// Build Timer Header
+// Newlines To Line Breaks
+//
+// Alt+Enter in the Excel question bank survives into questions.json as
+// \r\n, but HTML collapses whitespace — so numbered sub-parts would run
+// together into one sentence without this.
 // ------------------------------------------------------------
 
-function renderTimerHeader(title = "") {
+function nl2br(text) {
 
-    const titleMarkup = title
+    if (text === null || text === undefined) return "";
 
-        ? `<div class="exam-header-title">${title}</div>`
+    return String(text).replace(/\r\n|\r|\n/g, "<br>");
 
-        : `<div class="exam-header-title exam-header-title--empty"></div>`;
+}
 
-    return `
 
-        <div class="exam-header">
+// ------------------------------------------------------------
+// Header Modes
+//
+// One bar for the whole app: branding on the home/access/summary
+// screens, section title + timers during the exam. The timer elements
+// live permanently in #app-header rather than being re-created on every
+// render, so their values survive screen changes.
+// ------------------------------------------------------------
 
-            ${titleMarkup}
+function setExamHeader(title) {
 
-            <div class="exam-header-timers">
+    const header = document.getElementById("app-header");
 
-                <div class="timer-box">
+    if (header) {
 
-                    <div class="timer-label">
+        header.classList.add("exam-mode");
 
-                        Overall Timer
+    }
 
-                    </div>
+    const examTitle = document.getElementById("examTitle");
 
-                    <div
-                        id="overallTimer"
-                        class="timer-value">
+    if (examTitle) {
 
-                        ${formatTime(appState.timer.overall)}
+        examTitle.textContent = title || "";
 
-                    </div>
+    }
 
-                </div>
+}
 
-                <div class="timer-box">
+function setBrandHeader() {
 
-                    <div class="timer-label">
+    const header = document.getElementById("app-header");
 
-                        Section Timer
+    if (header) {
 
-                    </div>
+        header.classList.remove("exam-mode");
 
-                    <div
-                        id="sectionTimer"
-                        class="timer-value">
+    }
 
-                        00:00
+    const examTitle = document.getElementById("examTitle");
 
-                    </div>
+    if (examTitle) {
 
-                </div>
+        examTitle.textContent = "";
 
-            </div>
-
-        </div>
-
-    `;
+    }
 
 }
 
@@ -339,22 +345,34 @@ function fitImageToRemainingSpace(container, imageWrap) {
 // Fit Question Layout
 //
 // .scenario/.question/.plot-instruction otherwise sit at a fixed size
-// regardless of how much (or little) room is left on screen. When
-// `imageWrap` is given, text and image compete for the same space, so
-// text is sized first (binary-searched in [MIN_TEXT_SIZE,24], checked
-// against the image held at its normal minimum) and only then is the
-// image given whatever's actually left via fitImageToRemainingSpace —
-// sizing them independently left cases where text alone (at a fixed
-// 24px) already didn't fit, so the image got crushed to its floor and
-// the page still overflowed regardless. With no image, text is
-// binary-searched up to 44px to fill the screen.
+// regardless of how much (or little) room is left on screen.
+//
+// `imageWrap` is passed only when the image is STACKED above/below the
+// text and so competes with it for the same vertical space: text is
+// sized first (binary-searched in [MIN_TEXT_SIZE,24] with the image held
+// at its floor), then the image takes what's actually left. Sizing them
+// independently left cases where text alone already didn't fit, so the
+// image got crushed to its floor and the page still overflowed.
+//
+// Pass no imageWrap when the image sits in its own column (Spotter's
+// 50/50) — there the grid gives the image a definite height and text
+// growing does not shrink it, so text is simply grown up to 44px.
+//
+// `measureContainer` is the box the text must fit inside; it defaults to
+// .exam-screen. Figure-bearing questions call this twice with the two
+// bands of their 60:40 split, so the sub-questions size themselves
+// independently of the scenario instead of sharing one size; Spotter
+// passes its left column.
+//
+// `maxOverride` raises or lowers the ceiling for a given band.
 // ------------------------------------------------------------
 
-const MIN_TEXT_SIZE = 22;
+const MIN_TEXT_SIZE = 24;
 
-function fitQuestionLayout(imageWrap) {
+function fitQuestionLayout(imageWrap, measureContainer, maxOverride) {
 
-    const examScreen = document.querySelector(".exam-screen");
+    const examScreen =
+        measureContainer || document.querySelector(".exam-screen");
 
     if (!examScreen) return;
 
@@ -366,7 +384,8 @@ function fitQuestionLayout(imageWrap) {
 
     if (targets.length === 0) return;
 
-    const maxSize = imageWrap ? 24 : 44;
+    const maxSize =
+        maxOverride || (imageWrap ? 24 : 44);
 
     function fits(size) {
 
@@ -425,6 +444,49 @@ function fitQuestionLayout(imageWrap) {
         fitImageToRemainingSpace(imageWrap.parentElement, imageWrap);
 
     }
+
+}
+
+
+// ------------------------------------------------------------
+// Two-Band Question Layout
+//
+// With a figure, the screen is split 60:40 — scenario + figure on top,
+// sub-questions below — and each band is sized independently so the
+// sub-questions grow to fill their share instead of being squeezed to
+// the same size as the scenario. Without a figure the question flows as
+// one band, as before.
+// ------------------------------------------------------------
+
+function fitTwoBandLayout(hasImage) {
+
+    if (!hasImage) {
+
+        fitQuestionLayout(null);
+
+        return;
+
+    }
+
+    fitQuestionLayout(
+
+        document.querySelector(".question-image"),
+
+        document.querySelector(".question-top"),
+
+        28
+
+    );
+
+    fitQuestionLayout(
+
+        null,
+
+        document.querySelector(".question-subquestions"),
+
+        44
+
+    );
 
 }
 

@@ -48,39 +48,12 @@ body {
     font-weight: 400;
 }
 
-/* Timer Panel */
-.exam-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 24px;
-    padding: 18px 30px;
-    border-bottom: 1px solid var(--border);
-    background: white;
-    flex-shrink: 0;
-}
-
 /* #app-content is a flex column, so its non-exam children need pinning
    to their natural height (letting the page scroll) rather than being
    compressed to fit. */
 .home-screen,
 .summary-screen {
     flex-shrink: 0;
-}
-
-.exam-header-title {
-    flex: 1;
-    min-width: 0;
-    font-size: 30px;
-    font-weight: 700;
-    color: var(--heading);
-    line-height: 1.2;
-}
-
-/* Kept in flow as a spacer so the timers stay right-aligned on screens
-   with no title (the Reserve screen) rather than jumping left. */
-.exam-header-title--empty {
-    visibility: hidden;
 }
 
 .exam-header-timers {
@@ -202,7 +175,7 @@ body {
 
 .instruction-note-body {
     font-size: 26px;
-    line-height: 1.5;
+    line-height: 1.0;
     color: var(--text);
 }
 
@@ -243,7 +216,7 @@ body {
 .scenario {
     font-size: 24px;
     color: #444;
-    line-height: 1.8;
+    line-height: 1.0;
     flex-shrink: 0;
 }
 
@@ -258,17 +231,38 @@ body {
     padding-left: 20px;
     border-left: 5px solid var(--primary);
     font-size: 24px;
+    line-height: 1.0;
     flex-shrink: 0;
 }
 
-.plot-instruction-content {
-    margin-top: 2px;
+.plot-instruction {
+    line-height: 1.0;
 }
 
-.question-subquestions {
+/* Figure-bearing questions split 60:40 — scenario + figure on top,
+   sub-questions below — so the sub-questions get a guaranteed band and
+   size themselves independently instead of being squeezed. Questions
+   with no figure keep a single free-flowing band. */
+.question-top {
+    flex: 6 1 0;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 12px;
+}
+
+.exam-screen > .question-subquestions {
+    flex: 4 1 0;
+    min-height: 0;
+}
+
+/* Sub-questions side by side: auto-flow column gives one column per
+   sub-question automatically — 3 for PG, 2 for UG — with no branching. */
+.question-subquestions {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 20px;
 }
 
 .question-subquestions .question {
@@ -288,28 +282,31 @@ body {
     color: #777;
 }
 
-/* Spotter Layout: fills whatever's left in .exam-screen after the
-   progress line/title; the image wrap fills whatever's left within it
-   after Sub-Question A/B/(C). */
+/* Spotter Layout: 50/50 — questions left, image right. */
 .spotter-layout {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
     flex: 1;
     min-height: 0;
 }
 
-.spotter-layout > .question {
-    flex-shrink: 0;
+/* Narrow column, so stack A/B/C rather than sub-dividing it further,
+   centred vertically against the image beside it. */
+.spotter-layout .question-subquestions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    min-height: 0;
+    overflow-y: auto;
 }
 
-/* Image Wrap: a flex-grown box with a definite height (from flex-grow);
-   the image/placeholder inside sizes itself against that box without
-   itself being a flex-basis:0 item, so its own aspect ratio drives its
-   size (no distortion, no letterboxed empty space). */
+/* Image Wrap: the image/placeholder inside sizes itself against this
+   box via its own aspect ratio (no distortion, no letterboxing). */
 .spotter-image-wrap {
-    flex: 1;
-    min-height: 60px;
+    min-height: 0;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;

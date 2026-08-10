@@ -63,6 +63,8 @@ body{
    HEADER
 ------------------------------ */
 
+/* The app's single bar. Branding on home/access/summary screens;
+   section title + timers during the exam (.exam-mode). */
 #app-header{
 
     background:white;
@@ -74,6 +76,8 @@ body{
     border-bottom:1px solid var(--border);
 
     box-shadow:var(--shadow);
+
+    flex-shrink:0;
 
 }
 
@@ -94,6 +98,64 @@ body{
     font-weight:400;
 
     font-size:1.1rem;
+
+}
+
+/* Exam mode: swap branding for title + timers, on one compact row */
+#app-header.exam-mode{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:24px;
+
+    padding:12px 30px;
+
+    text-align:left;
+
+}
+
+#app-header.exam-mode .app-brand{
+
+    display:none;
+
+}
+
+#app-header:not(.exam-mode) .app-exam-title,
+#app-header:not(.exam-mode) .app-timers{
+
+    display:none;
+
+}
+
+.app-exam-title{
+
+    flex:1;
+
+    min-width:0;
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:var(--heading);
+
+    line-height:1.2;
+
+}
+
+.app-timers{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:24px;
+
+    flex-shrink:0;
 
 }
 
