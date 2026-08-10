@@ -29,13 +29,11 @@ function showBiostatisticsHeader() {
 
     renderPage(`
 
-        ${renderTimerHeader()}
+        ${renderTimerHeader(header.Title)}
 
         <section class="exam-screen">
 
             <div class="section-header">
-
-                <h2>${header.Title}</h2>
 
                 <div class="scenario">
 
@@ -90,15 +88,9 @@ function showBiostatisticsQuestion() {
 
     let html = `
 
-        ${renderTimerHeader()}
+        ${renderTimerHeader("Biostatistics Question")}
 
         <section class="exam-screen">
-
-            <h2 class="question-title">
-
-                Biostatistics Question
-
-            </h2>
 
             <div class="scenario">
 
@@ -126,9 +118,11 @@ function showBiostatisticsQuestion() {
 
                 <strong>Plot Instruction</strong>
 
-                <br><br>
+                <div class="plot-instruction-content">
 
-                ${question.Plot_Instruction}
+                    ${question.Plot_Instruction}
+
+                </div>
 
             </div>
 
@@ -168,33 +162,35 @@ function showBiostatisticsQuestion() {
 
     html += `
 
-            <div class="question">
+            <div class="question-subquestions">
 
-                <strong>A.</strong>
+                <div class="question">
 
-                ${question.Sub_Question_A}
+                    <strong>A.</strong>
 
-                <span class="marks">
+                    ${question.Sub_Question_A}
 
-                    (${marks.A})
+                    <span class="marks">
 
-                </span>
+                        (${marks.A})
 
-            </div>
+                    </span>
 
-            <div class="question">
+                </div>
 
-                <strong>B.</strong>
+                <div class="question">
 
-                ${question.Sub_Question_B}
+                    <strong>B.</strong>
 
-                <span class="marks">
+                    ${question.Sub_Question_B}
 
-                    (${marks.B})
+                    <span class="marks">
 
-                </span>
+                        (${marks.B})
 
-            </div>
+                    </span>
+
+                </div>
 
     `;
 
@@ -208,23 +204,29 @@ function showBiostatisticsQuestion() {
 
         html += `
 
-            <div class="question">
+                <div class="question">
 
-                <strong>C.</strong>
+                    <strong>C.</strong>
 
-                ${question.Sub_Question_C}
+                    ${question.Sub_Question_C}
 
-                <span class="marks">
+                    <span class="marks">
 
-                    (${marks.C})
+                        (${marks.C})
 
-                </span>
+                    </span>
 
-            </div>
+                </div>
 
         `;
 
     }
+
+    html += `
+
+            </div>
+
+    `;
 
     html += `
 

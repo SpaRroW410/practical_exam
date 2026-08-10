@@ -121,14 +121,22 @@ body{
 
 #app-footer{
 
-    text-align:center;
-
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
     padding:15px;
-
     color:#777;
-
     border-top:1px solid var(--border);
 
+}
+
+.footer-left,
+.footer-right{
+    flex:1;
+}
+
+.footer-right{
+    text-align:right;
 }
 
 

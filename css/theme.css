@@ -44,9 +44,30 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 24px;
     padding: 18px 30px;
     border-bottom: 1px solid var(--border);
     background: white;
+}
+
+.exam-header-title {
+    flex: 1;
+    min-width: 0;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--heading);
+    line-height: 1.2;
+}
+
+.exam-header-title--empty {
+    display: none;
+}
+
+.exam-header-timers {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-shrink: 0;
 }
 
 /* Timer Box */
@@ -85,7 +106,7 @@ body {
 /* Section Header */
 .section-header {
     max-width: 900px;
-    margin: 60px auto;
+    margin: 28px auto 24px;
     text-align: center;
     flex-shrink: 0;
 }
@@ -118,6 +139,11 @@ body {
     flex-shrink: 0;
 }
 
+.exam-screen > .scenario {
+    color: #111111;
+    font-weight: 700;
+}
+
 /* Question */
 .question {
     margin: 28px 0;
@@ -125,6 +151,24 @@ body {
     border-left: 5px solid var(--primary);
     font-size: 24px;
     flex-shrink: 0;
+}
+
+.plot-instruction {
+    margin: 8px 0 0;
+}
+
+.plot-instruction-content {
+    margin-top: 2px;
+}
+
+.question-subquestions {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.question-subquestions .question {
+    margin: 0;
 }
 
 /* Marks */

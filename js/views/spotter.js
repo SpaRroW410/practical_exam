@@ -199,17 +199,11 @@ function showSpotterHeader() {
 
     renderPage(`
 
-        ${renderTimerHeader()}
+        ${renderTimerHeader(header.Title)}
 
         <section class="exam-screen">
 
             <div class="section-header">
-
-                <h2>
-
-                    ${header.Title}
-
-                </h2>
 
                 <div class="scenario">
 
@@ -419,8 +413,44 @@ function showSpotterSlide() {
     }
 
     // --------------------------------------------------------
-    // Question C
+    // Questions A/B/C
     // --------------------------------------------------------
+
+    let questionA = `
+
+        <div class="question">
+
+            <strong>A.</strong>
+
+            ${slide.Sub_Question_A}
+
+            <span class="marks">
+
+                (${slide.Marks_A})
+
+            </span>
+
+        </div>
+
+    `;
+
+    let questionB = `
+
+        <div class="question">
+
+            <strong>B.</strong>
+
+            ${slide.Sub_Question_B}
+
+            <span class="marks">
+
+                (${slide.Marks_B})
+
+            </span>
+
+        </div>
+
+    `;
 
     let questionC = "";
 
@@ -514,61 +544,23 @@ function showSpotterSlide() {
 
     renderPage(`
 
-        ${renderTimerHeader()}
+        ${renderTimerHeader(`Spotter ${currentSpotterIndex + 1} of ${spotterSlides.length}`)}
 
         <section class="exam-screen">
-
-            <div class="spotter-progress">
-
-                Spotter
-
-                ${currentSpotterIndex + 1}
-
-                of
-
-                ${spotterSlides.length}
-
-            </div>
-
-            <h2 class="question-title">
-
-                Spotter ${currentSpotterIndex + 1}
-
-            </h2>
 
             <div class="spotter-layout">
 
                 ${imageHTML}
 
-                <div class="question">
+                <div class="question-subquestions">
 
-                    <strong>A.</strong>
+                    ${questionA}
 
-                    ${slide.Sub_Question_A}
+                    ${questionB}
 
-                    <span class="marks">
-
-                        (${slide.Marks_A})
-
-                    </span>
+                    ${questionC}
 
                 </div>
-
-                <div class="question">
-
-                    <strong>B.</strong>
-
-                    ${slide.Sub_Question_B}
-
-                    <span class="marks">
-
-                        (${slide.Marks_B})
-
-                    </span>
-
-                </div>
-
-                ${questionC}
 
             </div>
 

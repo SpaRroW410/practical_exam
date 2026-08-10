@@ -94,43 +94,55 @@ function showError(message) {
 // Build Timer Header
 // ------------------------------------------------------------
 
-function renderTimerHeader() {
+function renderTimerHeader(title = "") {
+
+    const titleMarkup = title
+
+        ? `<div class="exam-header-title">${title}</div>`
+
+        : `<div class="exam-header-title exam-header-title--empty"></div>`;
 
     return `
 
         <div class="exam-header">
 
-            <div class="timer-box">
+            ${titleMarkup}
 
-                <div class="timer-label">
+            <div class="exam-header-timers">
 
-                    Overall Timer
+                <div class="timer-box">
 
-                </div>
+                    <div class="timer-label">
 
-                <div
-                    id="overallTimer"
-                    class="timer-value">
+                        Overall Timer
 
-                    ${formatTime(appState.timer.overall)}
+                    </div>
 
-                </div>
+                    <div
+                        id="overallTimer"
+                        class="timer-value">
 
-            </div>
+                        ${formatTime(appState.timer.overall)}
 
-            <div class="timer-box">
-
-                <div class="timer-label">
-
-                    Section Timer
+                    </div>
 
                 </div>
 
-                <div
-                    id="sectionTimer"
-                    class="timer-value">
+                <div class="timer-box">
 
-                    00:00
+                    <div class="timer-label">
+
+                        Section Timer
+
+                    </div>
+
+                    <div
+                        id="sectionTimer"
+                        class="timer-value">
+
+                        00:00
+
+                    </div>
 
                 </div>
 
