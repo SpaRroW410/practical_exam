@@ -572,6 +572,14 @@ function showSpotterSlide() {
 
     attachNavigationEvents();
 
+    fitImageToRemainingSpace(
+
+        document.querySelector(".spotter-layout"),
+
+        document.querySelector(".spotter-image-wrap")
+
+    );
+
     // --------------------------------------------------------
     // Previous
     // --------------------------------------------------------

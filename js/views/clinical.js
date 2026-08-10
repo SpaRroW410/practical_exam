@@ -92,6 +92,14 @@ function showClinicalQuestion() {
 
     const marks = getDisplayMarks(question);
 
+    const hasImage = Boolean(
+
+        question.Image_File &&
+
+        question.Image_File !== ""
+
+    );
+
     let html = `
 
         ${renderTimerHeader("Clinical Case")}
@@ -106,13 +114,7 @@ function showClinicalQuestion() {
 
     `;
 
-    if (
-
-        question.Image_File &&
-
-        question.Image_File !== ""
-
-    ) {
+    if (hasImage) {
 
         html += `
 
@@ -215,6 +217,24 @@ function showClinicalQuestion() {
     renderPage(html);
 
     attachNavigationEvents();
+
+    if (hasImage) {
+
+        fitImageToRemainingSpace(
+
+            document.querySelector(".exam-screen"),
+
+            document.querySelector(".question-image")
+
+        );
+
+    }
+
+    else {
+
+        fitQuestionText(false);
+
+    }
 
     // ---------------------------------------
     // Timer

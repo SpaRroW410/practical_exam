@@ -95,6 +95,8 @@ function showEpidemiologyQuestion() {
 
     const marks = getDisplayMarks(question);
 
+    const hasImage = Boolean(question.Image_File);
+
     let html = `
 
         ${renderTimerHeader("Epidemiology Question")}
@@ -109,7 +111,7 @@ function showEpidemiologyQuestion() {
 
     `;
 
-    if (question.Image_File) {
+    if (hasImage) {
 
         html += `
 
@@ -206,6 +208,24 @@ function showEpidemiologyQuestion() {
     renderPage(html);
 
     attachNavigationEvents();
+
+    if (hasImage) {
+
+        fitImageToRemainingSpace(
+
+            document.querySelector(".exam-screen"),
+
+            document.querySelector(".question-image")
+
+        );
+
+    }
+
+    else {
+
+        fitQuestionText(false);
+
+    }
 
     if (!epidemiologyTimerStarted) {
 

@@ -130,13 +130,15 @@ function showBiostatisticsQuestion() {
 
     }
 
-    if (
+    const hasImage = Boolean(
 
         question.Image_File &&
 
         question.Image_File !== ""
 
-    ) {
+    );
+
+    if (hasImage) {
 
         html += `
 
@@ -239,6 +241,24 @@ function showBiostatisticsQuestion() {
     renderPage(html);
 
     attachNavigationEvents();
+
+    if (hasImage) {
+
+        fitImageToRemainingSpace(
+
+            document.querySelector(".exam-screen"),
+
+            document.querySelector(".question-image")
+
+        );
+
+    }
+
+    else {
+
+        fitQuestionText(false);
+
+    }
 
     if (!biostatisticsTimerStarted) {
 

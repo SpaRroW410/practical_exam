@@ -217,6 +217,118 @@ function renderSectionInfo(section, header) {
 
 
 // ------------------------------------------------------------
+// Fit Image To Remaining Space
+//
+// Measures the real rendered height of every OTHER direct child of
+// `container`, then sets `imageWrap`'s height to whatever's left —
+// deterministic, unlike leaving it to flex-grow/shrink distribution
+// (which breaks silently whenever the surrounding markup changes shape).
+// ------------------------------------------------------------
+
+function fitImageToRemainingSpace(container, imageWrap) {
+
+    if (!container || !imageWrap) return;
+
+    let siblingsHeight = 0;
+
+    Array.from(container.children).forEach(function(child){
+
+        if (child !== imageWrap) {
+
+            siblingsHeight += child.getBoundingClientRect().height;
+
+        }
+
+    });
+
+    const gap =
+        parseFloat(getComputedStyle(container).rowGap) || 0;
+
+    const gapTotal =
+        gap * (container.children.length - 1);
+
+    const available =
+        container.clientHeight - siblingsHeight - gapTotal;
+
+    imageWrap.style.flex = "0 0 auto";
+
+    imageWrap.style.height = Math.max(60, available) + "px";
+
+}
+
+
+// ------------------------------------------------------------
+// Fit Question Text
+//
+// For questions with no image, .scenario/.question otherwise sit at a
+// fixed size regardless of how much (or little) room is left on screen.
+// Binary-searches for the largest font-size in [MIN,MAX] at which the
+// text still fits .exam-screen without overflowing.
+// ------------------------------------------------------------
+
+function fitQuestionText(hasImage) {
+
+    if (hasImage) return;
+
+    const examScreen = document.querySelector(".exam-screen");
+
+    if (!examScreen) return;
+
+    const targets =
+        examScreen.querySelectorAll(".scenario, .question");
+
+    if (targets.length === 0) return;
+
+    const MIN_SIZE = 18;
+
+    const MAX_SIZE = 44;
+
+    function fits(size) {
+
+        targets.forEach(function(el){
+
+            el.style.fontSize = size + "px";
+
+        });
+
+        return examScreen.scrollHeight <= examScreen.clientHeight;
+
+    }
+
+    if (!fits(MIN_SIZE)) return;
+
+    let lo = MIN_SIZE;
+
+    let hi = MAX_SIZE;
+
+    let best = MIN_SIZE;
+
+    for (let i = 0; i < 8; i++) {
+
+        const mid = Math.round((lo + hi) / 2);
+
+        if (fits(mid)) {
+
+            best = mid;
+
+            lo = mid + 1;
+
+        }
+
+        else {
+
+            hi = mid - 1;
+
+        }
+
+    }
+
+    fits(best);
+
+}
+
+
+// ------------------------------------------------------------
 // Build Navigation
 // ------------------------------------------------------------
 
