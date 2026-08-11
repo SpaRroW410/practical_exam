@@ -91,6 +91,26 @@ function renderHome() {
 
                 </div>
 
+                <div class="home-actions home-actions--print">
+
+                    <button
+                        id="printPaper"
+                        class="start-button print-button">
+
+                        PRINT QUESTION PAPER
+
+                    </button>
+
+                    <button
+                        id="printPaperKey"
+                        class="start-button print-button">
+
+                        PRINT WITH ANSWER KEY
+
+                    </button>
+
+                </div>
+
             </div>
 
         </section>
@@ -106,6 +126,28 @@ function renderHome() {
     document
         .getElementById("startExam")
         .addEventListener("click", startExam);
+
+    // Printing before the exam uses whatever is currently selected in
+    // the dropdowns, so mirror those into appState first.
+    document
+        .getElementById("printPaper")
+        .addEventListener("click", function(){
+
+            applySelectionToState();
+
+            printExamToPDF(false);
+
+        });
+
+    document
+        .getElementById("printPaperKey")
+        .addEventListener("click", function(){
+
+            applySelectionToState();
+
+            printExamToPDF(true);
+
+        });
 
     document
         .getElementById("examLevel")
@@ -203,6 +245,15 @@ function populateQuestionDropdowns() {
 
         spotterSelect.innerHTML = "";
 
+        const randomOption =
+            document.createElement("option");
+
+        randomOption.value = "random";
+
+        randomOption.textContent = "Random";
+
+        spotterSelect.appendChild(randomOption);
+
         getEligibleSpotterSetNumbers().forEach(function(setNo){
 
             const option =
@@ -215,6 +266,15 @@ function populateQuestionDropdowns() {
             spotterSelect.appendChild(option);
 
         });
+
+        // "Random" is listed first for visibility, but a numbered set
+        // stays the default so behaviour is unchanged unless it is
+        // deliberately chosen.
+        if (spotterSelect.options.length > 1) {
+
+            spotterSelect.selectedIndex = 1;
+
+        }
 
     }
 

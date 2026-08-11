@@ -117,7 +117,11 @@ function renderSummary() {
 
                         <td>
 
-                            ${appState.exam.spotter}
+                            ${
+                                appState.exam.spotter === "random"
+                                    ? "Random"
+                                    : appState.exam.spotter
+                            }
 
                         </td>
 

@@ -46,6 +46,17 @@ function renderSpotter() {
 
 function loadSpotterSlides() {
 
+    // A random set is generated once at startExam and cached, so the
+    // header, the slides, the print output and the summary all agree
+    // and Previous/Next never reshuffles it.
+    if (appState.randomSpotterSlides) {
+
+        spotterSlides = appState.randomSpotterSlides;
+
+        return;
+
+    }
+
     const allSlides =
         appData.questions.spotter;
 
@@ -115,6 +126,143 @@ function loadSpotterSlides() {
 
 }
 
+
+
+// ============================================================
+// Random Set Builder
+// ============================================================
+//
+// Draws one slide per station position from the whole 220-slide pool
+// rather than using a fixed Set_No. Because Domain_Category is fixed
+// per position (1-2 Entomology, 3-4 Nutrition, 5-6 Vaccination,
+// 7-8 Contraceptive, 9 Disinfectants/Water, 10 Logo, 11 Models), a
+// per-position draw stays domain-balanced on its own.
+//
+//   UG - positions 1..10, Easy or Moderate only.
+//   PG - positions 1..9, then a 10th station drawn from positions 10
+//        AND 11 combined (40 candidates), any difficulty.
+//
+// Species_Group (a column to be added to the workbook) prevents the
+// same species appearing twice in one paper — e.g. "Ascaris adult" at
+// position 1 alongside "Ascaris egg" at position 2, which the current
+// data allows. Until that column exists the rule is simply inert.
+
+function spotterPositionOf(slide) {
+
+    return Number(String(slide.Spotter_No).replace(/[^\d]/g, ""));
+
+}
+
+function shuffled(list) {
+
+    const out = list.slice();
+
+    for (let i = out.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        const tmp = out[i];
+
+        out[i] = out[j];
+
+        out[j] = tmp;
+
+    }
+
+    return out;
+
+}
+
+function buildRandomSpotterSet() {
+
+    const allSlides =
+        appData.questions.spotter.filter(
+            s => s.Item_Type === "Spotter_Slide"
+        );
+
+    const allowedDifficulty =
+        isPG()
+            ? null                       // PG: all difficulties open
+            : ["Easy", "Moderate"];      // UG: nothing Difficult
+
+    // Each entry is the list of positions that station may draw from.
+    const stations =
+        isPG()
+            ? [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10, 11]]
+            : [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]];
+
+    const usedGroups = [];
+
+    const chosen = [];
+
+    stations.forEach(function(positions){
+
+        const candidates = allSlides.filter(function(slide){
+
+            if (positions.indexOf(spotterPositionOf(slide)) === -1) {
+                return false;
+            }
+
+            if (allowedDifficulty &&
+                allowedDifficulty.indexOf(slide.Difficulty) === -1) {
+                return false;
+            }
+
+            return true;
+
+        });
+
+        if (candidates.length === 0) return;
+
+        const pool = shuffled(candidates);
+
+        // Prefer a slide whose species group is not already in this set;
+        // if every candidate collides, take one anyway rather than
+        // hand back a short paper.
+        let pick = pool.find(function(slide){
+
+            const group = slide.Species_Group;
+
+            return !group || usedGroups.indexOf(group) === -1;
+
+        });
+
+        if (!pick) pick = pool[0];
+
+        if (pick.Species_Group) usedGroups.push(pick.Species_Group);
+
+        chosen.push(pick);
+
+    });
+
+    return chosen;
+
+}
+
+
+// Human-readable tally, e.g. "4 Easy, 6 Moderate", so the header can
+// report what the draw actually produced.
+function describeDifficultyMix(slides) {
+
+    const order = ["Easy", "Moderate", "Difficult"];
+
+    const counts = {};
+
+    slides.forEach(function(slide){
+
+        counts[slide.Difficulty] = (counts[slide.Difficulty] || 0) + 1;
+
+    });
+
+    return order
+
+        .filter(level => counts[level])
+
+        .map(level => counts[level] + " " + level)
+
+        .join(", ");
+
+}
 
 
 // ============================================================
@@ -207,7 +355,12 @@ function showSpotterHeader() {
 
                     {
                         label: "Spotter Set",
-                        value: appState.exam.spotter
+                        value: appState.exam.spotter === "random"
+                            ? "Random"
+                            : appState.exam.spotter,
+                        unit: appState.exam.spotter === "random"
+                            ? describeDifficultyMix(spotterSlides)
+                            : ""
                     },
 
                     {

@@ -11,10 +11,21 @@
 
 
 // ------------------------------------------------------------
-// Entry Point (called from the Summary screen button)
+// Answer Key Visibility
+//
+// Read by buildAnswerKeyBlock() rather than threaded through both
+// builders. Printing the paper before the exam (or the admin question
+// bank) must never carry answers.
 // ------------------------------------------------------------
 
-function printExamToPDF() {
+let printIncludeAnswers = true;
+
+
+// ------------------------------------------------------------
+// Entry Point (Summary screen, and the selection screen's two buttons)
+// ------------------------------------------------------------
+
+function printExamToPDF(includeAnswers = true) {
 
     const printArea =
         document.getElementById("print-area");
@@ -27,7 +38,40 @@ function printExamToPDF() {
 
     }
 
+    printIncludeAnswers = includeAnswers;
+
     printArea.innerHTML = buildPrintableExamHTML();
+
+    printIncludeAnswers = true;
+
+    window.print();
+
+}
+
+
+// ------------------------------------------------------------
+// Admin: every question in one section, filtered by level,
+// never with answer keys.
+// ------------------------------------------------------------
+
+function printSectionBankToPDF(sectionKey, level) {
+
+    const printArea =
+        document.getElementById("print-area");
+
+    if (!printArea) {
+
+        alert("Print area not found.");
+
+        return;
+
+    }
+
+    printIncludeAnswers = false;
+
+    printArea.innerHTML = buildSectionBankHTML(sectionKey, level);
+
+    printIncludeAnswers = true;
 
     window.print();
 
@@ -141,7 +185,7 @@ function buildPrintableSummaryPage() {
 
 function buildAnswerKeyBlock(item) {
 
-    if (!item) {
+    if (!item || !printIncludeAnswers) {
         return "";
     }
 
@@ -295,6 +339,210 @@ function buildStandardSectionBlock(sectionKey, sectionLabel, questionNo) {
     }
 
     html += `</div>`;
+
+    return html;
+
+}
+
+
+// ------------------------------------------------------------
+// Admin Question Bank
+//
+// Every question in one section at the chosen level. appState.examLevel
+// is swapped for the duration so the existing isPG()/getDisplayMarks()
+// rules decide UG-vs-PG marks and whether sub-question C appears —
+// the printed bank then matches exactly what candidates would see.
+// ------------------------------------------------------------
+
+function buildSectionBankHTML(sectionKey, level) {
+
+    const previousLevel = appState.examLevel;
+
+    appState.examLevel = level;
+
+    let html = "";
+
+    try {
+
+        if (sectionKey === "spotter") {
+
+            html = buildSpotterBankHTML();
+
+        }
+
+        else {
+
+            const label = SECTION_NAMES[sectionKey] || sectionKey;
+
+            const questions =
+                (appData.questions[sectionKey] || []).filter(
+
+                    q =>
+
+                        q.Item_Type === "Question" &&
+
+                        (!isUG() || q.Difficulty !== "Difficult")
+
+                );
+
+            if (questions.length === 0) {
+
+                html = buildPrintPage(`
+
+                    <div class="print-section">
+
+                        <h2>${label} — no questions for ${level}</h2>
+
+                    </div>
+
+                `);
+
+            }
+
+            else {
+
+                questions.forEach(function(question){
+
+                    html += buildPrintPage(
+
+                        buildStandardSectionBlock(
+
+                            sectionKey,
+
+                            label,
+
+                            question.Question_No
+
+                        )
+
+                    );
+
+                });
+
+            }
+
+        }
+
+    }
+
+    finally {
+
+        appState.examLevel = previousLevel;
+
+    }
+
+    return html;
+
+}
+
+
+function buildSpotterBankHTML() {
+
+    const slides =
+        appData.questions.spotter.filter(
+
+            s =>
+
+                s.Item_Type === "Spotter_Slide" &&
+
+                (!isUG() || s.Difficulty !== "Difficult")
+
+        );
+
+    const bySet = {};
+
+    slides.forEach(function(slide){
+
+        (bySet[slide.Set_No] = bySet[slide.Set_No] || []).push(slide);
+
+    });
+
+    const setNames = Object.keys(bySet).sort(function(a, b){
+
+        return Number(String(a).replace(/[^\d]/g, "")) -
+               Number(String(b).replace(/[^\d]/g, ""));
+
+    });
+
+    let html = "";
+
+    setNames.forEach(function(setNo){
+
+        let content = `
+
+            <div class="print-section">
+
+                <h2>Spotter — ${setNo}</h2>
+
+        `;
+
+        bySet[setNo].forEach(function(slide){
+
+            content += `
+
+                <div class="print-spotter-station">
+
+                    <h3>
+                        ${slide.Spotter_No}
+                        — ${slide.Domain_Category ?? ""}
+                        (${slide.Difficulty ?? ""})
+                    </h3>
+
+                    <div class="print-question-item">
+
+                        <strong>A.</strong>
+                        ${nl2br(slide.Sub_Question_A ?? "")}
+                        <span class="print-marks">(${slide.Marks_A})</span>
+
+                    </div>
+
+                    <div class="print-question-item">
+
+                        <strong>B.</strong>
+                        ${nl2br(slide.Sub_Question_B ?? "")}
+                        <span class="print-marks">(${slide.Marks_B})</span>
+
+                    </div>
+
+                    ${
+
+                        isPG() && slide.Sub_Question_C
+
+                        ? `<div class="print-question-item">
+                               <strong>C.</strong>
+                               ${nl2br(slide.Sub_Question_C)}
+                               <span class="print-marks">(${slide.Marks_C})</span>
+                           </div>`
+
+                        : ""
+
+                    }
+
+                    ${
+
+                        slide.Image_File
+
+                        ? `<div class="print-image">
+                               <img
+                                   src="images/spotter/${slide.Image_File}"
+                                   alt="Spotter Image">
+                           </div>`
+
+                        : ""
+
+                    }
+
+                </div>
+
+            `;
+
+        });
+
+        content += `</div>`;
+
+        html += buildPrintPage(content);
+
+    });
 
     return html;
 
