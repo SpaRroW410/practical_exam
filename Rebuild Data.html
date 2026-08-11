@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rebuild Data — Community Medicine Examination</title>
+
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/home.css">
+
+    <style>
+
+        #app-content {
+            overflow-y: auto;
+        }
+
+        .rebuild-status {
+            margin: 16px 0;
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 20px;
+            white-space: pre-wrap;
+        }
+
+        .rebuild-status--idle {
+            background: #f2f7fd;
+            color: #444;
+        }
+
+        .rebuild-status--error {
+            background: var(--pastel-4);
+            border: 1px solid var(--pastel-border-4);
+            color: #7a1f1f;
+        }
+
+        .rebuild-status--ok {
+            background: var(--pastel-2);
+            border: 1px solid var(--pastel-border-2);
+            color: #1e4d2b;
+        }
+
+        .rebuild-summary {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .rebuild-summary th,
+        .rebuild-summary td {
+            text-align: left;
+            padding: 6px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        #xlsxFile {
+            width: 100%;
+            font-size: 16px;
+        }
+
+        #rebuildOutputs {
+            display: none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <header id="app-header">
+
+        <div class="app-brand">
+
+            <h1>Community Medicine</h1>
+
+            <h2>Rebuild Data — offline, no install required</h2>
+
+        </div>
+
+    </header>
+
+    <main id="app-content">
+
+        <section class="home-screen">
+
+            <div class="home-card" style="max-width: 780px;">
+
+                <h2>Rebuild Data</h2>
+
+                <p>
+
+                    Reads <strong>QuestionBank.xlsx</strong> directly in this
+                    browser — no server, no R, no internet connection — and
+                    regenerates the files the app uses.
+
+                </p>
+
+                <div class="selector">
+
+                    <label>QuestionBank.xlsx</label>
+
+                    <input type="file" id="xlsxFile" accept=".xlsx">
+
+                </div>
+
+                <div id="rebuildStatus" class="rebuild-status rebuild-status--idle">
+                    Choose the workbook above to begin.
+                </div>
+
+                <div id="rebuildOutputs">
+
+                    <table class="rebuild-summary" id="rebuildSummaryTable"></table>
+
+                    <div class="home-actions" style="margin-top: 22px;">
+
+                        <button id="saveOutputsBtn" class="start-button">
+                            SAVE TO data/ FOLDER
+                        </button>
+
+                        <button id="downloadOutputsBtn" class="start-button print-button">
+                            DOWNLOAD 3 FILES INSTEAD
+                        </button>
+
+                    </div>
+
+                    <p style="font-size: 16px; color: #666; margin-top: 14px;">
+
+                        <strong>For the offline pendrive copy:</strong> the three
+                        files (<code>questions.json</code>, <code>settings.json</code>,
+                        <code>data-embedded.js</code>) go into this app's
+                        <code>data/</code> folder, overwriting what's there. If
+                        your browser supports it, "Save to data/ folder" does
+                        this in one step — otherwise use the download button and
+                        move the three files into <code>data/</code> yourself.
+
+                        <br><br>
+
+                        <strong>For the online (Netlify) deployment:</strong> commit
+                        and push <code>questions.json</code> and
+                        <code>settings.json</code> only — <code>data-embedded.js</code>
+                        is only used by the offline copy and should not be committed.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer id="app-footer">
+
+        <div class="footer-left">
+            <small>Version 1.2</small>
+        </div>
+
+        <div class="footer-right">
+            <small>Developed by Dr. Mukul Maheshwari</small>
+        </div>
+
+    </footer>
+
+    <script src="tools/vendor/xlsx.full.min.js"></script>
+    <script src="tools/rebuild.js"></script>
+
+    <script>
+
+        let lastOutputs = null;
+
+        const statusEl = document.getElementById("rebuildStatus");
+
+        const outputsEl = document.getElementById("rebuildOutputs");
+
+        const summaryTableEl = document.getElementById("rebuildSummaryTable");
+
+        function setStatus(kind, text) {
+
+            statusEl.className = "rebuild-status rebuild-status--" + kind;
+
+            statusEl.textContent = text;
+
+        }
+
+        function renderSummary(counts) {
+
+            let html =
+                "<tr><th>Section</th><th>Items</th><th>Header rows</th><th>Total rows</th></tr>";
+
+            Object.keys(counts).forEach(function(sectionKey){
+
+                const c = counts[sectionKey];
+
+                html +=
+
+                    "<tr><td>" + sectionKey + "</td>" +
+                    "<td>" + c.items + "</td>" +
+                    "<td>" + c.headers + "</td>" +
+                    "<td>" + c.total + "</td></tr>";
+
+            });
+
+            summaryTableEl.innerHTML = html;
+
+        }
+
+        document
+
+            .getElementById("xlsxFile")
+
+            .addEventListener("change", async function(event){
+
+                const file = event.target.files[0];
+
+                if (!file) return;
+
+                outputsEl.style.display = "none";
+
+                lastOutputs = null;
+
+                setStatus("idle", "Reading " + file.name + " …");
+
+                try {
+
+                    const arrayBuffer = await file.arrayBuffer();
+
+                    const parsed = parseWorkbook(arrayBuffer);
+
+                    lastOutputs = {
+
+                        "questions.json": buildQuestionsJSON(parsed),
+
+                        "settings.json": buildSettingsJSON(parsed),
+
+                        "data-embedded.js": buildEmbeddedJS(parsed)
+
+                    };
+
+                    renderSummary(parsed.counts);
+
+                    outputsEl.style.display = "block";
+
+                    setStatus(
+
+                        "ok",
+
+                        "Parsed successfully. Review the counts below, then save."
+
+                    );
+
+                }
+
+                catch (error) {
+
+                    console.error(error);
+
+                    setStatus("error", "Could not read this workbook:\n" + error.message);
+
+                }
+
+            });
+
+        document
+
+            .getElementById("saveOutputsBtn")
+
+            .addEventListener("click", async function(){
+
+                if (!lastOutputs) return;
+
+                try {
+
+                    const result = await saveOutputs(lastOutputs);
+
+                    setStatus(
+
+                        "ok",
+
+                        result === "written"
+                            ? "Saved directly into the folder you chose."
+                            : "Downloaded — move the 3 files into data/ yourself."
+
+                    );
+
+                }
+
+                catch (error) {
+
+                    // AbortError: the user cancelled the folder picker — not a failure.
+                    if (error.name === "AbortError") return;
+
+                    console.error(error);
+
+                    setStatus("error", "Could not save the files:\n" + error.message);
+
+                }
+
+            });
+
+        document
+
+            .getElementById("downloadOutputsBtn")
+
+            .addEventListener("click", function(){
+
+                if (!lastOutputs) return;
+
+                for (const filename in lastOutputs) {
+
+                    downloadFile(filename, lastOutputs[filename]);
+
+                }
+
+                setStatus("ok", "Downloaded — move the 3 files into data/ yourself.");
+
+            });
+
+    </script>
+
+</body>
+
+</html>
