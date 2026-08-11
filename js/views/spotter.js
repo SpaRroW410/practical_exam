@@ -133,19 +133,17 @@ function loadSpotterSlides() {
 // ============================================================
 //
 // Draws one slide per station position from the whole 220-slide pool
-// rather than using a fixed Set_No. Because Domain_Category is fixed
-// per position (1-2 Entomology, 3-4 Nutrition, 5-6 Vaccination,
-// 7-8 Contraceptive, 9 Disinfectants/Water, 10 Logo, 11 Models), a
-// per-position draw stays domain-balanced on its own.
+// rather than using a fixed Set_No.
 //
 //   UG - positions 1..10, Easy or Moderate only.
 //   PG - positions 1..9, then a 10th station drawn from positions 10
 //        AND 11 combined (40 candidates), any difficulty.
 //
-// Species_Group (a column to be added to the workbook) prevents the
-// same species appearing twice in one paper — e.g. "Ascaris adult" at
-// position 1 alongside "Ascaris egg" at position 2, which the current
-// data allows. Until that column exists the rule is simply inert.
+// One slide per domain: a set never carries two slides sharing a
+// Domain_Category. Today every domain belongs to exactly one position,
+// so the per-position draw already satisfies this and the check costs
+// nothing — it is a guard that keeps the guarantee true if a domain
+// ever spans more than one position.
 
 function spotterPositionOf(slide) {
 
@@ -191,7 +189,7 @@ function buildRandomSpotterSet() {
             ? [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10, 11]]
             : [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]];
 
-    const usedGroups = [];
+    const usedDomains = [];
 
     const chosen = [];
 
@@ -216,20 +214,20 @@ function buildRandomSpotterSet() {
 
         const pool = shuffled(candidates);
 
-        // Prefer a slide whose species group is not already in this set;
-        // if every candidate collides, take one anyway rather than
-        // hand back a short paper.
+        // Prefer a slide whose domain is not already in this set; if
+        // every candidate collides, take one anyway rather than hand
+        // back a short paper.
         let pick = pool.find(function(slide){
 
-            const group = slide.Species_Group;
+            const domain = slide.Domain_Category;
 
-            return !group || usedGroups.indexOf(group) === -1;
+            return !domain || usedDomains.indexOf(domain) === -1;
 
         });
 
         if (!pick) pick = pool[0];
 
-        if (pick.Species_Group) usedGroups.push(pick.Species_Group);
+        if (pick.Domain_Category) usedDomains.push(pick.Domain_Category);
 
         chosen.push(pick);
 
