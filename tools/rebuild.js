@@ -45,6 +45,64 @@ const ANSWER_KEY_FIELDS =
 
 
 // ------------------------------------------------------------
+// Editable Field Schemas
+//
+// Matches the columns actually present in the real workbook (verified
+// this session, not assumed) — the four written sections share one
+// shape, Spotter has its own (Spotter_ID/Set_No/Spotter_No/
+// Domain_Category instead of Question_ID/Question_No, no
+// Scenario_or_Stem/Plot_Instruction/Last_Updated).
+// ------------------------------------------------------------
+
+const WRITTEN_SECTION_FIELDS = [
+
+    "Question_ID", "Item_Type", "Question_No", "Topic", "Difficulty",
+    "Title", "Scenario_or_Stem", "Sub_Question_A", "Answer_Key_A",
+    "Marks_A", "Sub_Question_B", "Answer_Key_B", "Marks_B",
+    "Sub_Question_C", "Answer_Key_C", "Marks_C", "Plot_Instruction",
+    "Image_File", "Image_Caption", "Total_Marks", "Status",
+    "Last_Updated", "Remarks"
+
+];
+
+const SPOTTER_FIELDS = [
+
+    "Spotter_ID", "Item_Type", "Set_No", "Spotter_No", "Domain_Category",
+    "Topic", "Difficulty", "Title", "Sub_Question_A", "Answer_Key_A",
+    "Marks_A", "Sub_Question_B", "Answer_Key_B", "Marks_B",
+    "Sub_Question_C", "Answer_Key_C", "Marks_C", "Image_File", "Remarks",
+    "Image_Caption", "Total_Marks", "Status"
+
+];
+
+const SECTION_IMAGE_FOLDER = {
+
+    clinical: "images/clinical/",
+
+    epidemiology: "images/epidemiology/",
+
+    biostatistics: "images/biostatistics/",
+
+    ospe: "images/ospe/",
+
+    spotter: "images/spotter/"
+
+};
+
+function fieldsForSection(sectionKey) {
+
+    return sectionKey === "spotter" ? SPOTTER_FIELDS : WRITTEN_SECTION_FIELDS;
+
+}
+
+function itemTypeForSection(sectionKey) {
+
+    return sectionKey === "spotter" ? "Spotter_Slide" : "Question";
+
+}
+
+
+// ------------------------------------------------------------
 // Parse a workbook (ArrayBuffer) into { questions, settings }
 // ------------------------------------------------------------
 
@@ -113,15 +171,38 @@ function parseWorkbook(arrayBuffer) {
 
     const settings = {};
 
+    // Description isn't part of the app's data model (settings.json
+    // never carried it), but it's real content in the workbook — kept
+    // here purely so an .xlsx round-trip doesn't quietly erase it.
+    const settingsDescriptions = {};
+
     settingsRows.forEach(function(row){
 
         if (!row.Parameter) return;
 
         settings[row.Parameter] = coerceSettingValue(row.Value);
 
+        settingsDescriptions[row.Parameter] = row.Description ?? null;
+
     });
 
-    return { questions, settings, counts };
+    return {
+
+        questions,
+
+        settings,
+
+        settingsDescriptions,
+
+        counts,
+
+        // Retained so buildUpdatedWorkbook() can write the edited
+        // section/Settings sheets back into the SAME workbook object,
+        // leaving Dashboard/Lists/Index/Instructions untouched rather
+        // than silently dropping them.
+        workbook
+
+    };
 
 }
 
@@ -198,12 +279,67 @@ function buildEmbeddedJS(parsed) {
 
 
 // ------------------------------------------------------------
+// .xlsx Round-Trip
+//
+// Writes the current (possibly edited) section and Settings rows back
+// into the ORIGINAL parsed workbook object — replacing only those 6
+// sheets — rather than building a new workbook from scratch, so
+// Dashboard/Lists/Index/Instructions and anything else in the real
+// file survive untouched.
+// ------------------------------------------------------------
+
+function buildUpdatedWorkbook(parsed) {
+
+    Object.keys(SECTION_SHEETS).forEach(function(sectionKey){
+
+        const sheetName = SECTION_SHEETS[sectionKey];
+
+        parsed.workbook.Sheets[sheetName] =
+            XLSX.utils.json_to_sheet(parsed.questions[sectionKey]);
+
+    });
+
+    const settingsRows = Object.keys(parsed.settings).map(function(param){
+
+        return {
+
+            Parameter: param,
+
+            Value: parsed.settings[param],
+
+            Description: parsed.settingsDescriptions[param] ?? null
+
+        };
+
+    });
+
+    parsed.workbook.Sheets.Settings =
+        XLSX.utils.json_to_sheet(settingsRows);
+
+    return XLSX.write(
+
+        parsed.workbook,
+
+        { type: "array", bookType: "xlsx" }
+
+    );
+
+}
+
+
+// ------------------------------------------------------------
 // Saving
 // ------------------------------------------------------------
 
-function downloadFile(filename, content) {
+function downloadFile(filename, content, mimeType) {
 
-    const blob = new Blob([content], { type: "text/plain" });
+    const blob = new Blob(
+
+        [content],
+
+        { type: mimeType || "text/plain" }
+
+    );
 
     const url = URL.createObjectURL(blob);
 

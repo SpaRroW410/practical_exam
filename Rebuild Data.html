@@ -62,8 +62,228 @@
             font-size: 16px;
         }
 
+        #rebuildChoice,
+        #rebuildEditor,
         #rebuildOutputs {
             display: none;
+        }
+
+        .rebuild-choice-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .section-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 18px 0 14px;
+        }
+
+        .section-tab {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #f2f7fd;
+            color: #333;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .section-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .editor-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .editor-toolbar span {
+            font-size: 15px;
+            color: #555;
+        }
+
+        .editor-add-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            background: #2e7d4f;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .editor-table-wrap {
+            max-height: 360px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .editor-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        .editor-table th {
+            position: sticky;
+            top: 0;
+            background: #eef4fb;
+            text-align: left;
+            padding: 8px 10px;
+        }
+
+        .editor-table td {
+            padding: 6px 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .editor-table tr:hover {
+            background: #f7fbff;
+        }
+
+        .editor-edit-btn {
+            padding: 4px 12px;
+            font-size: 13px;
+            border-radius: 6px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+        }
+
+        .editor-form-panel {
+            display: none;
+            margin-top: 16px;
+            padding: 18px;
+            border-radius: 10px;
+            background: var(--pastel-3);
+            border: 1px solid var(--pastel-border-3);
+        }
+
+        .editor-form-panel h3 {
+            margin-top: 0;
+        }
+
+        .editor-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .editor-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-field--wide {
+            grid-column: 1 / -1;
+        }
+
+        .editor-field label {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .editor-field input,
+        .editor-field select,
+        .editor-field textarea {
+            font-size: 15px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-family: inherit;
+            background: white;
+        }
+
+        .editor-field textarea {
+            resize: vertical;
+            min-height: 44px;
+        }
+
+        .editor-field-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        .editor-image-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .editor-image-row input[type="text"] {
+            flex: 1;
+        }
+
+        .editor-image-row button {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .editor-warning {
+            display: none;
+            color: #7a1f1f;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .editor-form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .editor-form-actions button {
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .editor-save-btn {
+            background: var(--primary);
+            color: white;
+        }
+
+        .editor-cancel-btn {
+            background: #ccc;
+            color: #333;
+        }
+
+        .editor-done-actions {
+            margin-top: 22px;
+        }
+
+        .output-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 22px;
+        }
+
+        .xlsx-download-button {
+            background: #5a6b7d;
+        }
+
+        .xlsx-download-button:hover {
+            background: #44525f;
         }
 
     </style>
@@ -88,7 +308,7 @@
 
         <section class="home-screen">
 
-            <div class="home-card" style="max-width: 780px;">
+            <div class="home-card" style="max-width: 900px;">
 
                 <h2>Rebuild Data</h2>
 
@@ -112,11 +332,58 @@
                     Choose the workbook above to begin.
                 </div>
 
-                <div id="rebuildOutputs">
+                <!-- Step 2: after a successful parse, choose auto vs interactive -->
+                <div id="rebuildChoice">
 
                     <table class="rebuild-summary" id="rebuildSummaryTable"></table>
 
-                    <div class="home-actions" style="margin-top: 22px;">
+                    <div class="rebuild-choice-actions">
+
+                        <button id="generateNowBtn" class="start-button">
+                            GENERATE FILES NOW
+                        </button>
+
+                        <button id="reviewEditBtn" class="start-button print-button">
+                            REVIEW &amp; EDIT FIRST
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Step 2b: interactive editor (only shown if "Review & edit first" chosen) -->
+                <div id="rebuildEditor">
+
+                    <div class="section-tabs" id="sectionTabs"></div>
+
+                    <div class="editor-toolbar">
+
+                        <span id="sectionRowCount"></span>
+
+                        <button type="button" id="addRowBtn" class="editor-add-btn">+ Add New</button>
+
+                    </div>
+
+                    <div class="editor-table-wrap">
+                        <table class="editor-table" id="editorTable"></table>
+                    </div>
+
+                    <div class="editor-form-panel" id="editorFormPanel"></div>
+
+                    <div class="editor-done-actions">
+
+                        <button type="button" id="doneEditingBtn" class="start-button">
+                            DONE — GENERATE FILES
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Step 3: output files -->
+                <div id="rebuildOutputs">
+
+                    <div class="output-actions">
 
                         <button id="saveOutputsBtn" class="start-button">
                             SAVE TO data/ FOLDER
@@ -124,6 +391,10 @@
 
                         <button id="downloadOutputsBtn" class="start-button print-button">
                             DOWNLOAD 3 FILES INSTEAD
+                        </button>
+
+                        <button id="downloadXlsxBtn" class="start-button xlsx-download-button">
+                            DOWNLOAD UPDATED QuestionBank.xlsx
                         </button>
 
                     </div>
@@ -144,6 +415,14 @@
                         and push <code>questions.json</code> and
                         <code>settings.json</code> only — <code>data-embedded.js</code>
                         is only used by the offline copy and should not be committed.
+
+                        <br><br>
+
+                        <strong>Keeping QuestionBank.xlsx up to date:</strong> if you
+                        edited or added questions above, download the updated workbook
+                        and save it over your working copy of
+                        <code>QuestionBank.xlsx</code> — that keeps it the source of
+                        truth for the next time you (or someone else) opens this tool.
 
                     </p>
 
@@ -172,19 +451,64 @@
 
     <script>
 
-        let lastOutputs = null;
+        // ------------------------------------------------------------
+        // State
+        // ------------------------------------------------------------
+
+        let parsedData = null;      // result of parseWorkbook(), mutated in place by the editor
+        let lastOutputs = null;     // { filename: content } for the three generated files
+
+        let currentSectionKey = "clinical";
+        let editingIndex = null;    // index being edited, or null while adding a new row
+
+        const SECTION_LABELS = {
+            clinical: "Clinical",
+            epidemiology: "Epidemiology",
+            biostatistics: "Biostatistics",
+            ospe: "OSPE",
+            spotter: "Spotter"
+        };
+
+        const TEXTAREA_FIELDS = new Set([
+            "Title", "Scenario_or_Stem", "Sub_Question_A", "Sub_Question_B",
+            "Sub_Question_C", "Answer_Key_A", "Answer_Key_B", "Answer_Key_C",
+            "Plot_Instruction", "Image_Caption", "Remarks"
+        ]);
+
+        const NUMBER_FIELDS = new Set(["Marks_A", "Marks_B", "Marks_C", "Total_Marks"]);
+
+        const DIFFICULTY_OPTIONS = ["", "Easy", "Moderate", "Difficult"];
 
         const statusEl = document.getElementById("rebuildStatus");
+
+        const choiceEl = document.getElementById("rebuildChoice");
+
+        const editorEl = document.getElementById("rebuildEditor");
 
         const outputsEl = document.getElementById("rebuildOutputs");
 
         const summaryTableEl = document.getElementById("rebuildSummaryTable");
+
+
+        // ------------------------------------------------------------
+        // Small helpers
+        // ------------------------------------------------------------
 
         function setStatus(kind, text) {
 
             statusEl.className = "rebuild-status rebuild-status--" + kind;
 
             statusEl.textContent = text;
+
+        }
+
+        function escapeHtml(value) {
+
+            return String(value ?? "").replace(/[&<>"']/g, function(ch){
+
+                return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[ch];
+
+            });
 
         }
 
@@ -210,6 +534,11 @@
 
         }
 
+
+        // ------------------------------------------------------------
+        // Step 1: pick + parse the workbook
+        // ------------------------------------------------------------
+
         document
 
             .getElementById("xlsxFile")
@@ -220,7 +549,13 @@
 
                 if (!file) return;
 
+                choiceEl.style.display = "none";
+
+                editorEl.style.display = "none";
+
                 outputsEl.style.display = "none";
+
+                parsedData = null;
 
                 lastOutputs = null;
 
@@ -230,27 +565,17 @@
 
                     const arrayBuffer = await file.arrayBuffer();
 
-                    const parsed = parseWorkbook(arrayBuffer);
+                    parsedData = parseWorkbook(arrayBuffer);
 
-                    lastOutputs = {
+                    renderSummary(parsedData.counts);
 
-                        "questions.json": buildQuestionsJSON(parsed),
-
-                        "settings.json": buildSettingsJSON(parsed),
-
-                        "data-embedded.js": buildEmbeddedJS(parsed)
-
-                    };
-
-                    renderSummary(parsed.counts);
-
-                    outputsEl.style.display = "block";
+                    choiceEl.style.display = "block";
 
                     setStatus(
 
                         "ok",
 
-                        "Parsed successfully. Review the counts below, then save."
+                        "Parsed successfully. Review the counts below, then choose how to proceed."
 
                     );
 
@@ -265,6 +590,512 @@
                 }
 
             });
+
+
+        // ------------------------------------------------------------
+        // Step 2: auto vs interactive choice
+        // ------------------------------------------------------------
+
+        document.getElementById("generateNowBtn").addEventListener("click", function(){
+
+            choiceEl.style.display = "none";
+
+            finalizeAndShowOutputs();
+
+        });
+
+        document.getElementById("reviewEditBtn").addEventListener("click", function(){
+
+            choiceEl.style.display = "none";
+
+            currentSectionKey = "clinical";
+
+            renderSectionTabs();
+
+            renderEditorTable(currentSectionKey);
+
+            editorEl.style.display = "block";
+
+        });
+
+
+        // ------------------------------------------------------------
+        // Step 2b: interactive editor
+        // ------------------------------------------------------------
+
+        function renderSectionTabs() {
+
+            let html = "";
+
+            Object.keys(SECTION_LABELS).forEach(function(key){
+
+                html +=
+                    "<button type=\"button\" class=\"section-tab" +
+                    (key === currentSectionKey ? " active" : "") + "\" data-section=\"" + key + "\">" +
+                    SECTION_LABELS[key] + " (" + parsedData.questions[key].length + ")</button>";
+
+            });
+
+            document.getElementById("sectionTabs").innerHTML = html;
+
+        }
+
+        document.getElementById("sectionTabs").addEventListener("click", function(event){
+
+            const btn = event.target.closest(".section-tab");
+
+            if (!btn) return;
+
+            closeForm();
+
+            currentSectionKey = btn.dataset.section;
+
+            renderSectionTabs();
+
+            renderEditorTable(currentSectionKey);
+
+        });
+
+        function rowNumberLabel(sectionKey, row) {
+
+            return sectionKey === "spotter"
+                ? (row.Set_No ?? "") + " / " + (row.Spotter_No ?? "")
+                : String(row.Question_No ?? "");
+
+        }
+
+        function renderEditorTable(sectionKey) {
+
+            const rows = parsedData.questions[sectionKey];
+
+            let html = "<tr><th>No.</th><th>Title</th><th>Difficulty</th><th>Item Type</th><th></th></tr>";
+
+            rows.forEach(function(row, index){
+
+                html +=
+
+                    "<tr>" +
+                    "<td>" + escapeHtml(rowNumberLabel(sectionKey, row)) + "</td>" +
+                    "<td>" + escapeHtml(row.Title) + "</td>" +
+                    "<td>" + escapeHtml(row.Difficulty) + "</td>" +
+                    "<td>" + escapeHtml(row.Item_Type) + "</td>" +
+                    "<td><button type=\"button\" class=\"editor-edit-btn\" data-index=\"" +
+                    index + "\">Edit</button></td>" +
+                    "</tr>";
+
+            });
+
+            document.getElementById("editorTable").innerHTML = html;
+
+            document.getElementById("sectionRowCount").textContent =
+                rows.length + " row(s) in " + SECTION_LABELS[sectionKey];
+
+        }
+
+        document.getElementById("editorTable").addEventListener("click", function(event){
+
+            const btn = event.target.closest(".editor-edit-btn");
+
+            if (!btn) return;
+
+            openForm(currentSectionKey, Number(btn.dataset.index));
+
+        });
+
+        document.getElementById("addRowBtn").addEventListener("click", function(){
+
+            openForm(currentSectionKey, null);
+
+        });
+
+        document.getElementById("doneEditingBtn").addEventListener("click", function(){
+
+            closeForm();
+
+            editorEl.style.display = "none";
+
+            finalizeAndShowOutputs();
+
+        });
+
+
+        // ---- Detail form ----
+
+        function fieldLabel(fieldName) {
+
+            return fieldName.replace(/_/g, " ");
+
+        }
+
+        function itemTypeOptions(sectionKey) {
+
+            return sectionKey === "spotter"
+                ? ["Spotter_Slide", "Section_Header"]
+                : ["Question", "Section_Header"];
+
+        }
+
+        function selectFieldHtml(fieldName, options, value) {
+
+            let html =
+                "<div class=\"editor-field\"><label>" + fieldLabel(fieldName) + "</label><select id=\"field_" +
+                fieldName + "\">";
+
+            options.forEach(function(opt){
+
+                html +=
+                    "<option value=\"" + escapeHtml(opt) + "\"" +
+                    (opt === String(value ?? "") ? " selected" : "") + ">" +
+                    (opt || "—") + "</option>";
+
+            });
+
+            html += "</select></div>";
+
+            return html;
+
+        }
+
+        function renderFormField(sectionKey, fieldName, value) {
+
+            if (fieldName === "Image_File") {
+
+                return (
+
+                    "<div class=\"editor-field editor-field--wide\">" +
+                    "<label>" + fieldLabel(fieldName) + "</label>" +
+                    "<div class=\"editor-image-row\">" +
+                    "<input type=\"text\" id=\"field_" + fieldName + "\" value=\"" + escapeHtml(value) +
+                    "\" placeholder=\"e.g. clinical_003_01.jpg\">" +
+                    "<button type=\"button\" id=\"chooseImageBtn\">Choose File…</button>" +
+                    "</div>" +
+                    "<div class=\"editor-field-hint\">Filename only — goes in <code>" +
+                    SECTION_IMAGE_FOLDER[sectionKey] + "</code>. The actual image file still has to be copied " +
+                    "there by hand; this tool never reads or embeds the image itself.</div>" +
+                    "</div>"
+
+                );
+
+            }
+
+            if (fieldName === "Item_Type") {
+
+                return selectFieldHtml(fieldName, itemTypeOptions(sectionKey), value);
+
+            }
+
+            if (fieldName === "Difficulty") {
+
+                return selectFieldHtml(fieldName, DIFFICULTY_OPTIONS, value);
+
+            }
+
+            if (TEXTAREA_FIELDS.has(fieldName)) {
+
+                return (
+
+                    "<div class=\"editor-field editor-field--wide\">" +
+                    "<label>" + fieldLabel(fieldName) + "</label>" +
+                    "<textarea id=\"field_" + fieldName + "\">" + escapeHtml(value) + "</textarea>" +
+                    "</div>"
+
+                );
+
+            }
+
+            const inputType = NUMBER_FIELDS.has(fieldName) ? "number" : "text";
+
+            return (
+
+                "<div class=\"editor-field\">" +
+                "<label>" + fieldLabel(fieldName) + "</label>" +
+                "<input type=\"" + inputType + "\" id=\"field_" + fieldName + "\" value=\"" + escapeHtml(value) +
+                "\">" +
+                "</div>"
+
+            );
+
+        }
+
+        function nextQuestionNumber(sectionKey) {
+
+            let max = 0;
+
+            parsedData.questions[sectionKey].forEach(function(row){
+
+                const n = parseInt(row.Question_No, 10);
+
+                if (!isNaN(n) && n > max) max = n;
+
+            });
+
+            return max + 1;
+
+        }
+
+        function openForm(sectionKey, index) {
+
+            editingIndex = index;
+
+            const isNew = index === null;
+
+            const row = isNew ? {} : parsedData.questions[sectionKey][index];
+
+            const fields = fieldsForSection(sectionKey);
+
+            const defaults = {};
+
+            if (isNew) {
+
+                defaults.Item_Type = itemTypeForSection(sectionKey);
+
+                if (sectionKey !== "spotter") {
+
+                    defaults.Question_No = String(nextQuestionNumber(sectionKey));
+
+                }
+
+            }
+
+            let html =
+                "<h3>" + (isNew ? "Add New " + SECTION_LABELS[sectionKey] + " Row" : "Edit Row") + "</h3>";
+
+            html += "<div class=\"editor-form-grid\">";
+
+            fields.forEach(function(fieldName){
+
+                const value = isNew
+                    ? (defaults[fieldName] !== undefined ? defaults[fieldName] : "")
+                    : (row[fieldName] ?? "");
+
+                html += renderFormField(sectionKey, fieldName, value);
+
+            });
+
+            html += "</div>";
+
+            if (isNew && sectionKey === "spotter") {
+
+                const example =
+                    parsedData.questions.spotter.find(r => r.Item_Type === "Spotter_Slide");
+
+                html +=
+
+                    "<div class=\"editor-field-hint\" style=\"margin-top:10px;\">" +
+                    "Spotter numbering is two-axis (Set × position), so it isn't auto-suggested — " +
+                    (example
+                        ? "existing example: Set_No \"" + example.Set_No + "\", Spotter_No \"" +
+                          example.Spotter_No + "\"."
+                        : "enter Set_No and Spotter_No matching the existing pattern in this workbook.") +
+                    "</div>";
+
+            }
+
+            html += "<div class=\"editor-warning\" id=\"editorWarning\"></div>";
+
+            html +=
+
+                "<div class=\"editor-form-actions\">" +
+                "<button type=\"button\" id=\"saveRowBtn\" class=\"editor-save-btn\">Save</button>" +
+                "<button type=\"button\" id=\"cancelRowBtn\" class=\"editor-cancel-btn\">Cancel</button>" +
+                "</div>";
+
+            const panel = document.getElementById("editorFormPanel");
+
+            panel.innerHTML = html;
+
+            panel.style.display = "block";
+
+            const chooseBtn = document.getElementById("chooseImageBtn");
+
+            if (chooseBtn) {
+
+                chooseBtn.addEventListener("click", function(){
+
+                    hiddenImagePicker.value = "";
+
+                    hiddenImagePicker.click();
+
+                });
+
+            }
+
+            document.getElementById("saveRowBtn").addEventListener("click", function(){
+
+                saveRow(sectionKey);
+
+            });
+
+            document.getElementById("cancelRowBtn").addEventListener("click", closeForm);
+
+            panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+        }
+
+        function closeForm() {
+
+            editingIndex = null;
+
+            const panel = document.getElementById("editorFormPanel");
+
+            panel.innerHTML = "";
+
+            panel.style.display = "none";
+
+        }
+
+        function duplicateLabel(sectionKey) {
+
+            return sectionKey === "spotter" ? "Set_No + Spotter_No combination" : "Question_No";
+
+        }
+
+        function findDuplicateIndex(sectionKey, candidateRow, ignoreIndex) {
+
+            const rows = parsedData.questions[sectionKey];
+
+            for (let i = 0; i < rows.length; i++) {
+
+                if (i === ignoreIndex) continue;
+
+                const existing = rows[i];
+
+                const isDuplicate = sectionKey === "spotter"
+                    ? (String(existing.Set_No) === String(candidateRow.Set_No) &&
+                       String(existing.Spotter_No) === String(candidateRow.Spotter_No))
+                    : (String(existing.Question_No) === String(candidateRow.Question_No));
+
+                if (isDuplicate) return i;
+
+            }
+
+            return -1;
+
+        }
+
+        function saveRow(sectionKey) {
+
+            const fields = fieldsForSection(sectionKey);
+
+            const newRow = {};
+
+            fields.forEach(function(fieldName){
+
+                const el = document.getElementById("field_" + fieldName);
+
+                const value = el.value;
+
+                if (NUMBER_FIELDS.has(fieldName)) {
+
+                    newRow[fieldName] = value === "" ? null : Number(value);
+
+                } else {
+
+                    newRow[fieldName] = value === "" ? null : value;
+
+                }
+
+            });
+
+            const rows = parsedData.questions[sectionKey];
+
+            const duplicateIndex = findDuplicateIndex(sectionKey, newRow, editingIndex);
+
+            if (duplicateIndex !== -1) {
+
+                const proceed = confirm(
+
+                    "A row with that " + duplicateLabel(sectionKey) + " already exists (row " +
+                    (duplicateIndex + 1) + "). Overwrite it instead of adding a new one?"
+
+                );
+
+                if (!proceed) {
+
+                    const warningEl = document.getElementById("editorWarning");
+
+                    warningEl.style.display = "block";
+
+                    warningEl.textContent =
+                        "Not saved — change the " + duplicateLabel(sectionKey) +
+                        " to something that doesn't already exist, or confirm the overwrite.";
+
+                    return;
+
+                }
+
+                rows[duplicateIndex] = newRow;
+
+            } else if (editingIndex !== null) {
+
+                rows[editingIndex] = newRow;
+
+            } else {
+
+                rows.push(newRow);
+
+            }
+
+            closeForm();
+
+            renderSectionTabs();
+
+            renderEditorTable(sectionKey);
+
+        }
+
+        // Hidden file input used only to read a chosen image's NAME —
+        // the File object (and its bytes) is discarded immediately after.
+        const hiddenImagePicker = document.createElement("input");
+
+        hiddenImagePicker.type = "file";
+
+        hiddenImagePicker.accept = "image/*";
+
+        hiddenImagePicker.style.display = "none";
+
+        document.body.appendChild(hiddenImagePicker);
+
+        hiddenImagePicker.addEventListener("change", function(){
+
+            const file = hiddenImagePicker.files[0];
+
+            hiddenImagePicker.value = "";
+
+            if (!file) return;
+
+            const imageInput = document.getElementById("field_Image_File");
+
+            if (imageInput) imageInput.value = file.name;
+
+        });
+
+
+        // ------------------------------------------------------------
+        // Step 3: generate + save output files
+        // ------------------------------------------------------------
+
+        function finalizeAndShowOutputs() {
+
+            choiceEl.style.display = "none";
+
+            editorEl.style.display = "none";
+
+            lastOutputs = {
+
+                "questions.json": buildQuestionsJSON(parsedData),
+
+                "settings.json": buildSettingsJSON(parsedData),
+
+                "data-embedded.js": buildEmbeddedJS(parsedData)
+
+            };
+
+            outputsEl.style.display = "block";
+
+            setStatus("ok", "Ready. Save the files below.");
+
+        }
 
         document
 
@@ -318,6 +1149,42 @@
                 }
 
                 setStatus("ok", "Downloaded — move the 3 files into data/ yourself.");
+
+            });
+
+        document
+
+            .getElementById("downloadXlsxBtn")
+
+            .addEventListener("click", function(){
+
+                if (!parsedData) return;
+
+                try {
+
+                    const updated = buildUpdatedWorkbook(parsedData);
+
+                    downloadFile(
+
+                        "QuestionBank.xlsx",
+
+                        updated,
+
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+                    );
+
+                    setStatus("ok", "Downloaded updated QuestionBank.xlsx — save it over your working copy.");
+
+                }
+
+                catch (error) {
+
+                    console.error(error);
+
+                    setStatus("error", "Could not build the updated workbook:\n" + error.message);
+
+                }
 
             });
 
