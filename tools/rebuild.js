@@ -279,13 +279,78 @@ function buildEmbeddedJS(parsed) {
 
 
 // ------------------------------------------------------------
+// Index Sheet
+//
+// A flat, all-sections listing used purely for browsing/QA — not read
+// by the app or by parseWorkbook() itself. Previously hand-typed and,
+// as found this session, already out of sync with the real data (6
+// missing Epidemiology rows, stale Title text). Rebuilding it here from
+// the same parsed.questions the rest of this file already trusts means
+// it can't drift again. Title is left out: for most rows it just
+// repeats Question_ID-shaped text, so it added nothing an index needs.
+// ------------------------------------------------------------
+
+const SECTION_DISPLAY_NAME = {
+
+    clinical: "Clinical Case",
+
+    epidemiology: "Epidemiology",
+
+    biostatistics: "Biostatistics",
+
+    ospe: "OSPE",
+
+    spotter: "Spotter"
+
+};
+
+function buildIndexRows(parsed) {
+
+    const rows = [];
+
+    Object.keys(SECTION_SHEETS).forEach(function(sectionKey){
+
+        const itemType = itemTypeForSection(sectionKey);
+
+        const isSpotter = sectionKey === "spotter";
+
+        parsed.questions[sectionKey].forEach(function(row){
+
+            if (row.Item_Type !== itemType) return; // skip Section_Header rows
+
+            rows.push({
+
+                Question_ID: isSpotter ? row.Spotter_ID : row.Question_ID,
+
+                Section: SECTION_DISPLAY_NAME[sectionKey],
+
+                Set_No: isSpotter ? row.Set_No : "N/A",
+
+                Item_No: isSpotter ? row.Spotter_No : row.Question_No,
+
+                Topic: row.Topic,
+
+                Difficulty: row.Difficulty
+
+            });
+
+        });
+
+    });
+
+    return rows;
+
+}
+
+
+// ------------------------------------------------------------
 // .xlsx Round-Trip
 //
 // Writes the current (possibly edited) section and Settings rows back
-// into the ORIGINAL parsed workbook object — replacing only those 6
+// into the ORIGINAL parsed workbook object — replacing only those 7
 // sheets — rather than building a new workbook from scratch, so
-// Dashboard/Lists/Index/Instructions and anything else in the real
-// file survive untouched.
+// Dashboard/Lists/Instructions and anything else in the real file
+// survive untouched.
 // ------------------------------------------------------------
 
 function buildUpdatedWorkbook(parsed) {
@@ -315,6 +380,9 @@ function buildUpdatedWorkbook(parsed) {
 
     parsed.workbook.Sheets.Settings =
         XLSX.utils.json_to_sheet(settingsRows);
+
+    parsed.workbook.Sheets.Index =
+        XLSX.utils.json_to_sheet(buildIndexRows(parsed));
 
     return XLSX.write(
 
