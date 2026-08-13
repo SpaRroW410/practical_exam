@@ -167,6 +167,35 @@
 
 }
 
+.used-questions-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:16px;
+
+    font-size:16px;
+
+}
+
+.used-questions-table th,
+.used-questions-table td{
+
+    text-align:left;
+
+    padding:8px 12px;
+
+    border-bottom:1px solid var(--border);
+
+}
+
+.used-questions-table th{
+
+    background:#f2f7fd;
+
+}
+
 
 @media(max-width:768px){
 

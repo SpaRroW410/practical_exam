@@ -376,9 +376,14 @@ function fitQuestionLayout(imageWrap, measureContainer, maxOverride) {
 
     if (!examScreen) return;
 
+    // .plot-instruction is intentionally excluded here: it holds a fixed
+    // size of its own (css/theme.css) rather than sharing the dynamic
+    // scenario/question size. It still counts toward examScreen's real
+    // rendered height below, so the binary search still accounts for the
+    // space it actually takes and the no-overflow guarantee holds.
     const targets = examScreen.querySelectorAll(
 
-        ".scenario, .question, .plot-instruction"
+        ".scenario, .question"
 
     );
 
