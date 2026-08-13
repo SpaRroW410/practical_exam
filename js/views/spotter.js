@@ -46,6 +46,17 @@ function renderSpotter() {
 
 function loadSpotterSlides() {
 
+    // A random set is generated once at startExam and cached, so the
+    // header, the slides, the print output and the summary all agree
+    // and Previous/Next never reshuffles it.
+    if (appState.randomSpotterSlides) {
+
+        spotterSlides = appState.randomSpotterSlides;
+
+        return;
+
+    }
+
     const allSlides =
         appData.questions.spotter;
 
@@ -115,6 +126,141 @@ function loadSpotterSlides() {
 
 }
 
+
+
+// ============================================================
+// Random Set Builder
+// ============================================================
+//
+// Draws one slide per station position from the whole 220-slide pool
+// rather than using a fixed Set_No.
+//
+//   UG - positions 1..10, Easy or Moderate only.
+//   PG - positions 1..9, then a 10th station drawn from positions 10
+//        AND 11 combined (40 candidates), any difficulty.
+//
+// One slide per domain: a set never carries two slides sharing a
+// Domain_Category. Today every domain belongs to exactly one position,
+// so the per-position draw already satisfies this and the check costs
+// nothing — it is a guard that keeps the guarantee true if a domain
+// ever spans more than one position.
+
+function spotterPositionOf(slide) {
+
+    return Number(String(slide.Spotter_No).replace(/[^\d]/g, ""));
+
+}
+
+function shuffled(list) {
+
+    const out = list.slice();
+
+    for (let i = out.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        const tmp = out[i];
+
+        out[i] = out[j];
+
+        out[j] = tmp;
+
+    }
+
+    return out;
+
+}
+
+function buildRandomSpotterSet() {
+
+    const allSlides =
+        appData.questions.spotter.filter(
+            s => s.Item_Type === "Spotter_Slide"
+        );
+
+    const allowedDifficulty =
+        isPG()
+            ? null                       // PG: all difficulties open
+            : ["Easy", "Moderate"];      // UG: nothing Difficult
+
+    // Each entry is the list of positions that station may draw from.
+    const stations =
+        isPG()
+            ? [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10, 11]]
+            : [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]];
+
+    const usedDomains = [];
+
+    const chosen = [];
+
+    stations.forEach(function(positions){
+
+        const candidates = allSlides.filter(function(slide){
+
+            if (positions.indexOf(spotterPositionOf(slide)) === -1) {
+                return false;
+            }
+
+            if (allowedDifficulty &&
+                allowedDifficulty.indexOf(slide.Difficulty) === -1) {
+                return false;
+            }
+
+            return true;
+
+        });
+
+        if (candidates.length === 0) return;
+
+        const pool = shuffled(candidates);
+
+        // Prefer a slide whose domain is not already in this set; if
+        // every candidate collides, take one anyway rather than hand
+        // back a short paper.
+        let pick = pool.find(function(slide){
+
+            const domain = slide.Domain_Category;
+
+            return !domain || usedDomains.indexOf(domain) === -1;
+
+        });
+
+        if (!pick) pick = pool[0];
+
+        if (pick.Domain_Category) usedDomains.push(pick.Domain_Category);
+
+        chosen.push(pick);
+
+    });
+
+    return chosen;
+
+}
+
+
+// Human-readable tally, e.g. "4 Easy, 6 Moderate", so the header can
+// report what the draw actually produced.
+function describeDifficultyMix(slides) {
+
+    const order = ["Easy", "Moderate", "Difficult"];
+
+    const counts = {};
+
+    slides.forEach(function(slide){
+
+        counts[slide.Difficulty] = (counts[slide.Difficulty] || 0) + 1;
+
+    });
+
+    return order
+
+        .filter(level => counts[level])
+
+        .map(level => counts[level] + " " + level)
+
+        .join(", ");
+
+}
 
 
 // ============================================================
@@ -207,7 +353,12 @@ function showSpotterHeader() {
 
                     {
                         label: "Spotter Set",
-                        value: appState.exam.spotter
+                        value: appState.exam.spotter === "random"
+                            ? "Random"
+                            : appState.exam.spotter,
+                        unit: appState.exam.spotter === "random"
+                            ? describeDifficultyMix(spotterSlides)
+                            : ""
                     },
 
                     {

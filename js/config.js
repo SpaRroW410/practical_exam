@@ -12,7 +12,11 @@
 
 const APP_CONFIG = {
 
-    ACCESS_CODE: "SpaRroW0410"
+    ACCESS_CODE: "SpaRroW0410",
+
+    // Separate code for the question-bank screen. Keep it distinct from
+    // ACCESS_CODE — candidates are given that one.
+    ADMIN_CODE: "SpaRroW0410Admin"
 
 };
 
@@ -46,6 +50,9 @@ const appState = {
         spotter: 1
 
     },
+
+    // Populated only when the Spotter Set dropdown is set to Random.
+    randomSpotterSlides: null,
 
     // Timers
 

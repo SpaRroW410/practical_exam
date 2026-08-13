@@ -105,6 +105,12 @@
 
 }
 
+.home-actions--print{
+
+    margin-top:16px;
+
+}
+
 .start-button{
 
     width:100%;
@@ -144,6 +150,23 @@
     background:#44525f;
 
 }
+
+.print-button{
+
+    background:#546e7a;
+
+    font-size:18px;
+
+    padding:12px;
+
+}
+
+.print-button:hover{
+
+    background:#3f5560;
+
+}
+
 
 @media(max-width:768px){
 
@@ -191,41 +214,7 @@
 
     .selector-grid{
 
-        gap:14px;
-
-    }
-
-    .selector{
-
-        padding:12px;
-
-    }
-
-    .home-actions{
-
-        margin-top:18px;
-
-    }
-
-    .start-button{
-
-        padding:12px;
-
-    }
-
-}
-
-@media(max-height:740px){
-
-    .home-card{
-
-        padding:18px;
-
-    }
-
-    .selector-grid{
-
-        gap:10px;
+        gap:12px;
 
     }
 
@@ -237,7 +226,73 @@
 
     .home-actions{
 
-        margin-top:12px;
+        margin-top:14px;
+
+    }
+
+    .home-actions--print{
+
+        margin-top:10px;
+
+    }
+
+    .start-button{
+
+        padding:10px;
+
+    }
+
+    .print-button{
+
+        padding:8px;
+
+        font-size:16px;
+
+    }
+
+}
+
+@media(max-height:740px){
+
+    .home-card{
+
+        padding:14px;
+
+    }
+
+    .home-card > p{
+
+        margin-bottom:10px;
+
+    }
+
+    .selector-grid{
+
+        gap:8px;
+
+    }
+
+    .selector{
+
+        padding:8px;
+
+    }
+
+    .home-actions{
+
+        margin-top:10px;
+
+    }
+
+    .home-actions--print{
+
+        margin-top:8px;
+
+    }
+
+    .start-button{
+
+        padding:8px;
 
     }
 

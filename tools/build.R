@@ -7,6 +7,14 @@
 #   data/questions.json
 #   data/settings.json
 #
+# DEPRECATED (fallback only): "Rebuild Data.html" at the repo root is
+# now the primary way to regenerate these files — it runs entirely in
+# the browser (no R, no packages, no install) and its output has been
+# validated field-by-field against this script's, including the
+# Settings-sheet-to-string coercion and the Answer_Key_A/B/C null-fill
+# below. Kept here only in case R happens to be more convenient to
+# reach for; if the two ever disagree, trust Rebuild Data.html.
+#
 # ============================================================
 
 library(readxl)

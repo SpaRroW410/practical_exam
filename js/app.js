@@ -42,22 +42,16 @@ async function initializeApplication() {
 
 
 // ------------------------------------------------------------
-// Start Examination
+// Read the Selection Screen Into State
+//
+// Shared by START EXAM and the selection screen's print buttons, so
+// a printed paper always matches what starting the exam would give.
 // ------------------------------------------------------------
 
-function startExam(){
-
-    // -----------------------------
-    // Examination Level
-    // -----------------------------
+function applySelectionToState(){
 
     appState.examLevel =
         document.getElementById("examLevel").value;
-
-
-    // -----------------------------
-    // Selected Questions
-    // -----------------------------
 
     appState.exam.clinical =
         Number(document.getElementById("clinical").value);
@@ -71,8 +65,31 @@ function startExam(){
     appState.exam.ospe =
         Number(document.getElementById("ospe").value);
 
+    const spotterChoice =
+        document.getElementById("spotter").value;
+
     appState.exam.spotter =
-        Number(document.getElementById("spotter").value);
+        spotterChoice === "random"
+            ? "random"
+            : Number(spotterChoice);
+
+    // Built once, here, so the header, slides, print output and summary
+    // all show the same set and navigating back never reshuffles it.
+    appState.randomSpotterSlides =
+        spotterChoice === "random"
+            ? buildRandomSpotterSet()
+            : null;
+
+}
+
+
+// ------------------------------------------------------------
+// Start Examination
+// ------------------------------------------------------------
+
+function startExam(){
+
+    applySelectionToState();
 
 
     // -----------------------------

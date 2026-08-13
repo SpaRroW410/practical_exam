@@ -14,6 +14,35 @@ async function loadApplicationData() {
     try {
 
         // ----------------------------
+        // Offline / pendrive path
+        //
+        // "Rebuild Data.html" can generate data/data-embedded.js, which
+        // defines EMBEDDED_APP_DATA as a plain <script> global. When
+        // present, use it directly — no fetch() at all, so the app
+        // works from a bare file:// double-click with no server.
+        //
+        // The committed data/data-embedded.js is an inert placeholder
+        // (defines nothing), so on a normal http(s) deployment this
+        // branch is simply skipped and fetch() below runs exactly as
+        // before.
+        // ----------------------------
+
+        if (typeof EMBEDDED_APP_DATA !== "undefined") {
+
+            appData.questions = EMBEDDED_APP_DATA.questions;
+
+            appData.settings = EMBEDDED_APP_DATA.settings;
+
+            console.log("Application data loaded (embedded).");
+
+            console.log(appData);
+
+            return;
+
+        }
+
+
+        // ----------------------------
         // Questions
         // ----------------------------
 
