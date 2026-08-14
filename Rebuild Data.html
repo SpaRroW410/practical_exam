@@ -64,8 +64,56 @@
 
         #rebuildChoice,
         #rebuildEditor,
-        #rebuildOutputs {
+        #rebuildOutputs,
+        #rebuildDiff {
             display: none;
+        }
+
+        .diff-summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 20px;
+            font-size: 17px;
+        }
+
+        .diff-summary-table th,
+        .diff-summary-table td {
+            text-align: left;
+            padding: 6px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .diff-section-heading {
+            margin: 20px 0 8px;
+            color: var(--primary);
+        }
+
+        .diff-added,
+        .diff-removed,
+        .diff-modified {
+            padding: 8px 12px;
+            margin: 6px 0;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .diff-added {
+            background: var(--pastel-2);
+            border: 1px solid var(--pastel-border-2);
+        }
+
+        .diff-removed {
+            background: var(--pastel-4);
+            border: 1px solid var(--pastel-border-4);
+        }
+
+        .diff-modified {
+            background: var(--pastel-1);
+            border: 1px solid var(--pastel-border-1);
+        }
+
+        .diff-modified ul {
+            margin: 6px 0 0 20px;
         }
 
         .rebuild-choice-actions {
@@ -349,6 +397,47 @@
 
                     </div>
 
+                    <div class="home-actions home-actions--print">
+
+                        <button type="button" id="showDiffBtn" class="start-button print-button">
+                            SHOW CHANGES FROM CURRENT DATA
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Step 2c: diff against the currently committed data files -->
+                <div id="rebuildDiff">
+
+                    <div id="diffLoadStatus" class="rebuild-status rebuild-status--idle">
+                        Loading data/questions.json and data/settings.json …
+                    </div>
+
+                    <div id="diffFallbackPickers" style="display:none;">
+
+                        <div class="selector">
+                            <label>Current data/questions.json</label>
+                            <input type="file" id="diffQuestionsFile" accept=".json">
+                        </div>
+
+                        <div class="selector">
+                            <label>Current data/settings.json</label>
+                            <input type="file" id="diffSettingsFile" accept=".json">
+                        </div>
+
+                    </div>
+
+                    <div id="diffResults"></div>
+
+                    <div class="home-actions home-actions--print">
+
+                        <button type="button" id="diffBackBtn" class="start-button print-button">
+                            BACK
+                        </button>
+
+                    </div>
+
                 </div>
 
                 <!-- Step 2b: interactive editor (only shown if "Review & edit first" chosen) -->
@@ -487,6 +576,8 @@
 
         const outputsEl = document.getElementById("rebuildOutputs");
 
+        const diffEl = document.getElementById("rebuildDiff");
+
         const summaryTableEl = document.getElementById("rebuildSummaryTable");
 
 
@@ -555,6 +646,8 @@
 
                 outputsEl.style.display = "none";
 
+                diffEl.style.display = "none";
+
                 parsedData = null;
 
                 lastOutputs = null;
@@ -620,6 +713,257 @@
 
 
         // ------------------------------------------------------------
+        // Step 2c: diff against the currently committed data files
+        //
+        // Tries fetch() first (works when this page is served over
+        // http(s), e.g. Netlify/GitHub Pages — no extra step needed).
+        // fetch() is blocked by CORS when this file is opened directly
+        // via file:// with no server, so that failure falls back to two
+        // plain file pickers for the offline case.
+        // ------------------------------------------------------------
+
+        let diffOldQuestions = null;
+
+        let diffOldSettings = null;
+
+        document.getElementById("showDiffBtn").addEventListener("click", async function(){
+
+            choiceEl.style.display = "none";
+
+            diffEl.style.display = "block";
+
+            document.getElementById("diffFallbackPickers").style.display = "none";
+
+            document.getElementById("diffResults").innerHTML = "";
+
+            const diffStatusEl = document.getElementById("diffLoadStatus");
+
+            diffStatusEl.className = "rebuild-status rebuild-status--idle";
+
+            diffStatusEl.textContent = "Loading data/questions.json and data/settings.json …";
+
+            try {
+
+                const [questionsResponse, settingsResponse] = await Promise.all([
+
+                    fetch("data/questions.json"),
+
+                    fetch("data/settings.json")
+
+                ]);
+
+                if (!questionsResponse.ok || !settingsResponse.ok) {
+
+                    throw new Error("fetch did not return ok");
+
+                }
+
+                diffOldQuestions = await questionsResponse.json();
+
+                diffOldSettings = await settingsResponse.json();
+
+                diffStatusEl.className = "rebuild-status rebuild-status--ok";
+
+                diffStatusEl.textContent = "Loaded current data/questions.json and data/settings.json automatically.";
+
+                renderDiffResults();
+
+            }
+
+            catch (error) {
+
+                diffStatusEl.className = "rebuild-status rebuild-status--idle";
+
+                diffStatusEl.textContent =
+
+                    "Could not load automatically (expected when opening this file " +
+                    "directly via file:// with no server). Pick the two current files by hand:";
+
+                document.getElementById("diffFallbackPickers").style.display = "block";
+
+            }
+
+        });
+
+        function maybeRenderManualDiff() {
+
+            if (diffOldQuestions && diffOldSettings) renderDiffResults();
+
+        }
+
+        document.getElementById("diffQuestionsFile").addEventListener("change", async function(event){
+
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            try {
+
+                diffOldQuestions = JSON.parse(await file.text());
+
+                maybeRenderManualDiff();
+
+            }
+
+            catch (error) {
+
+                alert("Could not read this file as JSON:\n" + error.message);
+
+            }
+
+        });
+
+        document.getElementById("diffSettingsFile").addEventListener("change", async function(event){
+
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            try {
+
+                diffOldSettings = JSON.parse(await file.text());
+
+                maybeRenderManualDiff();
+
+            }
+
+            catch (error) {
+
+                alert("Could not read this file as JSON:\n" + error.message);
+
+            }
+
+        });
+
+        document.getElementById("diffBackBtn").addEventListener("click", function(){
+
+            diffEl.style.display = "none";
+
+            choiceEl.style.display = "block";
+
+        });
+
+        function diffRowIdOf(sectionKey, row) {
+
+            return sectionKey === "spotter" ? row.Spotter_ID : row.Question_ID;
+
+        }
+
+        function renderDiffResults() {
+
+            const sectionDiffs = diffAllSections(diffOldQuestions, parsedData.questions);
+
+            const settingsDiff = diffSettingsData(diffOldSettings, parsedData.settings);
+
+            let summaryHtml =
+
+                "<table class=\"diff-summary-table\">" +
+                "<tr><th>Section</th><th>Added</th><th>Removed</th><th>Modified</th></tr>";
+
+            let detailHtml = "";
+
+            Object.keys(SECTION_SHEETS).forEach(function(sectionKey){
+
+                const diff = sectionDiffs[sectionKey];
+
+                summaryHtml +=
+
+                    "<tr><td>" + SECTION_LABELS[sectionKey] + "</td>" +
+                    "<td>" + diff.added.length + "</td>" +
+                    "<td>" + diff.removed.length + "</td>" +
+                    "<td>" + diff.modified.length + "</td></tr>";
+
+                if (diff.added.length === 0 && diff.removed.length === 0 && diff.modified.length === 0) {
+
+                    return;
+
+                }
+
+                detailHtml += "<h4 class=\"diff-section-heading\">" + SECTION_LABELS[sectionKey] + "</h4>";
+
+                diff.added.forEach(function(row){
+
+                    detailHtml +=
+
+                        "<div class=\"diff-added\">+ Added " + escapeHtml(diffRowIdOf(sectionKey, row)) +
+                        " — " + escapeHtml(row.Title) + "</div>";
+
+                });
+
+                diff.removed.forEach(function(row){
+
+                    detailHtml +=
+
+                        "<div class=\"diff-removed\">− Removed " + escapeHtml(diffRowIdOf(sectionKey, row)) +
+                        " — " + escapeHtml(row.Title) + "</div>";
+
+                });
+
+                diff.modified.forEach(function(entry){
+
+                    let fieldsHtml = "<ul>";
+
+                    entry.changedFields.forEach(function(cf){
+
+                        fieldsHtml +=
+
+                            "<li><strong>" + escapeHtml(cf.field) + "</strong>: \"" +
+                            escapeHtml(cf.oldVal) + "\" &rarr; \"" + escapeHtml(cf.newVal) + "\"</li>";
+
+                    });
+
+                    fieldsHtml += "</ul>";
+
+                    detailHtml +=
+
+                        "<div class=\"diff-modified\">" + escapeHtml(entry.id) + " changed:" +
+                        fieldsHtml + "</div>";
+
+                });
+
+            });
+
+            summaryHtml += "</table>";
+
+            if (settingsDiff.added.length || settingsDiff.removed.length || settingsDiff.modified.length) {
+
+                detailHtml += "<h4 class=\"diff-section-heading\">Settings</h4>";
+
+                settingsDiff.added.forEach(function(key){
+
+                    detailHtml += "<div class=\"diff-added\">+ Added " + escapeHtml(key) + "</div>";
+
+                });
+
+                settingsDiff.removed.forEach(function(key){
+
+                    detailHtml += "<div class=\"diff-removed\">− Removed " + escapeHtml(key) + "</div>";
+
+                });
+
+                settingsDiff.modified.forEach(function(entry){
+
+                    detailHtml +=
+
+                        "<div class=\"diff-modified\">" + escapeHtml(entry.key) + ": \"" +
+                        escapeHtml(entry.oldVal) + "\" &rarr; \"" + escapeHtml(entry.newVal) + "\"</div>";
+
+                });
+
+            }
+
+            if (!detailHtml) {
+
+                detailHtml = "<p>No differences found — this workbook matches the current data files exactly.</p>";
+
+            }
+
+            document.getElementById("diffResults").innerHTML = summaryHtml + detailHtml;
+
+        }
+
+
+        // ------------------------------------------------------------
         // Step 2b: interactive editor
         // ------------------------------------------------------------
 
@@ -668,7 +1012,7 @@
 
             const rows = parsedData.questions[sectionKey];
 
-            let html = "<tr><th>No.</th><th>Title</th><th>Difficulty</th><th>Item Type</th><th></th></tr>";
+            let html = "<tr><th>No.</th><th>Title</th><th>Topic</th><th>Difficulty</th><th>Item Type</th><th></th></tr>";
 
             rows.forEach(function(row, index){
 
@@ -677,6 +1021,7 @@
                     "<tr>" +
                     "<td>" + escapeHtml(rowNumberLabel(sectionKey, row)) + "</td>" +
                     "<td>" + escapeHtml(row.Title) + "</td>" +
+                    "<td>" + escapeHtml(row.Topic) + "</td>" +
                     "<td>" + escapeHtml(row.Difficulty) + "</td>" +
                     "<td>" + escapeHtml(row.Item_Type) + "</td>" +
                     "<td><button type=\"button\" class=\"editor-edit-btn\" data-index=\"" +

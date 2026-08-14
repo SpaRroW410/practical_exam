@@ -23,8 +23,8 @@ function renderHome() {
                         <label>Examination Level</label>
 
                         <select id="examLevel">
-                            <option value="UG">Undergraduate</option>
-                            <option value="PG">Postgraduate</option>
+                            <option value="UG" ${appState.examLevel === "UG" ? "selected" : ""}>Undergraduate</option>
+                            <option value="PG" ${appState.examLevel === "PG" ? "selected" : ""}>Postgraduate</option>
                         </select>
 
                     </div>
@@ -111,6 +111,54 @@ function renderHome() {
 
                 </div>
 
+                <div class="home-actions home-actions--print">
+
+                    <button
+                        id="addToExclusion"
+                        class="start-button print-button">
+
+                        ADD TO EXCLUSION
+
+                    </button>
+
+                    <button
+                        id="refreshExclusion"
+                        class="start-button print-button">
+
+                        REFRESH EXCLUSION LIST
+
+                    </button>
+
+                </div>
+
+                <div id="usedQuestionsTable"></div>
+
+                <div class="home-actions home-actions--print">
+
+                    <button
+                        id="exportExclusion"
+                        class="start-button print-button">
+
+                        EXPORT LIST (JSON)
+
+                    </button>
+
+                    <button
+                        id="importExclusionBtn"
+                        class="start-button print-button">
+
+                        IMPORT LIST (JSON)
+
+                    </button>
+
+                    <input
+                        type="file"
+                        id="importExclusionFile"
+                        accept="application/json"
+                        style="display:none;">
+
+                </div>
+
             </div>
 
         </section>
@@ -118,6 +166,8 @@ function renderHome() {
     `);
 
     populateQuestionDropdowns();
+
+    renderUsedQuestionsTable();
 
     document
         .getElementById("randomSet")
@@ -158,6 +208,163 @@ function renderHome() {
             populateQuestionDropdowns();
 
         });
+
+    // --------------------------------------------------------
+    // Exclusion List
+    // --------------------------------------------------------
+
+    document
+        .getElementById("addToExclusion")
+        .addEventListener("click", function(){
+
+            applySelectionToState();
+
+            markCurrentSelectionUsed();
+
+            renderHome();
+
+        });
+
+    document
+        .getElementById("refreshExclusion")
+        .addEventListener("click", function(){
+
+            if (!confirm("Clear the entire \"previously used\" exclusion list?")) {
+                return;
+            }
+
+            clearUsedLog();
+
+            renderHome();
+
+        });
+
+    document
+        .getElementById("exportExclusion")
+        .addEventListener("click", function(){
+
+            downloadJSONFile("used_questions.json", exportUsedLogJSON());
+
+        });
+
+    document
+        .getElementById("importExclusionBtn")
+        .addEventListener("click", function(){
+
+            document.getElementById("importExclusionFile").click();
+
+        });
+
+    document
+        .getElementById("importExclusionFile")
+        .addEventListener("change", function(event){
+
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function(){
+
+                try {
+
+                    const obj = JSON.parse(reader.result);
+
+                    importUsedLogFromObject(obj);
+
+                    renderHome();
+
+                }
+
+                catch (error) {
+
+                    console.error(error);
+
+                    alert("Could not read this file as a used-questions JSON export.\n\n" + error.message);
+
+                }
+
+            };
+
+            reader.readAsText(file);
+
+            event.target.value = "";
+
+        });
+
+}
+
+// ------------------------------------------------------------
+// "Previously Used" Table
+// ------------------------------------------------------------
+
+function renderUsedQuestionsTable() {
+
+    const container = document.getElementById("usedQuestionsTable");
+
+    if (!container) return;
+
+    const log = loadUsedLog();
+
+    function formatList(values) {
+
+        return values.length
+            ? values.slice().sort((a, b) => a - b).join(", ")
+            : "None";
+
+    }
+
+    // Spotter_ID values (e.g. "SP004-11") are strings, not numbers, so
+    // they need a plain string sort rather than formatList()'s numeric one.
+    function formatStringList(values) {
+
+        return values.length
+            ? values.slice().sort().join(", ")
+            : "None";
+
+    }
+
+    container.innerHTML = `
+
+        <table class="used-questions-table">
+            <tr><th>Section</th><th>Previously Used</th></tr>
+            <tr><td>Clinical</td><td>${formatList(log.clinical)}</td></tr>
+            <tr><td>Epidemiology</td><td>${formatList(log.epidemiology)}</td></tr>
+            <tr><td>Biostatistics</td><td>${formatList(log.biostatistics)}</td></tr>
+            <tr><td>OSPE</td><td>${formatList(log.ospe)}</td></tr>
+            <tr><td>Spotter Sets</td><td>${formatList(log.spotterSets)}</td></tr>
+            <tr><td>Spotter Slides</td><td>${formatStringList(log.spotterSlides)}</td></tr>
+        </table>
+
+    `;
+
+}
+
+// ------------------------------------------------------------
+// Small download helper (Blob + anchor-click, same pattern used by
+// tools/rebuild.js's downloadFile() for the offline rebuild tool).
+// ------------------------------------------------------------
+
+function downloadJSONFile(filename, content) {
+
+    const blob = new Blob([content], { type: "application/json" });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+
+    a.href = url;
+
+    a.download = filename;
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
 
 }
 
@@ -283,8 +490,38 @@ function populateQuestionDropdowns() {
 // ------------------------------------------------------------
 // Random Set
 // Picks a random valid option in every dropdown except
-// Examination Level, which stays a manual choice.
+// Examination Level, which stays a manual choice. Prefers options not
+// already in the "previously used" exclusion log; if every option in a
+// dropdown is already used, falls back to the full option list rather
+// than getting stuck (same graceful-fallback pattern used elsewhere in
+// this app for the domain-random Spotter draw).
 // ------------------------------------------------------------
+
+function randomIndexPool(length) {
+
+    const pool = [];
+
+    for (let i = 0; i < length; i++) pool.push(i);
+
+    return pool;
+
+}
+
+function pickUnusedOrFallbackIndex(select, isUsedFn) {
+
+    const eligible = [];
+
+    for (let i = 0; i < select.options.length; i++) {
+
+        if (!isUsedFn(select.options[i].value)) eligible.push(i);
+
+    }
+
+    const pool = eligible.length > 0 ? eligible : randomIndexPool(select.options.length);
+
+    return pool[Math.floor(Math.random() * pool.length)];
+
+}
 
 function randomizeSelections() {
 
@@ -297,7 +534,7 @@ function randomizeSelections() {
             return;
 
         select.selectedIndex =
-            Math.floor(Math.random() * select.options.length);
+            pickUnusedOrFallbackIndex(select, value => isQuestionUsed(section, value));
 
     });
 
@@ -306,8 +543,13 @@ function randomizeSelections() {
 
     if(spotterSelect && spotterSelect.options.length > 0){
 
+        // "random" is never considered used, so it always stays in the
+        // eligible pool alongside any not-yet-used numbered sets.
         spotterSelect.selectedIndex =
-            Math.floor(Math.random() * spotterSelect.options.length);
+            pickUnusedOrFallbackIndex(
+                spotterSelect,
+                value => value !== "random" && isSpotterSetUsed(value)
+            );
 
     }
 

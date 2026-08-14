@@ -101,6 +101,12 @@ function itemTypeForSection(sectionKey) {
 
 }
 
+function idFieldForSection(sectionKey) {
+
+    return sectionKey === "spotter" ? "Spotter_ID" : "Question_ID";
+
+}
+
 
 // ------------------------------------------------------------
 // Parse a workbook (ArrayBuffer) into { questions, settings }
@@ -391,6 +397,160 @@ function buildUpdatedWorkbook(parsed) {
         { type: "array", bookType: "xlsx" }
 
     );
+
+}
+
+
+// ------------------------------------------------------------
+// Diff Against Already-Generated Data
+//
+// Compares the freshly parsed workbook against the committed
+// data/questions.json + data/settings.json so a maintainer can see what
+// an updated QuestionBank.xlsx would actually change before generating
+// files from it. Comparison is value-oriented (String(a) === String(b))
+// rather than strict-typed, since the same content can legitimately come
+// through as a number from one parse and a numeric string from another
+// (e.g. hand-typed vs. formula-derived Excel cells) — that's noise here,
+// not a real change.
+// ------------------------------------------------------------
+
+function valuesEqual(a, b) {
+
+    const na = a === undefined || a === null ? "" : String(a);
+
+    const nb = b === undefined || b === null ? "" : String(b);
+
+    return na === nb;
+
+}
+
+function diffSectionRows(sectionKey, oldRows, newRows) {
+
+    const idField = idFieldForSection(sectionKey);
+
+    const fields = fieldsForSection(sectionKey);
+
+    const oldMap = new Map((oldRows || []).map(row => [row[idField], row]));
+
+    const newMap = new Map((newRows || []).map(row => [row[idField], row]));
+
+    const added = [];
+
+    const removed = [];
+
+    const modified = [];
+
+    newMap.forEach(function(newRow, id){
+
+        if (!oldMap.has(id)) added.push(newRow);
+
+    });
+
+    oldMap.forEach(function(oldRow, id){
+
+        if (!newMap.has(id)) removed.push(oldRow);
+
+    });
+
+    oldMap.forEach(function(oldRow, id){
+
+        const newRow = newMap.get(id);
+
+        if (!newRow) return;
+
+        const changedFields = [];
+
+        fields.forEach(function(field){
+
+            const oldVal = oldRow[field] ?? null;
+
+            const newVal = newRow[field] ?? null;
+
+            if (!valuesEqual(oldVal, newVal)) {
+
+                changedFields.push({ field, oldVal, newVal });
+
+            }
+
+        });
+
+        if (changedFields.length > 0) {
+
+            modified.push({ id, changedFields });
+
+        }
+
+    });
+
+    return { added, removed, modified };
+
+}
+
+function diffAllSections(oldQuestions, newQuestions) {
+
+    const result = {};
+
+    Object.keys(SECTION_SHEETS).forEach(function(sectionKey){
+
+        result[sectionKey] = diffSectionRows(
+
+            sectionKey,
+
+            oldQuestions ? oldQuestions[sectionKey] : [],
+
+            newQuestions[sectionKey]
+
+        );
+
+    });
+
+    return result;
+
+}
+
+function diffSettingsData(oldSettings, newSettings) {
+
+    oldSettings = oldSettings || {};
+
+    const keys = new Set(
+
+        Object.keys(oldSettings).concat(Object.keys(newSettings))
+
+    );
+
+    const added = [];
+
+    const removed = [];
+
+    const modified = [];
+
+    keys.forEach(function(key){
+
+        const inOld = key in oldSettings;
+
+        const inNew = key in newSettings;
+
+        if (inNew && !inOld) {
+
+            added.push(key);
+
+        }
+
+        else if (inOld && !inNew) {
+
+            removed.push(key);
+
+        }
+
+        else if (!valuesEqual(oldSettings[key], newSettings[key])) {
+
+            modified.push({ key, oldVal: oldSettings[key], newVal: newSettings[key] });
+
+        }
+
+    });
+
+    return { added, removed, modified };
 
 }
 
