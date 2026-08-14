@@ -43,7 +43,9 @@ function emptyUsedLog() {
 
         ospe: [],
 
-        spotterSets: []
+        spotterSets: [],
+
+        spotterSlides: []
 
     };
 
@@ -100,6 +102,12 @@ function normalizeUsedLog(obj) {
 
     }
 
+    if (Array.isArray(obj.spotterSlides)) {
+
+        normalized.spotterSlides = obj.spotterSlides.slice();
+
+    }
+
     return normalized;
 
 }
@@ -116,9 +124,9 @@ function saveUsedLog(log) {
 // ------------------------------------------------------------
 
 // Called after applySelectionToState(), so appState.exam.* already
-// reflects the current dropdown selections (with "random" Spotter
-// already resolved to concrete slides elsewhere, though this function
-// only needs the Set_No case — see the Spotter branch below).
+// reflects the current dropdown selections, and a "random" Spotter
+// choice has already been resolved to concrete slides on
+// appState.randomSpotterSlides — see the Spotter branch below.
 function markCurrentSelectionUsed() {
 
     const log = loadUsedLog();
@@ -137,9 +145,11 @@ function markCurrentSelectionUsed() {
 
     });
 
-    // Spotter only logs a concrete numbered set. "Random" doesn't
-    // resolve to a single Set_No, so it is intentionally skipped here —
-    // exclusion for Spotter stays at the Set_No level, not per slide.
+    // A manually-picked numbered set logs at the Set_No level. "Random"
+    // doesn't resolve to a single Set_No, so it instead logs the actual
+    // resolved slides (appState.randomSpotterSlides, already built and
+    // cached by applySelectionToState() before this function runs) at
+    // the individual Spotter_ID level.
     if (typeof appState.exam.spotter === "number") {
 
         const set = new Set(log.spotterSets);
@@ -147,6 +157,20 @@ function markCurrentSelectionUsed() {
         set.add(appState.exam.spotter);
 
         log.spotterSets = Array.from(set);
+
+    }
+
+    else if (appState.exam.spotter === "random" && appState.randomSpotterSlides) {
+
+        const set = new Set(log.spotterSlides);
+
+        appState.randomSpotterSlides.forEach(function(slide){
+
+            set.add(slide.Spotter_ID);
+
+        });
+
+        log.spotterSlides = Array.from(set);
 
     }
 
@@ -207,5 +231,13 @@ function isSpotterSetUsed(setNo) {
     const log = loadUsedLog();
 
     return log.spotterSets.indexOf(Number(setNo)) !== -1;
+
+}
+
+function isSpotterSlideUsed(spotterId) {
+
+    const log = loadUsedLog();
+
+    return log.spotterSlides.indexOf(spotterId) !== -1;
 
 }

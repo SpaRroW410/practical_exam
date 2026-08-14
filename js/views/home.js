@@ -315,6 +315,16 @@ function renderUsedQuestionsTable() {
 
     }
 
+    // Spotter_ID values (e.g. "SP004-11") are strings, not numbers, so
+    // they need a plain string sort rather than formatList()'s numeric one.
+    function formatStringList(values) {
+
+        return values.length
+            ? values.slice().sort().join(", ")
+            : "None";
+
+    }
+
     container.innerHTML = `
 
         <table class="used-questions-table">
@@ -324,6 +334,7 @@ function renderUsedQuestionsTable() {
             <tr><td>Biostatistics</td><td>${formatList(log.biostatistics)}</td></tr>
             <tr><td>OSPE</td><td>${formatList(log.ospe)}</td></tr>
             <tr><td>Spotter Sets</td><td>${formatList(log.spotterSets)}</td></tr>
+            <tr><td>Spotter Slides</td><td>${formatStringList(log.spotterSlides)}</td></tr>
         </table>
 
     `;

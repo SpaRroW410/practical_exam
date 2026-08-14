@@ -189,6 +189,12 @@ function buildRandomSpotterSet() {
             ? [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10, 11]]
             : [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]];
 
+    // Slides already marked "used" (e.g. by an earlier day's Random draw
+    // that was added to the exclusion list) are avoided when an
+    // alternative exists, same graceful-fallback spirit as the domain
+    // preference below — never blocks a pick outright.
+    const excludedSlideIds = loadUsedLog().spotterSlides;
+
     const usedDomains = [];
 
     const chosen = [];
@@ -214,18 +220,28 @@ function buildRandomSpotterSet() {
 
         const pool = shuffled(candidates);
 
-        // Prefer a slide whose domain is not already in this set; if
-        // every candidate collides, take one anyway rather than hand
-        // back a short paper.
-        let pick = pool.find(function(slide){
+        function isFreeDomain(slide) {
 
             const domain = slide.Domain_Category;
 
             return !domain || usedDomains.indexOf(domain) === -1;
 
-        });
+        }
 
-        if (!pick) pick = pool[0];
+        function isNotExcluded(slide) {
+
+            return excludedSlideIds.indexOf(slide.Spotter_ID) === -1;
+
+        }
+
+        // Prefer a slide that is both a fresh domain and not previously
+        // excluded; relax to just a fresh domain if none exist; relax to
+        // any candidate if every one collides, rather than hand back a
+        // short paper.
+        let pick =
+            pool.find(slide => isFreeDomain(slide) && isNotExcluded(slide)) ||
+            pool.find(isFreeDomain) ||
+            pool[0];
 
         if (pick.Domain_Category) usedDomains.push(pick.Domain_Category);
 
