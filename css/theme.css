@@ -283,6 +283,27 @@ body {
     color: #777;
 }
 
+/* Admin Display Testing toolbar */
+.admin-preview-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    margin-bottom: 12px;
+    gap: 16px;
+}
+
+.admin-preview-position {
+    font-size: 20px;
+    color: #444;
+}
+
+.admin-preview-toolbar .start-button {
+    width: auto;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
 /* Spotter Layout: 50/50 — questions left, image right. */
 .spotter-layout {
     display: grid;

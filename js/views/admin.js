@@ -75,6 +75,22 @@ function renderAdminScreen() {
 
                 </div>
 
+                <div class="selector" id="adminSpotterScopeWrap" style="display:none;">
+
+                    <label>Display Testing Scope (Spotter only)</label>
+
+                    <select id="adminSpotterScope">
+
+                        ${Object.keys(SPOTTER_PREVIEW_GROUPS).map(function(key){
+
+                            return `<option value="${key}">${SPOTTER_PREVIEW_GROUPS[key].label}</option>`;
+
+                        }).join("")}
+
+                    </select>
+
+                </div>
+
                 <div class="home-actions">
 
                     <button
@@ -95,6 +111,18 @@ function renderAdminScreen() {
 
                 </div>
 
+                <div class="home-actions home-actions--print">
+
+                    <button
+                        id="adminDisplayTesting"
+                        class="start-button print-button">
+
+                        DISPLAY TESTING
+
+                    </button>
+
+                </div>
+
             </div>
 
         </section>
@@ -104,6 +132,8 @@ function renderAdminScreen() {
     const sectionSelect = document.getElementById("adminSection");
 
     const levelSelect = document.getElementById("adminLevel");
+
+    const spotterScopeWrap = document.getElementById("adminSpotterScopeWrap");
 
     function refreshCount() {
 
@@ -116,6 +146,9 @@ function renderAdminScreen() {
                 levelSelect.value
 
             ) + " items";
+
+        spotterScopeWrap.style.display =
+            sectionSelect.value === "spotter" ? "block" : "none";
 
     }
 
@@ -132,6 +165,20 @@ function renderAdminScreen() {
                 sectionSelect.value,
 
                 levelSelect.value
+
+            );
+
+        };
+
+    document
+        .getElementById("adminDisplayTesting")
+        .onclick = function(){
+
+            renderAdminPreview(
+
+                sectionSelect.value,
+
+                document.getElementById("adminSpotterScope").value
 
             );
 
