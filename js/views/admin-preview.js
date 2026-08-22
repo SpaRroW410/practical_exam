@@ -4,8 +4,10 @@
 //
 // Lets an admin visually step through every question in a section
 // exactly as a candidate would see it (images, sub-questions, layout),
-// with no UG/PG filter and no timer — purely a display/content review
-// tool. Deliberately independent of the real exam renderers
+// with no timer and, by default, no UG/PG filter — an optional UG-only
+// toggle narrows it to exactly what a UG candidate would see (Difficult
+// items excluded, Sub_Question_C hidden). Purely a display/content
+// review tool. Deliberately independent of the real exam renderers
 // (js/views/clinical.js etc.) and the timer/navigation engine: it reuses
 // their CSS classes so it looks identical on screen, but touches none
 // of their code, so there is zero risk to the tested live-exam flow.
@@ -36,16 +38,20 @@ let adminPreviewIndex = 0;
 
 let adminPreviewSectionKey = null;
 
+let adminPreviewUGOnly = false;
+
 
 // ------------------------------------------------------------
 // Entry point
 // ------------------------------------------------------------
 
-function renderAdminPreview(sectionKey, spotterScope) {
+function renderAdminPreview(sectionKey, spotterScope, ugOnly) {
 
     appState.currentView = "admin-preview";
 
     adminPreviewSectionKey = sectionKey;
+
+    adminPreviewUGOnly = !!ugOnly;
 
     adminPreviewItems =
         sectionKey === "spotter"
@@ -63,6 +69,8 @@ function collectWrittenPreviewItems(sectionKey) {
     return (appData.questions[sectionKey] || [])
 
         .filter(row => row.Item_Type === "Question")
+
+        .filter(row => !adminPreviewUGOnly || row.Difficulty !== "Difficult")
 
         .sort((a, b) => Number(a.Question_No) - Number(b.Question_No));
 
@@ -86,6 +94,8 @@ function collectSpotterPreviewItems(scopeKey) {
             !group.positions ||
             group.positions.indexOf(spotterPositionOfRow(row)) !== -1
         )
+
+        .filter(row => !adminPreviewUGOnly || row.Difficulty !== "Difficult")
 
         .sort(function(a, b){
 
@@ -159,6 +169,7 @@ function showAdminPreviewItem() {
                     <strong>${escapeAdminPreviewHtml(idLabel)}</strong>
                     &mdash; ${escapeAdminPreviewHtml(positionLabel)}
                     (${adminPreviewIndex + 1} of ${adminPreviewItems.length})
+                    ${adminPreviewUGOnly ? " — UG only" : ""}
                 </div>
 
                 <button id="adminPreviewBack" class="start-button print-button">BACK TO ADMIN</button>
@@ -272,9 +283,10 @@ function escapeAdminPreviewHtml(value) {
 
 // ------------------------------------------------------------
 // Written sections (Clinical / Epidemiology / Biostatistics / OSPE)
-// Mirrors the markup shape of js/views/clinical.js etc., always
-// including Sub_Question_C when present (no UG/PG gate) and never
-// showing Answer_Key_*.
+// Mirrors the markup shape of js/views/clinical.js etc. Includes
+// Sub_Question_C when present, unless adminPreviewUGOnly is set (then
+// it's hidden, matching what a real UG candidate would see). Never
+// shows Answer_Key_*.
 // ------------------------------------------------------------
 
 function buildWrittenPreviewHTML(question) {
@@ -311,7 +323,9 @@ function buildWrittenPreviewHTML(question) {
 
     html += `<div class="question-subquestions">`;
 
-    ["A", "B", "C"].forEach(function(letter){
+    const previewLetters = adminPreviewUGOnly ? ["A", "B"] : ["A", "B", "C"];
+
+    previewLetters.forEach(function(letter){
 
         const sub = question["Sub_Question_" + letter];
 
@@ -337,15 +351,17 @@ function buildWrittenPreviewHTML(question) {
 
 
 // ------------------------------------------------------------
-// Spotter — mirrors js/views/spotter.js's showSpotterSlide() markup,
-// always including Sub_Question_C when present.
+// Spotter — mirrors js/views/spotter.js's showSpotterSlide() markup.
+// Includes Sub_Question_C when present, unless adminPreviewUGOnly.
 // ------------------------------------------------------------
 
 function buildSpotterPreviewHTML(slide) {
 
     let subHtml = "";
 
-    ["A", "B", "C"].forEach(function(letter){
+    const previewLetters = adminPreviewUGOnly ? ["A", "B"] : ["A", "B", "C"];
+
+    previewLetters.forEach(function(letter){
 
         const sub = slide["Sub_Question_" + letter];
 

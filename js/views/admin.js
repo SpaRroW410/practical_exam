@@ -2,9 +2,11 @@
 // Community Medicine Examination System
 // Admin — Question Bank
 //
-// Prints every question in one section at the chosen level.
-// Answer keys are never included; this is a question bank for
-// review, not a marking sheet.
+// Prints every question in one section at the chosen level, either as
+// a candidate-safe question bank (no answers) or, on request, with the
+// answer key included as a marking sheet. Also offers Display Testing:
+// an on-screen, unfiltered walk-through of every question for visual
+// QA, with an optional UG-only toggle.
 // ============================================================
 
 const ADMIN_SECTIONS = [
@@ -34,7 +36,7 @@ function renderAdminScreen() {
 
                 <h2>Question Bank</h2>
 
-                <p>Print every question in a section. Answer keys are not included.</p>
+                <p>Print every question in a section, with or without the answer key — or walk through them on screen for display testing.</p>
 
                 <div class="selector-grid">
 
@@ -91,6 +93,15 @@ function renderAdminScreen() {
 
                 </div>
 
+                <div class="selector">
+
+                    <label>
+                        <input type="checkbox" id="adminPreviewUGOnly">
+                        Display Testing: UG only (hides Difficult items and Sub-Question C)
+                    </label>
+
+                </div>
+
                 <div class="home-actions">
 
                     <button
@@ -112,6 +123,14 @@ function renderAdminScreen() {
                 </div>
 
                 <div class="home-actions home-actions--print">
+
+                    <button
+                        id="adminPrintWithAnswers"
+                        class="start-button print-button">
+
+                        PRINT WITH ANSWER KEY
+
+                    </button>
 
                     <button
                         id="adminDisplayTesting"
@@ -171,6 +190,22 @@ function renderAdminScreen() {
         };
 
     document
+        .getElementById("adminPrintWithAnswers")
+        .onclick = function(){
+
+            printSectionBankToPDF(
+
+                sectionSelect.value,
+
+                levelSelect.value,
+
+                true
+
+            );
+
+        };
+
+    document
         .getElementById("adminDisplayTesting")
         .onclick = function(){
 
@@ -178,7 +213,9 @@ function renderAdminScreen() {
 
                 sectionSelect.value,
 
-                document.getElementById("adminSpotterScope").value
+                document.getElementById("adminSpotterScope").value,
+
+                document.getElementById("adminPreviewUGOnly").checked
 
             );
 
