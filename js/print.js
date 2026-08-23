@@ -50,11 +50,12 @@ function printExamToPDF(includeAnswers = true) {
 
 
 // ------------------------------------------------------------
-// Admin: every question in one section, filtered by level,
-// never with answer keys.
+// Admin: every question in one section, filtered by level.
+// includeAnswers defaults to false (candidate-safe question bank);
+// pass true for the admin-only marking-sheet variant.
 // ------------------------------------------------------------
 
-function printSectionBankToPDF(sectionKey, level) {
+function printSectionBankToPDF(sectionKey, level, includeAnswers = false) {
 
     const printArea =
         document.getElementById("print-area");
@@ -67,7 +68,7 @@ function printSectionBankToPDF(sectionKey, level) {
 
     }
 
-    printIncludeAnswers = false;
+    printIncludeAnswers = includeAnswers;
 
     printArea.innerHTML = buildSectionBankHTML(sectionKey, level);
 
@@ -517,6 +518,8 @@ function buildSpotterBankHTML() {
                         : ""
 
                     }
+
+                    ${buildAnswerKeyBlock(slide)}
 
                     ${
 
