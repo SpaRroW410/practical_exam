@@ -293,8 +293,17 @@ function buildWrittenPreviewHTML(question) {
 
     const hasImage = !!(question.Image_File && question.Image_File !== "");
 
+    // .scenario-emphasized only applies alongside an image (the 65:35
+    // split, where scenario/sub-questions are already independently
+    // sized bands) — mirrors js/views/epidemiology.js etc. exactly. The
+    // free-flowing no-image layout keeps scenario in the shared dynamic
+    // sizing group so it scales together with the sub-questions instead
+    // of leaving them to balloon on their own.
+    const emphasize =
+        hasImage && ["epidemiology", "biostatistics", "ospe"].indexOf(adminPreviewSectionKey) !== -1;
+
     let html = `${hasImage ? `<div class="question-top">` : ""}
-        <div class="scenario${["epidemiology", "biostatistics", "ospe"].indexOf(adminPreviewSectionKey) !== -1 ? " scenario-emphasized" : ""}">${nl2br(question.Scenario_or_Stem)}</div>
+        <div class="scenario${emphasize ? " scenario-emphasized" : ""}">${nl2br(question.Scenario_or_Stem)}</div>
     `;
 
     if (hasImage) {
