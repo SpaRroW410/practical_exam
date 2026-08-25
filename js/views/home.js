@@ -6,6 +6,15 @@
 
 function renderHome() {
 
+    // Every other screen sets appState.currentView itself; Home never
+    // did, relying entirely on it happening to still hold config.js's
+    // initial default ("home") from page load. That was never actually
+    // exercised before now — nothing returned to Home mid-session until
+    // the Exit widget (js/ui.js) did, which broke on it: the widget's
+    // visibility check saw a stale currentView and never recognized
+    // that Home was showing.
+    appState.currentView = "home";
+
     renderPage(`
 
         <section class="home-screen">

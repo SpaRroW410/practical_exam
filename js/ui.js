@@ -32,7 +32,97 @@ function renderPage(html) {
     // after, so a home-type screen can never inherit a stale exam bar.
     setBrandHeader();
 
+    updateExamExitWidget();
+
 }
+
+
+// ------------------------------------------------------------
+// Exam Exit Widget
+//
+// A fixed, always-in-DOM control (index.html) shown only while one of
+// the five exam sections is on screen, letting an invigilator abort a
+// live exam and return to Home. The checkbox is a deliberate two-step
+// confirmation — the button stays disabled until it's ticked — rather
+// than a native confirm() dialog, since this can be reached mid-timer
+// during a live exam. Re-armed to unchecked/disabled on every screen
+// change so a stray tick never carries over to a different screen.
+// ------------------------------------------------------------
+
+const EXAM_SECTION_VIEWS = [
+
+    "clinical",
+
+    "epidemiology",
+
+    "biostatistics",
+
+    "ospe",
+
+    "spotter"
+
+];
+
+function updateExamExitWidget() {
+
+    const widget = document.getElementById("examExitWidget");
+
+    if (!widget) return;
+
+    widget.style.display =
+        EXAM_SECTION_VIEWS.indexOf(appState.currentView) !== -1 ? "flex" : "none";
+
+    const checkbox = document.getElementById("examExitConfirm");
+
+    const button = document.getElementById("examExitBtn");
+
+    if (checkbox) checkbox.checked = false;
+
+    if (button) button.disabled = true;
+
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const checkbox = document.getElementById("examExitConfirm");
+
+    const button = document.getElementById("examExitBtn");
+
+    if (!checkbox || !button) return;
+
+    checkbox.addEventListener("change", function(){
+
+        button.disabled = !checkbox.checked;
+
+    });
+
+    button.addEventListener("click", function(){
+
+        if (!checkbox.checked) return;
+
+        resetTimers();
+
+        // Each written section latches "timer already started" in its
+        // own module-level variable and never clears it itself except
+        // when moving on to the next section — exiting mid-exam can
+        // leave one of these stuck true, which would silently stop that
+        // section's timer from starting on a later exam run. Clear all
+        // five explicitly so the next run is unaffected.
+        clinicalTimerStarted = false;
+
+        epidemiologyTimerStarted = false;
+
+        biostatisticsTimerStarted = false;
+
+        ospeTimerStarted = false;
+
+        spotterTimerStarted = false;
+
+        renderHome();
+
+    });
+
+});
 
 
 // ------------------------------------------------------------
@@ -376,21 +466,29 @@ function fitQuestionLayout(imageWrap, measureContainer, maxOverride) {
 
     if (!examScreen) return;
 
-    // .plot-instruction is intentionally excluded here: it holds a fixed
-    // size of its own (css/theme.css) rather than sharing the dynamic
-    // scenario/question size. It still counts toward examScreen's real
-    // rendered height below, so the binary search still accounts for the
-    // space it actually takes and the no-overflow guarantee holds.
+    // .plot-instruction and .scenario-emphasized (Epidemiology/
+    // Biostatistics/OSPE's bolder, larger scenario) are intentionally
+    // excluded here: each holds a fixed size of its own (css/theme.css)
+    // rather than sharing the dynamic scenario/question size. Both still
+    // count toward examScreen's real rendered height below, so the
+    // binary search still accounts for the space they actually take and
+    // the no-overflow guarantee holds.
     const targets = examScreen.querySelectorAll(
 
-        ".scenario, .question"
+        ".scenario:not(.scenario-emphasized), .question"
 
     );
 
     if (targets.length === 0) return;
 
+    // No-image questions have no competing image to share space with, so
+    // their ceiling is deliberately much higher than the 44px used
+    // everywhere else — on a small screen the fits() check still caps
+    // them back down safely, but on a large display (e.g. a projector)
+    // they now actually grow to fill it instead of stopping at a
+    // laptop-sized ceiling with empty space left over.
     const maxSize =
-        maxOverride || (imageWrap ? 24 : 44);
+        maxOverride || (imageWrap ? 24 : 72);
 
     function fits(size) {
 

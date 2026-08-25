@@ -225,6 +225,17 @@ body {
     font-weight: 700;
 }
 
+/* Epidemiology / Biostatistics / OSPE only: bolder, larger scenario
+   text (base 24px + 5px). Deliberately excluded from the dynamic
+   scenario/question sizing pass in js/ui.js (fitQuestionLayout), so it
+   holds this size regardless of nesting (with or without an image) —
+   see the .scenario-emphasized exclusion there. */
+.scenario-emphasized {
+    font-size: 29px;
+    font-weight: 700;
+    color: #111111;
+}
+
 /* Question */
 .question {
     margin: 28px 0;
@@ -410,6 +421,53 @@ button {
 button:hover {
     transform: translateY(-1px);
     box-shadow: var(--shadow);
+}
+
+/* Exam Exit Widget — fixed bottom-right, shown only during the five
+   exam sections. The checkbox gates the button as a deliberate
+   two-step confirmation before aborting a live exam. */
+.exam-exit-widget {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    box-shadow: var(--shadow);
+}
+
+.exam-exit-confirm-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    color: #555;
+    cursor: pointer;
+    user-select: none;
+}
+
+.exam-exit-widget button {
+    padding: 8px 16px;
+    font-size: 15px;
+    background: var(--pastel-4);
+    border: 1px solid var(--pastel-border-4);
+    color: #7a1f1f;
+}
+
+.exam-exit-widget button:disabled {
+    background: #f2f2f2;
+    border-color: var(--border);
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.exam-exit-widget button:not(:disabled):hover {
+    background: #f6c9c9;
 }
 
 /* Summary */
