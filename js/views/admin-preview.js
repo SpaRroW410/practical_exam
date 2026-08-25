@@ -294,7 +294,7 @@ function buildWrittenPreviewHTML(question) {
     const hasImage = !!(question.Image_File && question.Image_File !== "");
 
     let html = `${hasImage ? `<div class="question-top">` : ""}
-        <div class="scenario">${nl2br(question.Scenario_or_Stem)}</div>
+        <div class="scenario${["epidemiology", "biostatistics", "ospe"].indexOf(adminPreviewSectionKey) !== -1 ? " scenario-emphasized" : ""}">${nl2br(question.Scenario_or_Stem)}</div>
     `;
 
     if (hasImage) {

@@ -188,6 +188,21 @@
     <!-- Hidden container populated only when printing -->
     <div id="print-area"></div>
 
+    <!-- Exit control — shown only during the five exam sections
+         (js/ui.js toggles it), never on Home/Access/Admin/Summary.
+         Requires the checkbox to be ticked before EXIT is clickable, as
+         a deliberate two-step confirmation for aborting a live exam. -->
+    <div id="examExitWidget" class="exam-exit-widget" style="display:none;">
+
+        <label class="exam-exit-confirm-label">
+            <input type="checkbox" id="examExitConfirm">
+            Confirm Exit
+        </label>
+
+        <button id="examExitBtn" class="exam-exit-btn" disabled>EXIT</button>
+
+    </div>
+
 
     <!-- =====================================================
          JAVASCRIPT
