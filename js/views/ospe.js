@@ -98,7 +98,7 @@ function showOSPEQuestion() {
 
             ${hasImage ? `<div class="question-top">` : ""}
 
-            <div class="scenario scenario-emphasized">
+            <div class="scenario${hasImage ? " scenario-emphasized" : ""}">
 
                 ${nl2br(question.Scenario_or_Stem)}
 
