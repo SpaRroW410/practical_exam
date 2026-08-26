@@ -98,16 +98,23 @@ function showOSPEQuestion() {
 
             ${hasImage ? `<div class="question-top">` : ""}
 
-            <div class="scenario${hasImage ? " scenario-emphasized" : ""}">
-
-                ${nl2br(question.Scenario_or_Stem)}
-
-            </div>
-
     `;
+
+    if (!hasImage) {
+
+        html += `
+            <div class="scenario">
+                ${nl2br(question.Scenario_or_Stem)}
+            </div>
+        `;
+
+    }
 
     if (hasImage) {
 
+        // Image leads, then the scenario sits in a compact caption
+        // strip right below it — the image gets the large majority of
+        // the top band instead of being sandwiched under the scenario.
         html += `
 
             <div class="question-image">
@@ -121,6 +128,16 @@ function showOSPEQuestion() {
                 <div class="image-caption">
 
                     ${nl2br(question.Image_Caption ?? "")}
+
+                </div>
+
+            </div>
+
+            <div class="scenario-plot-group">
+
+                <div class="scenario scenario-emphasized">
+
+                    ${nl2br(question.Scenario_or_Stem)}
 
                 </div>
 

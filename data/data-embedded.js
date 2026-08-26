@@ -1256,7 +1256,7 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_C": "Discuss the clinical significance of this BP reduction and its implications for non-pharmacological management of hypertension.",
             "Marks_C": 3,
             "Plot_Instruction": "Construct a paired dot plot (before–after plot) connecting each patient's pre- and post-intervention BP.",
-            "Image_File": "BIO06_paired_bp",
+            "Image_File": "BIO06_paired_bp.png",
             "Image_Caption": null,
             "Total_Marks": 10,
             "Status": "Active",

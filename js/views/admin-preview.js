@@ -234,37 +234,7 @@ function showAdminPreviewItem() {
 
     else {
 
-        const hasImage = !!document.querySelector(".question-image");
-
-        if (hasImage) {
-
-            fitQuestionLayout(
-
-                document.querySelector(".question-image"),
-
-                document.querySelector(".question-top"),
-
-                32
-
-            );
-
-            fitQuestionLayout(
-
-                null,
-
-                document.querySelector(".question-subquestions"),
-
-                44
-
-            );
-
-        }
-
-        else {
-
-            fitQuestionLayout(null);
-
-        }
+        fitTwoBandLayout(!!document.querySelector(".question-image"));
 
     }
 
@@ -293,7 +263,7 @@ function buildWrittenPreviewHTML(question) {
 
     const hasImage = !!(question.Image_File && question.Image_File !== "");
 
-    // .scenario-emphasized only applies alongside an image (the 65:35
+    // .scenario-emphasized only applies alongside an image (the 70:30
     // split, where scenario/sub-questions are already independently
     // sized bands) — mirrors js/views/epidemiology.js etc. exactly. The
     // free-flowing no-image layout keeps scenario in the shared dynamic
@@ -302,10 +272,19 @@ function buildWrittenPreviewHTML(question) {
     const emphasize =
         hasImage && ["epidemiology", "biostatistics", "ospe"].indexOf(adminPreviewSectionKey) !== -1;
 
-    let html = `${hasImage ? `<div class="question-top">` : ""}
-        <div class="scenario${emphasize ? " scenario-emphasized" : ""}">${nl2br(question.Scenario_or_Stem)}</div>
-    `;
+    let html = `${hasImage ? `<div class="question-top">` : ""}`;
 
+    if (!hasImage) {
+
+        html += `
+            <div class="scenario">${nl2br(question.Scenario_or_Stem)}</div>
+        `;
+
+    }
+
+    // Image leads, then the scenario (+ Plot Instruction) sits in a
+    // compact caption strip right below it — mirrors the image-first
+    // order js/views/epidemiology.js etc. now render in the real exam.
     if (hasImage) {
 
         html += `
@@ -313,6 +292,8 @@ function buildWrittenPreviewHTML(question) {
                 <img src="images/${adminPreviewSectionKey}/${question.Image_File}" alt="Question Image">
                 <div class="image-caption">${nl2br(question.Image_Caption ?? "")}</div>
             </div>
+            <div class="scenario-plot-group">
+                <div class="scenario${emphasize ? " scenario-emphasized" : ""}">${nl2br(question.Scenario_or_Stem)}</div>
         `;
 
     }
@@ -328,7 +309,9 @@ function buildWrittenPreviewHTML(question) {
 
     }
 
-    if (hasImage) html += `</div>`;
+    if (hasImage) html += `</div>`; // close .scenario-plot-group
+
+    if (hasImage) html += `</div>`; // close .question-top
 
     html += `<div class="question-subquestions">`;
 
