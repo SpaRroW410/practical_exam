@@ -96,16 +96,23 @@ function showBiostatisticsQuestion() {
 
             ${hasImage ? `<div class="question-top">` : ""}
 
-            <div class="scenario${hasImage ? " scenario-emphasized" : ""}">
-
-                ${nl2br(question.Scenario_or_Stem)}
-
-            </div>
-
     `;
 
+    if (!hasImage) {
+
+        html += `
+            <div class="scenario">
+                ${nl2br(question.Scenario_or_Stem)}
+            </div>
+        `;
+
+    }
+
     // --------------------------------------------------------
-    // Image
+    // Image — leads when present, with the scenario (and Plot
+    // Instruction) grouped into a compact caption strip right below it
+    // instead of sandwiching the image between them. Gives the image
+    // the large majority of the top band.
     // --------------------------------------------------------
 
     if (hasImage) {
@@ -128,12 +135,21 @@ function showBiostatisticsQuestion() {
 
             </div>
 
+            <div class="scenario-plot-group">
+
+                <div class="scenario scenario-emphasized">
+
+                    ${nl2br(question.Scenario_or_Stem)}
+
+                </div>
+
         `;
 
     }
 
     // --------------------------------------------------------
-    // Plot Instruction
+    // Plot Instruction — grouped with the scenario above when there's
+    // an image; otherwise stays in the no-image flow in its old spot.
     // --------------------------------------------------------
 
     if (
@@ -159,7 +175,9 @@ function showBiostatisticsQuestion() {
 
     if (hasImage) {
 
-        html += `</div>`;
+        html += `</div>`; // close .scenario-plot-group
+
+        html += `</div>`; // close .question-top
 
     }
 

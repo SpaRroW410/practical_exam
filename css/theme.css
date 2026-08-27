@@ -226,10 +226,13 @@ body {
 }
 
 /* Epidemiology / Biostatistics / OSPE only: bolder, larger scenario
-   text (base 24px + 5px). Deliberately excluded from the dynamic
-   scenario/question sizing pass in js/ui.js (fitQuestionLayout), so it
-   holds this size regardless of nesting (with or without an image) —
-   see the .scenario-emphasized exclusion there. */
+   text (base 24px + 5px), applied only when the question has an image
+   (js/views/*.js). This is its default/preferred size — js/ui.js
+   (fitQuestionLayout) still gives it its own independent fit pass
+   within the top image band, so it can shrink (down to the shared
+   MIN_TEXT_SIZE floor) if a long scenario would otherwise overflow, or
+   grow slightly if there's room, without ever coupling to the
+   sub-questions' size below. */
 .scenario-emphasized {
     font-size: 29px;
     font-weight: 700;
@@ -251,12 +254,16 @@ body {
     line-height: 1.2;
 }
 
-/* Figure-bearing questions split 65:35 — scenario + figure on top,
-   sub-questions below — so the sub-questions get a guaranteed band and
-   size themselves independently instead of being squeezed. Questions
-   with no figure keep a single free-flowing band. */
+/* Figure-bearing questions split 70:30 — image (+ its compact scenario/
+   plot caption) on top, sub-questions below — so the sub-questions get
+   a guaranteed band and size themselves independently instead of being
+   squeezed. Questions with no figure keep a single free-flowing band.
+   Within the top band the image itself lands close to 60% of the whole
+   screen: .scenario-plot-group is a small fixed-height caption strip,
+   not a flex participant, so the image (flex:1) absorbs the rest of
+   the 70% share. */
 .question-top {
-    flex: 6.5 1 0;
+    flex: 7 1 0;
     min-height: 0;
     display: flex;
     flex-direction: column;
@@ -264,8 +271,23 @@ body {
 }
 
 .exam-screen > .question-subquestions {
-    flex: 3.5 1 0;
+    flex: 3 1 0;
     min-height: 0;
+}
+
+/* Compact caption strip: scenario (+ Plot Instruction, Biostatistics
+   only) grouped tightly together below the image, reading as one
+   close-set block rather than two separately-spaced paragraphs. */
+.scenario-plot-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.scenario-plot-group .scenario,
+.scenario-plot-group .plot-instruction {
+    margin: 0;
 }
 
 /* Sub-questions side by side: auto-flow column gives one column per

@@ -466,16 +466,22 @@ function fitQuestionLayout(imageWrap, measureContainer, maxOverride) {
 
     if (!examScreen) return;
 
-    // .plot-instruction and .scenario-emphasized (Epidemiology/
-    // Biostatistics/OSPE's bolder, larger scenario) are intentionally
-    // excluded here: each holds a fixed size of its own (css/theme.css)
-    // rather than sharing the dynamic scenario/question size. Both still
-    // count toward examScreen's real rendered height below, so the
-    // binary search still accounts for the space they actually take and
-    // the no-overflow guarantee holds.
+    // .plot-instruction is intentionally excluded here: it holds a fixed
+    // size of its own (css/theme.css) rather than sharing the dynamic
+    // scenario/question size. It still counts toward examScreen's real
+    // rendered height below, so the binary search still accounts for the
+    // space it actually takes.
+    //
+    // .scenario-emphasized (Epidemiology/Biostatistics/OSPE's bolder,
+    // larger image-question scenario) IS included: when it's the sole
+    // target of the top image band's own independent fit call, this is
+    // what lets it shrink below its default 29px on a long scenario
+    // that would otherwise overflow the band — the safety net every
+    // other target already has. It never shares a container with
+    // .question, so this can't re-couple it to sub-question sizing.
     const targets = examScreen.querySelectorAll(
 
-        ".scenario:not(.scenario-emphasized), .question"
+        ".scenario, .question"
 
     );
 
@@ -554,11 +560,21 @@ function fitQuestionLayout(imageWrap, measureContainer, maxOverride) {
 // ------------------------------------------------------------
 // Two-Band Question Layout
 //
-// With a figure, the screen is split 65:35 — scenario + figure on top,
-// sub-questions below — and each band is sized independently so the
-// sub-questions grow to fill their share instead of being squeezed to
-// the same size as the scenario. Without a figure the question flows as
-// one band, as before.
+// With a figure, the screen is split 70:30 (css/theme.css) — image +
+// scenario on top, sub-questions below — and each band is sized
+// independently so the sub-questions grow to fill their share instead
+// of being squeezed to the same size as the scenario.
+//
+// A handful of real sub-questions pack several numbered parts into one
+// column and still don't fit their 30% share even at the MIN_TEXT_SIZE
+// floor (e.g. OSPE Station 11's 3-part Sub_Question_A). Rather than let
+// that overflow the screen, the loop below hands the sub-questions band
+// more room, one step at a time, and re-fits both bands, until it
+// actually fits — capped at 40:60 so this only ever bites for a genuine
+// outlier; the vast majority of questions never enter the loop and keep
+// the normal 70:30 split.
+//
+// Without a figure the question flows as one band, as before.
 // ------------------------------------------------------------
 
 function fitTwoBandLayout(hasImage) {
@@ -571,25 +587,59 @@ function fitTwoBandLayout(hasImage) {
 
     }
 
-    fitQuestionLayout(
+    const topBand = document.querySelector(".question-top");
 
-        document.querySelector(".question-image"),
+    const subBand = document.querySelector(".question-subquestions");
 
-        document.querySelector(".question-top"),
+    topBand.style.flex = "";
 
-        32
+    subBand.style.flex = "";
 
-    );
+    function fitBothBands() {
 
-    fitQuestionLayout(
+        fitQuestionLayout(
 
-        null,
+            document.querySelector(".question-image"),
 
-        document.querySelector(".question-subquestions"),
+            topBand,
 
-        44
+            32
 
-    );
+        );
+
+        fitQuestionLayout(
+
+            null,
+
+            subBand,
+
+            44
+
+        );
+
+    }
+
+    fitBothBands();
+
+    let subShare = 3;
+
+    while (
+
+        subBand.scrollHeight > subBand.clientHeight + 2 &&
+
+        subShare < 6
+
+    ) {
+
+        subShare += 1;
+
+        topBand.style.flex = (10 - subShare) + " 1 0";
+
+        subBand.style.flex = subShare + " 1 0";
+
+        fitBothBands();
+
+    }
 
 }
 
