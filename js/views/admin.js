@@ -5,8 +5,12 @@
 // Prints every question in one section at the chosen level, either as
 // a candidate-safe question bank (no answers) or, on request, with the
 // answer key included as a marking sheet. Also offers Display Testing:
-// an on-screen, unfiltered walk-through of every question for visual
-// QA, with an optional UG-only toggle.
+// an on-screen walk-through of every question for visual QA, with its
+// own independent All/Only UG/Only PG level filter (separate from the
+// print level above), plus — Spotter only — a choice between browsing
+// Individual slides (grouped by domain position, across all sets) or
+// one whole Set at a time. See js/views/admin-preview.js for how the
+// level and mode interact.
 // ============================================================
 
 const ADMIN_SECTIONS = [
@@ -77,6 +81,29 @@ function renderAdminScreen() {
 
                 </div>
 
+                <div class="selector">
+
+                    <label>Display Testing Level</label>
+
+                    <select id="adminPreviewLevel">
+                        <option value="all">All (no filter)</option>
+                        <option value="ug">Only UG</option>
+                        <option value="pg">Only PG</option>
+                    </select>
+
+                </div>
+
+                <div class="selector" id="adminSpotterModeWrap" style="display:none;">
+
+                    <label>Display Testing Mode (Spotter only)</label>
+
+                    <select id="adminSpotterMode">
+                        <option value="individual">Individual (by position/domain, across all sets)</option>
+                        <option value="set">Set (one whole set, in order)</option>
+                    </select>
+
+                </div>
+
                 <div class="selector" id="adminSpotterScopeWrap" style="display:none;">
 
                     <label>Display Testing Scope (Spotter only)</label>
@@ -93,12 +120,11 @@ function renderAdminScreen() {
 
                 </div>
 
-                <div class="selector">
+                <div class="selector" id="adminSpotterSetNoWrap" style="display:none;">
 
-                    <label>
-                        <input type="checkbox" id="adminPreviewUGOnly">
-                        Display Testing: UG only (hides Difficult items and Sub-Question C)
-                    </label>
+                    <label>Display Testing Set (Spotter only)</label>
+
+                    <select id="adminSpotterSetNo"></select>
 
                 </div>
 
@@ -152,7 +178,44 @@ function renderAdminScreen() {
 
     const levelSelect = document.getElementById("adminLevel");
 
+    const previewLevelSelect = document.getElementById("adminPreviewLevel");
+
+    const spotterModeWrap = document.getElementById("adminSpotterModeWrap");
+
+    const spotterModeSelect = document.getElementById("adminSpotterMode");
+
     const spotterScopeWrap = document.getElementById("adminSpotterScopeWrap");
+
+    const spotterSetNoWrap = document.getElementById("adminSpotterSetNoWrap");
+
+    const spotterSetNoSelect = document.getElementById("adminSpotterSetNo");
+
+    function refreshSpotterSetNoOptions() {
+
+        const setNos = eligibleSpotterSetNumbersForLevel(previewLevelSelect.value);
+
+        spotterSetNoSelect.innerHTML =
+            setNos.length
+                ? setNos.map(n => `<option value="${n}">Set ${n}</option>`).join("")
+                : `<option value="">No eligible sets</option>`;
+
+    }
+
+    function refreshSpotterVisibility() {
+
+        const isSpotter = sectionSelect.value === "spotter";
+
+        const isSetMode = isSpotter && spotterModeSelect.value === "set";
+
+        spotterModeWrap.style.display = isSpotter ? "block" : "none";
+
+        spotterScopeWrap.style.display = isSpotter && !isSetMode ? "block" : "none";
+
+        spotterSetNoWrap.style.display = isSetMode ? "block" : "none";
+
+        if (isSetMode) refreshSpotterSetNoOptions();
+
+    }
 
     function refreshCount() {
 
@@ -166,14 +229,25 @@ function renderAdminScreen() {
 
             ) + " items";
 
-        spotterScopeWrap.style.display =
-            sectionSelect.value === "spotter" ? "block" : "none";
+        refreshSpotterVisibility();
 
     }
 
     sectionSelect.onchange = refreshCount;
 
     levelSelect.onchange = refreshCount;
+
+    spotterModeSelect.onchange = refreshSpotterVisibility;
+
+    previewLevelSelect.onchange = function(){
+
+        if (sectionSelect.value === "spotter" && spotterModeSelect.value === "set") {
+
+            refreshSpotterSetNoOptions();
+
+        }
+
+    };
 
     document
         .getElementById("adminPrint")
@@ -213,9 +287,12 @@ function renderAdminScreen() {
 
                 sectionSelect.value,
 
-                document.getElementById("adminSpotterScope").value,
-
-                document.getElementById("adminPreviewUGOnly").checked
+                {
+                    level: previewLevelSelect.value,
+                    spotterMode: spotterModeSelect.value,
+                    spotterScope: document.getElementById("adminSpotterScope").value,
+                    spotterSetNo: spotterSetNoSelect.value
+                }
 
             );
 

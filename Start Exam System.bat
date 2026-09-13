@@ -6,9 +6,15 @@ rem Community Medicine Examination System
 rem Offline Launcher (Windows)
 rem
 rem Resolves its own folder via %~dp0 so this works no matter what
-rem drive letter the pendrive gets assigned on a given PC. Tries
-rem Edge first (bundled with Windows 10/11), then Chrome, then
-rem falls back to opening the default browser without kiosk mode.
+rem drive letter the pendrive gets assigned on a given PC. Shows a
+rem small mode-picker popup first (Select Launch Mode.ps1): Exam
+rem Mode continues below exactly as before; Admin Mode hands off to
+rem "Start Admin Mode.bat" for a normal, minimizable/resizable
+rem window suited to prep and review work instead of a locked-down
+rem kiosk (see that file for details - it can also be double-clicked
+rem directly to skip this picker). Tries Edge first (bundled with
+rem Windows 10/11), then Chrome, then falls back to opening the
+rem default browser without kiosk mode.
 rem
 rem Kiosk mode hides the address bar and tabs, so there is nothing
 rem for a candidate to click out of during the exam. To exit,
@@ -17,6 +23,7 @@ rem ============================================================
 
 set "APPDIR=%~dp0"
 set "APPFILE=%APPDIR%index.html"
+set "PICKER=%APPDIR%Select Launch Mode.ps1"
 
 if not exist "%APPFILE%" (
     echo Could not find index.html next to this launcher.
@@ -24,6 +31,34 @@ if not exist "%APPFILE%" (
     pause
     exit /b 1
 )
+
+rem --- Ask which mode to launch in ---
+
+set "MODECHOICE=1"
+set "USE_POPUP=0"
+
+where powershell >nul 2>nul && if exist "%PICKER%" set "USE_POPUP=1"
+
+if "%USE_POPUP%"=="1" (
+    powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "%PICKER%"
+    set "MODECHOICE=!errorlevel!"
+) else (
+    echo PowerShell or the mode-picker script was not found - falling back to a text prompt.
+    choice /c EA /n /m "Press E for Exam Mode (kiosk), A for Admin Mode (normal window): "
+    if !errorlevel! geq 2 (set "MODECHOICE=2") else (set "MODECHOICE=1")
+)
+
+if "%MODECHOICE%"=="2" (
+    call "%APPDIR%Start Admin Mode.bat"
+    goto :done
+)
+
+if not "%MODECHOICE%"=="1" (
+    rem Dialog closed with no choice made - exit quietly, nothing launched.
+    goto :done
+)
+
+rem --- MODECHOICE=1 (Exam Mode): continue with the kiosk launch below ---
 
 rem --- Locate Microsoft Edge ---
 
