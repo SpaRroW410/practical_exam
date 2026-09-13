@@ -4,15 +4,26 @@
 //
 // Lets an admin visually step through every question in a section
 // exactly as a candidate would see it (images, sub-questions, layout),
-// with no timer and, by default, no UG/PG filter — an optional UG-only
-// toggle narrows it to exactly what a UG candidate would see (Difficult
-// items excluded, Sub_Question_C hidden). Purely a display/content
-// review tool. Deliberately independent of the real exam renderers
-// (js/views/clinical.js etc.) and the timer/navigation engine: it reuses
-// their CSS classes so it looks identical on screen, but touches none
-// of their code, so there is zero risk to the tested live-exam flow.
-// Answer keys are never shown here, matching the existing Question Bank
-// print's non-disclosure stance.
+// with no timer and a three-way level filter (All / Only UG / Only PG)
+// mirroring the real exam's own eligibility rules exactly: Only UG
+// excludes anything marked Difficult and hides Sub_Question_C; Only PG
+// and All both show everything (PG is unrestricted everywhere else in
+// the app too — see js/views/spotter.js's allowedDifficulty). Purely a
+// display/content review tool. Deliberately independent of the real
+// exam renderers (js/views/clinical.js etc.) and the timer/navigation
+// engine: it reuses their CSS classes so it looks identical on screen,
+// but touches none of their code, so there is zero risk to the tested
+// live-exam flow. Answer keys are never shown here, matching the
+// existing Question Bank print's non-disclosure stance.
+//
+// Spotter has an extra Individual/Set mode choice, because the real
+// app itself filters Spotter eligibility two different ways depending
+// on how a slide is reached (js/views/spotter.js vs js/views/home.js):
+// Individual mode (position/domain groups, across all sets) filters
+// each SLIDE by its own Difficulty, mirroring the random per-station
+// draw; Set mode (one whole numbered set, browsed in order) filters
+// whole SETS by their Section_Header row's Difficulty, mirroring how a
+// specific Set_No is chosen manually for a given level.
 // ============================================================
 
 
@@ -38,24 +49,32 @@ let adminPreviewIndex = 0;
 
 let adminPreviewSectionKey = null;
 
-let adminPreviewUGOnly = false;
+let adminPreviewLevel = "all"; // "all" | "ug" | "pg"
+
+let adminPreviewSpotterMode = "individual"; // "individual" | "set"
 
 
 // ------------------------------------------------------------
 // Entry point
+//
+// `options`: { level, spotterMode, spotterScope, spotterSetNo }
 // ------------------------------------------------------------
 
-function renderAdminPreview(sectionKey, spotterScope, ugOnly) {
+function renderAdminPreview(sectionKey, options) {
+
+    options = options || {};
 
     appState.currentView = "admin-preview";
 
     adminPreviewSectionKey = sectionKey;
 
-    adminPreviewUGOnly = !!ugOnly;
+    adminPreviewLevel = options.level || "all";
+
+    adminPreviewSpotterMode = options.spotterMode || "individual";
 
     adminPreviewItems =
         sectionKey === "spotter"
-            ? collectSpotterPreviewItems(spotterScope || "full")
+            ? collectSpotterPreviewItems(options)
             : collectWrittenPreviewItems(sectionKey);
 
     adminPreviewIndex = 0;
@@ -70,7 +89,7 @@ function collectWrittenPreviewItems(sectionKey) {
 
         .filter(row => row.Item_Type === "Question")
 
-        .filter(row => !adminPreviewUGOnly || row.Difficulty !== "Difficult")
+        .filter(row => adminPreviewLevel !== "ug" || row.Difficulty !== "Difficult")
 
         .sort((a, b) => Number(a.Question_No) - Number(b.Question_No));
 
@@ -82,9 +101,65 @@ function spotterPositionOfRow(row) {
 
 }
 
-function collectSpotterPreviewItems(scopeKey) {
+function spotterSetNumberOfRow(row) {
 
-    const group = SPOTTER_PREVIEW_GROUPS[scopeKey] || SPOTTER_PREVIEW_GROUPS.full;
+    return Number(String(row.Set_No).replace(/[^\d]/g, ""));
+
+}
+
+// Mirrors js/views/home.js's getEligibleSpotterSetNumbers(), but
+// against an admin-chosen level string instead of the real exam's
+// appState.exam.level — Display Testing's level is independent of
+// whatever level a candidate has (or hasn't) selected.
+function eligibleSpotterSetNumbersForLevel(level) {
+
+    return appData.questions.spotter
+
+        .filter(x => x.Item_Type === "Section_Header")
+
+        .filter(h => level !== "ug" || h.Difficulty !== "Difficult")
+
+        .map(spotterSetNumberOfRow)
+
+        .sort((a, b) => a - b);
+
+}
+
+// `options`: { spotterMode, spotterScope, spotterSetNo }
+function collectSpotterPreviewItems(options) {
+
+    options = options || {};
+
+    if (options.spotterMode === "set") {
+
+        const setNo = Number(options.spotterSetNo);
+
+        const header = appData.questions.spotter.find(
+
+            x => x.Item_Type === "Section_Header" &&
+                spotterSetNumberOfRow(x) === setNo
+
+        );
+
+        // Defensive: even if the picker only ever offers eligible sets,
+        // never show a set this level shouldn't see.
+        if (!header || (adminPreviewLevel === "ug" && header.Difficulty === "Difficult")) {
+
+            return [];
+
+        }
+
+        return appData.questions.spotter
+
+            .filter(row => row.Item_Type === "Spotter_Slide")
+
+            .filter(row => spotterSetNumberOfRow(row) === setNo)
+
+            .sort((a, b) => spotterPositionOfRow(a) - spotterPositionOfRow(b));
+
+    }
+
+    const group = SPOTTER_PREVIEW_GROUPS[options.spotterScope] || SPOTTER_PREVIEW_GROUPS.full;
 
     return appData.questions.spotter
 
@@ -95,13 +170,13 @@ function collectSpotterPreviewItems(scopeKey) {
             group.positions.indexOf(spotterPositionOfRow(row)) !== -1
         )
 
-        .filter(row => !adminPreviewUGOnly || row.Difficulty !== "Difficult")
+        .filter(row => adminPreviewLevel !== "ug" || row.Difficulty !== "Difficult")
 
         .sort(function(a, b){
 
-            const setA = Number(String(a.Set_No).replace(/[^\d]/g, ""));
+            const setA = spotterSetNumberOfRow(a);
 
-            const setB = Number(String(b.Set_No).replace(/[^\d]/g, ""));
+            const setB = spotterSetNumberOfRow(b);
 
             if (setA !== setB) return setA - setB;
 
@@ -169,7 +244,7 @@ function showAdminPreviewItem() {
                     <strong>${escapeAdminPreviewHtml(idLabel)}</strong>
                     &mdash; ${escapeAdminPreviewHtml(positionLabel)}
                     (${adminPreviewIndex + 1} of ${adminPreviewItems.length})
-                    ${adminPreviewUGOnly ? " — UG only" : ""}
+                    ${adminPreviewLevel !== "all" ? " — " + adminPreviewLevel.toUpperCase() + " only" : ""}
                 </div>
 
                 <button id="adminPreviewBack" class="start-button print-button">BACK TO ADMIN</button>
@@ -254,7 +329,7 @@ function escapeAdminPreviewHtml(value) {
 // ------------------------------------------------------------
 // Written sections (Clinical / Epidemiology / Biostatistics / OSPE)
 // Mirrors the markup shape of js/views/clinical.js etc. Includes
-// Sub_Question_C when present, unless adminPreviewUGOnly is set (then
+// Sub_Question_C when present, unless adminPreviewLevel is "ug" (then
 // it's hidden, matching what a real UG candidate would see). Never
 // shows Answer_Key_*.
 // ------------------------------------------------------------
@@ -315,7 +390,7 @@ function buildWrittenPreviewHTML(question) {
 
     html += `<div class="question-subquestions">`;
 
-    const previewLetters = adminPreviewUGOnly ? ["A", "B"] : ["A", "B", "C"];
+    const previewLetters = adminPreviewLevel === "ug" ? ["A", "B"] : ["A", "B", "C"];
 
     previewLetters.forEach(function(letter){
 
@@ -344,14 +419,14 @@ function buildWrittenPreviewHTML(question) {
 
 // ------------------------------------------------------------
 // Spotter — mirrors js/views/spotter.js's showSpotterSlide() markup.
-// Includes Sub_Question_C when present, unless adminPreviewUGOnly.
+// Includes Sub_Question_C when present, unless adminPreviewLevel is "ug".
 // ------------------------------------------------------------
 
 function buildSpotterPreviewHTML(slide) {
 
     let subHtml = "";
 
-    const previewLetters = adminPreviewUGOnly ? ["A", "B"] : ["A", "B", "C"];
+    const previewLetters = adminPreviewLevel === "ug" ? ["A", "B"] : ["A", "B", "C"];
 
     previewLetters.forEach(function(letter){
 
