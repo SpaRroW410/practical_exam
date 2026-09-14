@@ -4,11 +4,15 @@
 //
 // Lets an admin visually step through every question in a section
 // exactly as a candidate would see it (images, sub-questions, layout),
-// with no timer and a three-way level filter (All / Only UG / Only PG)
-// mirroring the real exam's own eligibility rules exactly: Only UG
-// excludes anything marked Difficult and hides Sub_Question_C; Only PG
-// and All both show everything (PG is unrestricted everywhere else in
-// the app too — see js/views/spotter.js's allowedDifficulty). Purely a
+// with no timer and a three-way level filter: All (no filter), Only UG
+// (excludes anything marked Difficult and hides Sub_Question_C — what a
+// UG candidate would actually see), and Only PG (the complement — ONLY
+// the Difficult-marked items, i.e. exactly what's PG-exclusive and was
+// never in the UG pool). This is a review-tool partition, not a replay
+// of the real exam's draw pool (a real PG candidate draws from every
+// difficulty, not just Difficult — see js/views/spotter.js's
+// allowedDifficulty) — Only PG here exists specifically so the admin can
+// inspect the harder, UG-excluded content in isolation. Purely a
 // display/content review tool. Deliberately independent of the real
 // exam renderers (js/views/clinical.js etc.) and the timer/navigation
 // engine: it reuses their CSS classes so it looks identical on screen,
@@ -16,6 +20,19 @@
 // live-exam flow. Answer keys are never shown here, matching the
 // existing Question Bank print's non-disclosure stance.
 //
+// Level filter shared by every collector below: "ug" keeps only
+// non-Difficult rows, "pg" keeps only Difficult rows (the UG-excluded
+// complement), "all" (or anything else) keeps everything.
+function difficultyPassesLevel(difficulty, level) {
+
+    if (level === "ug") return difficulty !== "Difficult";
+
+    if (level === "pg") return difficulty === "Difficult";
+
+    return true;
+
+}
+
 // Spotter has an extra Individual/Set mode choice, because the real
 // app itself filters Spotter eligibility two different ways depending
 // on how a slide is reached (js/views/spotter.js vs js/views/home.js):
@@ -89,7 +106,7 @@ function collectWrittenPreviewItems(sectionKey) {
 
         .filter(row => row.Item_Type === "Question")
 
-        .filter(row => adminPreviewLevel !== "ug" || row.Difficulty !== "Difficult")
+        .filter(row => difficultyPassesLevel(row.Difficulty, adminPreviewLevel))
 
         .sort((a, b) => Number(a.Question_No) - Number(b.Question_No));
 
@@ -117,7 +134,7 @@ function eligibleSpotterSetNumbersForLevel(level) {
 
         .filter(x => x.Item_Type === "Section_Header")
 
-        .filter(h => level !== "ug" || h.Difficulty !== "Difficult")
+        .filter(h => difficultyPassesLevel(h.Difficulty, level))
 
         .map(spotterSetNumberOfRow)
 
@@ -143,7 +160,7 @@ function collectSpotterPreviewItems(options) {
 
         // Defensive: even if the picker only ever offers eligible sets,
         // never show a set this level shouldn't see.
-        if (!header || (adminPreviewLevel === "ug" && header.Difficulty === "Difficult")) {
+        if (!header || !difficultyPassesLevel(header.Difficulty, adminPreviewLevel)) {
 
             return [];
 
@@ -170,7 +187,7 @@ function collectSpotterPreviewItems(options) {
             group.positions.indexOf(spotterPositionOfRow(row)) !== -1
         )
 
-        .filter(row => adminPreviewLevel !== "ug" || row.Difficulty !== "Difficult")
+        .filter(row => difficultyPassesLevel(row.Difficulty, adminPreviewLevel))
 
         .sort(function(a, b){
 

@@ -13,12 +13,16 @@ rem controls. Intended for admin / question-bank prep and review
 rem work - never for a candidate during a timed exam (use Exam Mode
 rem in Start Exam System.bat's launch picker for that instead).
 rem
+rem Opens index.html?mode=admin, which js/app.js reads to skip the
+rem normal access-code screen and go straight to Admin Access.
+rem
 rem Can be double-clicked directly, or reached via the "ADMIN MODE"
 rem button in Start Exam System.bat's launch picker.
 rem ============================================================
 
 set "APPDIR=%~dp0"
 set "APPFILE=%APPDIR%index.html"
+set "APPURL=%APPFILE%?mode=admin"
 
 if not exist "%APPFILE%" (
     echo Could not find index.html next to this launcher.
@@ -47,7 +51,7 @@ if not defined EDGE if exist "%LocalAppData%\Microsoft\Edge\Application\msedge.e
 
 if defined EDGE (
     echo Starting in Microsoft Edge, normal window ^(maximized, not kiosk^).
-    start "" "%EDGE%" --start-maximized "%APPFILE%" --no-first-run --disable-session-crashed-bubble
+    start "" "%EDGE%" --start-maximized "%APPURL%" --no-first-run --disable-session-crashed-bubble
     goto :done
 )
 
@@ -71,7 +75,7 @@ if not defined CHROME if exist "%LocalAppData%\Google\Chrome\Application\chrome.
 
 if defined CHROME (
     echo Starting in Google Chrome, normal window ^(maximized, not kiosk^).
-    start "" "%CHROME%" --start-maximized "%APPFILE%" --no-first-run
+    start "" "%CHROME%" --start-maximized "%APPURL%" --no-first-run
     goto :done
 )
 
@@ -79,7 +83,7 @@ rem --- Neither found: open normally, no kiosk mode ---
 
 echo Could not find Microsoft Edge or Google Chrome installed.
 echo Opening in your default browser instead.
-start "" "%APPFILE%"
+start "" "%APPURL%"
 
 :done
 endlocal
