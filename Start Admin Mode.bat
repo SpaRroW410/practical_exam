@@ -22,7 +22,6 @@ rem ============================================================
 
 set "APPDIR=%~dp0"
 set "APPFILE=%APPDIR%index.html"
-set "APPURL=%APPFILE%?mode=admin"
 
 if not exist "%APPFILE%" (
     echo Could not find index.html next to this launcher.
@@ -30,6 +29,15 @@ if not exist "%APPFILE%" (
     pause
     exit /b 1
 )
+
+rem Build a real file:// URL (forward slashes) instead of handing the
+rem browser a bare Windows path with "?mode=admin" appended - a bare
+rem path gets percent-encoded as part of the filename (the "?" becomes
+rem %3F), so the browser looks for a file literally named
+rem "index.html?mode=admin" and fails with File Not Found. A proper
+rem file:// URL is parsed as a URL, so the query string works.
+set "APPDIR_URL=%APPDIR:\=/%"
+set "APPURL=file:///%APPDIR_URL%index.html?mode=admin"
 
 rem --- Locate Microsoft Edge ---
 
