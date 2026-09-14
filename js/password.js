@@ -51,19 +51,6 @@ function renderPasswordScreen() {
 
                 </button>
 
-                <p style="text-align:center; margin-top:18px;">
-
-                    <a
-                        href="#"
-                        id="adminLink"
-                        style="color:#666; font-size:18px;">
-
-                        Admin — Question Bank
-
-                    </a>
-
-                </p>
-
             </div>
 
         </section>
@@ -107,16 +94,6 @@ function renderPasswordScreen() {
         }
 
     });
-
-    document
-        .getElementById("adminLink")
-        .onclick = function (event) {
-
-            event.preventDefault();
-
-            renderAdminLogin();
-
-        };
 
     input.focus();
 

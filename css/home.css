@@ -105,6 +105,90 @@
 
 }
 
+/* Admin screen: groups a filter + its action(s) under a heading, so
+   Display Testing and Print Question Bank read as two separate blocks
+   instead of one undifferentiated pile of selectors and buttons. Kept
+   compact — these are power-user filters, not the primary Home-screen
+   selectors, and the admin screen already has more distinct rows than
+   before (Section on its own, two grouped filter rows, three action
+   buttons instead of two shared rows), so trimming the decorative
+   spacing here keeps the extra structure from costing too much height. */
+.admin-group{
+
+    margin-top:16px;
+
+    padding-top:14px;
+
+    border-top:1px solid var(--border);
+
+}
+
+.admin-group-title{
+
+    margin:0 0 8px;
+
+    font-size:1.15rem;
+
+    color:var(--primary);
+
+}
+
+.admin-back-button{
+
+    margin-top:14px;
+
+}
+
+/* Like .selector-grid, but sizes columns to however many filters a
+   group actually has (1 for a written section's Display Testing, up
+   to 4 for Spotter) instead of a fixed 3, so a short row never leaves
+   an empty gap. */
+.filter-row{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+
+    gap:16px;
+
+    margin-bottom:10px;
+
+}
+
+/* Admin's .selector boxes (Section, and everything in a .filter-row)
+   carry the same fields as the Home screen's but at a lighter weight,
+   since there are more of them stacked vertically here. */
+.admin-card .selector{
+
+    padding:10px 14px;
+
+}
+
+.admin-card .selector label{
+
+    margin-bottom:4px;
+
+    font-size:1rem;
+
+}
+
+.admin-card .selector div{
+
+    font-size:1rem;
+
+}
+
+/* The admin screen packs in more rows than a typical .home-card, so
+   its intro heading/paragraph run at a lighter weight than the big,
+   projector-friendly Home-screen default. */
+.admin-card > p{
+
+    font-size:1.1rem;
+
+    margin-bottom:12px;
+
+}
+
 .home-actions--print{
 
     margin-top:16px;
@@ -241,7 +325,8 @@
 
     }
 
-    .selector-grid{
+    .selector-grid,
+    .filter-row{
 
         gap:12px;
 
@@ -250,6 +335,26 @@
     .selector{
 
         padding:10px;
+
+    }
+
+    .admin-group{
+
+        margin-top:10px;
+
+        padding-top:8px;
+
+    }
+
+    .admin-group-title{
+
+        margin-bottom:6px;
+
+    }
+
+    .admin-back-button{
+
+        margin-top:10px;
 
     }
 
@@ -295,7 +400,8 @@
 
     }
 
-    .selector-grid{
+    .selector-grid,
+    .filter-row{
 
         gap:8px;
 
@@ -304,6 +410,26 @@
     .selector{
 
         padding:8px;
+
+    }
+
+    .admin-group{
+
+        margin-top:6px;
+
+        padding-top:6px;
+
+    }
+
+    .admin-group-title{
+
+        margin-bottom:4px;
+
+    }
+
+    .admin-back-button{
+
+        margin-top:6px;
 
     }
 

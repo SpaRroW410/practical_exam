@@ -23,8 +23,22 @@ async function initializeApplication() {
         // Load JSON files
         await loadApplicationData();
 
-        // Render Access Screen (gates entry to Home Screen)
-        renderPasswordScreen();
+        // "Start Admin Mode.bat" opens index.html?mode=admin so it can
+        // skip straight to Admin Access instead of the normal exam
+        // Access Screen — otherwise gate entry to Home Screen as usual.
+        const launchParams = new URLSearchParams(window.location.search);
+
+        if (launchParams.get("mode") === "admin") {
+
+            renderAdminLogin();
+
+        }
+
+        else {
+
+            renderPasswordScreen();
+
+        }
 
         console.log("Application Ready");
 

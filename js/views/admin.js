@@ -36,83 +36,21 @@ function renderAdminScreen() {
 
         <section class="home-screen">
 
-            <div class="home-card">
+            <div class="home-card admin-card">
 
                 <h2>Question Bank</h2>
 
                 <p>Print every question in a section, with or without the answer key — or walk through them on screen for display testing.</p>
 
-                <div class="selector-grid">
-
-                    <div class="selector">
-
-                        <label>Section</label>
-
-                        <select id="adminSection">
-
-                            ${ADMIN_SECTIONS.map(function(section){
-
-                                return `<option value="${section.key}">${section.label}</option>`;
-
-                            }).join("")}
-
-                        </select>
-
-                    </div>
-
-                    <div class="selector">
-
-                        <label>Examination Level</label>
-
-                        <select id="adminLevel">
-                            <option value="UG">Undergraduate</option>
-                            <option value="PG">Postgraduate</option>
-                        </select>
-
-                    </div>
-
-                    <div class="selector">
-
-                        <label>Questions Included</label>
-
-                        <div id="adminCount">—</div>
-
-                    </div>
-
-                </div>
-
                 <div class="selector">
 
-                    <label>Display Testing Level</label>
+                    <label>Section</label>
 
-                    <select id="adminPreviewLevel">
-                        <option value="all">All (no filter)</option>
-                        <option value="ug">Only UG</option>
-                        <option value="pg">Only PG</option>
-                    </select>
+                    <select id="adminSection">
 
-                </div>
+                        ${ADMIN_SECTIONS.map(function(section){
 
-                <div class="selector" id="adminSpotterModeWrap" style="display:none;">
-
-                    <label>Display Testing Mode (Spotter only)</label>
-
-                    <select id="adminSpotterMode">
-                        <option value="individual">Individual (by position/domain, across all sets)</option>
-                        <option value="set">Set (one whole set, in order)</option>
-                    </select>
-
-                </div>
-
-                <div class="selector" id="adminSpotterScopeWrap" style="display:none;">
-
-                    <label>Display Testing Scope (Spotter only)</label>
-
-                    <select id="adminSpotterScope">
-
-                        ${Object.keys(SPOTTER_PREVIEW_GROUPS).map(function(key){
-
-                            return `<option value="${key}">${SPOTTER_PREVIEW_GROUPS[key].label}</option>`;
+                            return `<option value="${section.key}">${section.label}</option>`;
 
                         }).join("")}
 
@@ -120,43 +58,60 @@ function renderAdminScreen() {
 
                 </div>
 
-                <div class="selector" id="adminSpotterSetNoWrap" style="display:none;">
+                <div class="admin-group">
 
-                    <label>Display Testing Set (Spotter only)</label>
+                    <h3 class="admin-group-title">Display Testing</h3>
 
-                    <select id="adminSpotterSetNo"></select>
+                    <div class="filter-row">
 
-                </div>
+                        <div class="selector">
 
-                <div class="home-actions">
+                            <label>Level</label>
 
-                    <button
-                        id="adminBackToAccess"
-                        class="start-button print-button">
+                            <select id="adminPreviewLevel">
+                                <option value="all">All (no filter)</option>
+                                <option value="ug">Only UG</option>
+                                <option value="pg">Only PG</option>
+                            </select>
 
-                        BACK
+                        </div>
 
-                    </button>
+                        <div class="selector" id="adminSpotterModeWrap" style="display:none;">
 
-                    <button
-                        id="adminPrint"
-                        class="start-button">
+                            <label>Mode (Spotter only)</label>
 
-                        PRINT / SAVE PDF
+                            <select id="adminSpotterMode">
+                                <option value="individual">Individual (by position/domain, across all sets)</option>
+                                <option value="set">Set (one whole set, in order)</option>
+                            </select>
 
-                    </button>
+                        </div>
 
-                </div>
+                        <div class="selector" id="adminSpotterScopeWrap" style="display:none;">
 
-                <div class="home-actions home-actions--print">
+                            <label>Scope (Spotter only)</label>
 
-                    <button
-                        id="adminPrintWithAnswers"
-                        class="start-button print-button">
+                            <select id="adminSpotterScope">
 
-                        PRINT WITH ANSWER KEY
+                                ${Object.keys(SPOTTER_PREVIEW_GROUPS).map(function(key){
 
-                    </button>
+                                    return `<option value="${key}">${SPOTTER_PREVIEW_GROUPS[key].label}</option>`;
+
+                                }).join("")}
+
+                            </select>
+
+                        </div>
+
+                        <div class="selector" id="adminSpotterSetNoWrap" style="display:none;">
+
+                            <label>Set (Spotter only)</label>
+
+                            <select id="adminSpotterSetNo"></select>
+
+                        </div>
+
+                    </div>
 
                     <button
                         id="adminDisplayTesting"
@@ -167,6 +122,63 @@ function renderAdminScreen() {
                     </button>
 
                 </div>
+
+                <div class="admin-group">
+
+                    <h3 class="admin-group-title">Print Question Bank</h3>
+
+                    <div class="filter-row">
+
+                        <div class="selector">
+
+                            <label>Examination Level</label>
+
+                            <select id="adminLevel">
+                                <option value="UG">Undergraduate</option>
+                                <option value="PG">Postgraduate</option>
+                            </select>
+
+                        </div>
+
+                        <div class="selector">
+
+                            <label>Questions Included</label>
+
+                            <div id="adminCount">—</div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="home-actions">
+
+                        <button
+                            id="adminPrint"
+                            class="start-button">
+
+                            PRINT / SAVE PDF
+
+                        </button>
+
+                        <button
+                            id="adminPrintWithAnswers"
+                            class="start-button print-button">
+
+                            PRINT WITH ANSWER KEY
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <button
+                    id="adminBackToAccess"
+                    class="start-button print-button admin-back-button">
+
+                    BACK
+
+                </button>
 
             </div>
 
