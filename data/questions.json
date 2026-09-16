@@ -685,10 +685,10 @@
       "Difficulty": "Moderate",
       "Title": "Epidemiology - 6",
       "Scenario_or_Stem": "Investigators identified women diagnosed with cervical cancer as one group, and women without cervical cancer as another group, then obtained their HPV vaccination history. Among 500 women with cervical cancer, 200 were not immunized and 300 were immunized. Among 500 women without cervical cancer, 50 were not immunized and 450 were immunized.",
-      "Sub_Question_A": "1) Identify the study design used here.\r\n2) Calculate the measure of association.",
+      "Sub_Question_A": "1) Identify the study design used here.\r\n2) Make 2*2 matrix\r\n2) Calculate the measure of association.",
       "Answer_Key_A": "Study design: Case-control study. Odds Ratio = (200×450)/(300×50) = 90,000/15,000 = 6.0.",
       "Marks_A": 3,
-      "Sub_Question_B": "1) Interpret the measure of association.\r\n2) State its implication for HPV vaccination as a preventive strategy.\r\n3) Mention advantages and disadvantages of this design.",
+      "Sub_Question_B": "1) Interpret the measure of association.\r\n2) State its implication for HPV vaccination as a preventive strategy.\r\n",
       "Answer_Key_B": "OR = 6 means unimmunized women had 6 times the odds of cervical cancer compared to immunized women — supports HPV vaccination as a strongly protective intervention.",
       "Marks_B": 4,
       "Sub_Question_C": "1) Discuss the national HPV vaccination programme.\r\n2) Discuss cervical cancer screening strategy relevant here.",
@@ -709,7 +709,7 @@
       "Topic": "Epidemiology",
       "Difficulty": "Moderate",
       "Title": "Epidemiology - 7",
-      "Scenario_or_Stem": "A rapid diagnostic test for pulmonary tuberculosis is compared with the gold standard confirmatory test: Test positive – disease present 800, disease absent 1,000; Test negative – disease present 200, disease absent 8,000.",
+      "Scenario_or_Stem": "A rapid diagnostic test for pulmonary tuberculosis is compared with the gold standard confirmatory test: Test positive – disease present 800, disease absent 200; Test negative – disease present 200, disease absent 8,800.",
       "Sub_Question_A": "1) Identify the type of study design used to evaluate this test and make the 2*2 table.\r\n2) Calculate sensitivity.",
       "Answer_Key_A": "Study design: Diagnostic accuracy (cross-sectional) study. Sensitivity = 800/(800+200) = 80%.",
       "Marks_A": 3,
@@ -759,7 +759,7 @@
       "Topic": "Epidemiology",
       "Difficulty": "Moderate",
       "Title": "Epidemiology - 9",
-      "Scenario_or_Stem": "A new diagnostic test for cancer is compared with the complete diagnostic package in current use: Test positive – disease present 8, disease absent 1,000; Test negative – disease present 2, disease absent 9,000.",
+      "Scenario_or_Stem": "A new diagnostic test for cancer is compared with the complete diagnostic package in current use: Test positive – disease present 80, disease absent 900; Test negative – disease present 20, disease absent 9,000.",
       "Sub_Question_A": "1) Identify the type of study design used to evaluate this test and make the 2*2 table.\r\n2) Calculate sensitivity.",
       "Answer_Key_A": "Study design: Diagnostic accuracy study. Sensitivity = 8/10 = 80%.",
       "Marks_A": 3,
@@ -1074,7 +1074,7 @@
       "Image_Caption": null,
       "Total_Marks": 10,
       "Status": "Active",
-      "Last_Updated": 46278,
+      "Last_Updated": 46282,
       "Remarks": "Malaria"
     }
   ],
@@ -1468,7 +1468,7 @@
       "Marks_B": 4,
       "Sub_Question_C": "Discuss dietary counselling measures relevant to reducing excess oil/fat intake in the community.",
       "Marks_C": 3,
-      "Plot_Instruction": "Construct a box-and-whisker plot comparing oil intake distribution in Town X and Town Y.",
+      "Plot_Instruction": "Construct a mean bar with error comparing oil intake distribution in Town X and Town Y.",
       "Image_File": "BIO15_oilintake_towns.png",
       "Image_Caption": null,
       "Total_Marks": 10,
@@ -1632,11 +1632,11 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS002",
+      "Question_ID": "OS001",
       "Item_Type": "Question",
       "Question_No": "1",
       "Topic": "OSPE",
-      "Difficulty": "Moderate",
+      "Difficulty": "Difficult",
       "Title": "Station 1",
       "Scenario_or_Stem": "54-year-old male with type 2 diabetes, tingling/numbness in feet.",
       "Sub_Question_A": "1) Components of inspection\r\n2) Peripheral pulses\r\n3) Neuropathy assessment\r\n4) Importance\r\n5) Preventive measures",
@@ -1657,7 +1657,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS004",
+      "Question_ID": "OS002",
       "Item_Type": "Question",
       "Question_No": "2",
       "Topic": "OSPE",
@@ -1682,11 +1682,11 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS006",
+      "Question_ID": "OS003",
       "Item_Type": "Question",
       "Question_No": "3",
       "Topic": "OSPE",
-      "Difficulty": "Moderate",
+      "Difficulty": "Difficult",
       "Title": "Station 3",
       "Scenario_or_Stem": "32-week pregnant woman, routine ANC visit.",
       "Sub_Question_A": "1) Abdominal exam steps\r\n2) Leopold’s manoeuvres\r\n3) Fundal height\r\n4) FHR\r\n5) Findings recorded",
@@ -1707,7 +1707,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS008",
+      "Question_ID": "OS004",
       "Item_Type": "Question",
       "Question_No": "4",
       "Topic": "OSPE",
@@ -1732,7 +1732,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS010",
+      "Question_ID": "OS005",
       "Item_Type": "Question",
       "Question_No": "5",
       "Topic": "OSPE",
@@ -1757,7 +1757,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS012",
+      "Question_ID": "OS006",
       "Item_Type": "Question",
       "Question_No": "6",
       "Topic": "OSPE",
@@ -1782,7 +1782,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS014",
+      "Question_ID": "OS007",
       "Item_Type": "Question",
       "Question_No": "7",
       "Topic": "OSPE",
@@ -1807,7 +1807,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS016",
+      "Question_ID": "OS008",
       "Item_Type": "Question",
       "Question_No": "8",
       "Topic": "OSPE",
@@ -1832,7 +1832,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS018",
+      "Question_ID": "OS009",
       "Item_Type": "Question",
       "Question_No": "9",
       "Topic": "OSPE",
@@ -1857,7 +1857,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS020",
+      "Question_ID": "OS010",
       "Item_Type": "Question",
       "Question_No": "10",
       "Topic": "OSPE",
@@ -1882,13 +1882,13 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS021",
+      "Question_ID": "OS011",
       "Item_Type": "Question",
       "Question_No": "11",
       "Topic": "Immunization & Cold Chain",
       "Difficulty": "Moderate",
       "Title": "Station 11",
-      "Scenario_or_Stem": "Perform estimation of chlorine demand for well having  100mtr depth of water and inner circumference of 6.28m water using Horrocks Apparatus.",
+      "Scenario_or_Stem": "Perform estimation of chlorine demand for water well having  100mtr depth of and inner circumference of 6.28m using Horrocks Apparatus.",
       "Sub_Question_A": "1) Calculate the volume of water in the well from the given dimensions.\r\n2) waiting time after adding bleaching powder solution\r\n3) Name the indicator reagent used in the Horrocks Apparatus test and describe the colour change observed at the endpoint.",
       "Answer_Key_A": "Starch-iodide reagent or orthotolidine; a blue (starch-iodide) or canary yellow (orthotolidine) colour change indicates the endpoint (chlorine demand met).",
       "Marks_A": 3,
@@ -1907,7 +1907,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS022",
+      "Question_ID": "OS012",
       "Item_Type": "Question",
       "Question_No": "12",
       "Topic": "OSPE",
@@ -1932,7 +1932,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS023",
+      "Question_ID": "OS013",
       "Item_Type": "Question",
       "Question_No": "13",
       "Topic": "Contraceptive Technology & Family Planning",
@@ -1957,7 +1957,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS024",
+      "Question_ID": "OS014",
       "Item_Type": "Question",
       "Question_No": "14",
       "Topic": "Maternal and Child Health (MCH) & IMNCI",
@@ -1982,7 +1982,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS025",
+      "Question_ID": "OS015",
       "Item_Type": "Question",
       "Question_No": "15",
       "Topic": "Occupational & Environmental Health",
@@ -2007,17 +2007,17 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS026",
+      "Question_ID": "OS016",
       "Item_Type": "Question",
       "Question_No": "16",
       "Topic": "Disinfectants, Water Quality & Vector Control",
       "Difficulty": "Moderate",
       "Title": "Station 16",
       "Scenario_or_Stem": "Assessment of nutritional status in 2-year-old child using Shakir MUAC tape .",
-      "Sub_Question_A": "Demonstrate anatomical landmark and placement technique for MUAC measurement.",
+      "Sub_Question_A": "State anatomical landmark and placement technique for MUAC measurement.",
       "Answer_Key_A": "Landmark: midpoint between the tip of the shoulder (acromion) and tip of the elbow (olecranon) on the left arm, with the arm relaxed at the side.",
       "Marks_A": 3,
-      "Sub_Question_B": "State the colour-zone cut-off values used to classify a child's nutritional status by MUAC (SAM/MAM/Normal), and interpret their significance.",
+      "Sub_Question_B": "State the colour-zone cut-off values used to classify a child's nutritional status by MUAC , and interpret their significance.",
       "Answer_Key_B": "Red (<11.5cm) = Severe Acute Malnutrition; Yellow (11.5–12.5cm) = Moderate Acute Malnutrition; Green (>12.5cm) = Normal nutritional status.",
       "Marks_B": 4,
       "Sub_Question_C": "State advantages of MUAC as a quick community screening tool.",
@@ -2032,7 +2032,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS027",
+      "Question_ID": "OS017",
       "Item_Type": "Question",
       "Question_No": "17",
       "Topic": "Health Communication & Injury Prevention",
@@ -2057,7 +2057,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS028",
+      "Question_ID": "OS018",
       "Item_Type": "Question",
       "Question_No": "18",
       "Topic": "Nutrition & Health",
@@ -2082,7 +2082,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS029",
+      "Question_ID": "OS019",
       "Item_Type": "Question",
       "Question_No": "19",
       "Topic": "Contraceptive Technology & Family Planning",
@@ -2107,7 +2107,7 @@
       "Answer_Key_C": null
     },
     {
-      "Question_ID": "OS030",
+      "Question_ID": "OS020",
       "Item_Type": "Question",
       "Question_No": "20",
       "Topic": "National Health Programs & Health Administration",
@@ -2295,7 +2295,7 @@
       "Sub_Question_C": "Why are AD syringes considered essential in mass immunization campaigns compared to conventional disposable syringes?",
       "Answer_Key_C": null,
       "Marks_C": 1,
-      "Image_File": "spotter_1_6_ad.webp",
+      "Image_File": "spotter_1_6_ad.jpg",
       "Remarks": "Set 1 Spotter 6 – AD syringe",
       "Image_Caption": null,
       "Total_Marks": 3,
@@ -2967,7 +2967,7 @@
       "Sub_Question_C": "Explain its role in India’s reproductive health programmes.",
       "Answer_Key_C": "Supports family planning and reproductive health initiatives in India.",
       "Marks_C": 1,
-      "Image_File": "spotter_3_10_unfpa.webp",
+      "Image_File": "spotter_3_10_unfpa.png",
       "Remarks": "Set 3 Spotter 10 – UNFPA",
       "Image_Caption": null,
       "Total_Marks": 3,
@@ -3639,7 +3639,7 @@
       "Sub_Question_C": "Suggest one control measure relevant to endemic areas.",
       "Answer_Key_C": "Rodent control and insecticidal dusting of burrows; plague surveillance programme.",
       "Marks_C": 1,
-      "Image_File": "spotter_5_2_rat_flea.png",
+      "Image_File": "spotter_6_2_rat_flea.png",
       "Remarks": "Set 6 Spotter 2 – Rat flea (Xenopsylla cheopis)",
       "Image_Caption": null,
       "Total_Marks": 3,
@@ -4375,7 +4375,7 @@
       "Difficulty": "Moderate",
       "Title": "Spotter 9",
       "Sub_Question_A": "Identify the equipment shown and state what it measures.",
-      "Answer_Key_A": "DPD chlorine comparator — measures residual chlorine in treated water.",
+      "Answer_Key_A": "DPDchlorine comparator — measures residual chlorine in treated water.",
       "Marks_A": 1,
       "Sub_Question_B": "Explain the principle behind its colour-based reading.",
       "Answer_Key_B": "DPD reagent reacts with residual chlorine to produce a pink colour, whose intensity is compared against a standard colour scale to estimate concentration.",
