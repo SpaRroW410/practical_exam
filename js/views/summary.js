@@ -152,7 +152,14 @@ function renderSummary() {
                     <button
                         id="printExam">
 
-                        Print / Save PDF
+                        Print Question Paper
+
+                    </button>
+
+                    <button
+                        id="printExamWithAnswers">
+
+                        Print with Answer Key
 
                     </button>
 
@@ -173,7 +180,19 @@ function renderSummary() {
 
     document
         .getElementById("printExam")
-        .onclick = printExamToPDF;
+        .onclick = function () {
+
+            printExamToPDF(false);
+
+        };
+
+    document
+        .getElementById("printExamWithAnswers")
+        .onclick = function () {
+
+            printExamToPDF(true);
+
+        };
 
     document
         .getElementById("closeExam")

@@ -22,6 +22,60 @@ let printIncludeAnswers = true;
 
 
 // ------------------------------------------------------------
+// Wait For Print Images
+//
+// window.print() used to fire the instant innerHTML was set, but
+// <img> loading is asynchronous - every printed image (question
+// papers and the admin question bank alike) came out blank because
+// the print snapshot was taken before any image had actually loaded.
+// Confirmed: at the moment window.print() used to run, every <img> in
+// #print-area still had complete === false / naturalWidth === 0.
+//
+// Resolves once every <img> in the print area has either loaded or
+// failed (a missing/broken image shouldn't block printing forever),
+// capped at 4s so a single stuck image can never hang the print flow.
+// ------------------------------------------------------------
+
+function waitForPrintImages(printArea) {
+
+    const imgs = Array.from(printArea.querySelectorAll("img"));
+
+    if (imgs.length === 0) {
+
+        return Promise.resolve();
+
+    }
+
+    const imagesReady = Promise.all(
+
+        imgs.map(function(img){
+
+            if (img.complete) return Promise.resolve();
+
+            return new Promise(function(resolve){
+
+                img.addEventListener("load", resolve, { once: true });
+
+                img.addEventListener("error", resolve, { once: true });
+
+            });
+
+        })
+
+    );
+
+    const timeout = new Promise(function(resolve){
+
+        setTimeout(resolve, 4000);
+
+    });
+
+    return Promise.race([imagesReady, timeout]);
+
+}
+
+
+// ------------------------------------------------------------
 // Entry Point (Summary screen, and the selection screen's two buttons)
 // ------------------------------------------------------------
 
@@ -44,7 +98,11 @@ function printExamToPDF(includeAnswers = true) {
 
     printIncludeAnswers = true;
 
-    window.print();
+    waitForPrintImages(printArea).then(function(){
+
+        window.print();
+
+    });
 
 }
 
@@ -74,7 +132,11 @@ function printSectionBankToPDF(sectionKey, level, includeAnswers = false) {
 
     printIncludeAnswers = true;
 
-    window.print();
+    waitForPrintImages(printArea).then(function(){
+
+        window.print();
+
+    });
 
 }
 
