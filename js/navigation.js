@@ -12,7 +12,7 @@
 
 function nextSection() {
 
-    if (appState.currentSection < SECTION_ORDER.length - 1) {
+    if (appState.currentSection < activeSectionOrder().length - 1) {
 
         appState.currentSection++;
 
@@ -58,7 +58,7 @@ function isFirstSection() {
 function isLastSection() {
 
     return appState.currentSection ===
-        SECTION_ORDER.length - 1;
+        activeSectionOrder().length - 1;
 
 }
 

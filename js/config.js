@@ -54,6 +54,15 @@ const appState = {
     // Populated only when the Spotter Set dropdown is set to Random.
     randomSpotterSlides: null,
 
+    // Order of the 5 exam sections for this run (Summary always runs
+    // last, appended separately — see activeSectionOrder() below).
+    // Left unset until the coordinator confirms a sequence on the
+    // Sequence screen; activeSectionOrder() falls back to
+    // SECTION_ORDER's standard order until then. Sticky across
+    // multiple exam runs in the same session once set, so a custom
+    // sequence doesn't have to be re-picked every time.
+    sectionSequence: null,
+
     // Timers
 
     timer: {
@@ -141,9 +150,25 @@ const SPOTTER_SEQUENCE = {
 // Helper Functions
 // ------------------------------------------------------------
 
+// ------------------------------------------------------------
+// Active Section Order
+//
+// Defaults to SECTION_ORDER's standard 5 sections (everything before
+// "summary") unless the coordinator picked a custom order on the
+// Sequence screen (js/views/sequence.js) — Summary always runs last
+// regardless of what order the rest were set to.
+// ------------------------------------------------------------
+
+function activeSectionOrder(){
+
+    return (appState.sectionSequence || SECTION_ORDER.slice(0, -1))
+        .concat(["summary"]);
+
+}
+
 function currentSectionName(){
 
-    return SECTION_ORDER[appState.currentSection];
+    return activeSectionOrder()[appState.currentSection];
 
 }
 

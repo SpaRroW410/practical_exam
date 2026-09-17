@@ -99,11 +99,32 @@ function applySelectionToState(){
 
 // ------------------------------------------------------------
 // Start Examination
+//
+// Reads the Home screen's dropdowns (applySelectionToState) and hands
+// off to the Sequence screen (js/views/sequence.js) rather than
+// starting immediately, so the coordinator can reorder the 5 sections
+// first. Split out as beginExamRun() because by the time the Sequence
+// screen's BEGIN EXAM button fires, Home's own DOM (and so its
+// dropdowns) no longer exists — applySelectionToState() must run here,
+// while Home is still on screen, not be re-run later.
 // ------------------------------------------------------------
 
 function startExam(){
 
     applySelectionToState();
+
+    renderSequenceSelection();
+
+}
+
+
+// ------------------------------------------------------------
+// Begin Exam Run
+//
+// The actual start, once a sequence (default or custom) is confirmed.
+// ------------------------------------------------------------
+
+function beginExamRun(){
 
 
     // -----------------------------

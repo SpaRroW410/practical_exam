@@ -38,7 +38,7 @@ function showOSPEHeader() {
 
             </div>
 
-            ${renderNavigationButtons(true,true)}
+            ${renderNavigationButtons(!isFirstSection(), true)}
 
         </section>
 

@@ -426,7 +426,7 @@ function showSpotterHeader() {
 
             ${renderNavigationButtons(
 
-                true,
+                !isFirstSection(),
 
                 imageCount === 0
 

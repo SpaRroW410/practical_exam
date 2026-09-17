@@ -38,7 +38,7 @@ function showEpidemiologyHeader() {
 
             </div>
 
-            ${renderNavigationButtons(true, true)}
+            ${renderNavigationButtons(!isFirstSection(), true)}
 
         </section>
 

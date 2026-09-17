@@ -37,7 +37,7 @@ function showBiostatisticsHeader() {
 
             </div>
 
-            ${renderNavigationButtons(true,true)}
+            ${renderNavigationButtons(!isFirstSection(), true)}
 
         </section>
 
