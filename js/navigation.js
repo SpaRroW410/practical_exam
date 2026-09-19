@@ -94,19 +94,34 @@ function attachNavigationEvents() {
 
 // ------------------------------------------------------------
 // Keyboard Navigation
+//
+// Also drives physical slide-changer remotes: most send either the
+// Left/Right arrow keys or Page Up/Page Down (which model does which
+// varies by brand), so both pairs are treated as equivalent here —
+// whichever one a given clicker actually emits, Next/Previous still
+// works. preventDefault() is only called once we're actually about to
+// substitute a click for the key — screens with no Next/Previous
+// button (Sequence, Admin) keep the browser's native Page Up/Down
+// scrolling untouched, since nothing here is replacing it there.
 // ------------------------------------------------------------
+
+const NEXT_KEYS = ["ArrowRight", "PageDown"];
+
+const PREVIOUS_KEYS = ["ArrowLeft", "PageUp"];
 
 document.addEventListener("keydown", function (event) {
 
     if (appState.currentView === "home")
         return;
 
-    if (event.key === "ArrowRight") {
+    if (NEXT_KEYS.indexOf(event.key) !== -1) {
 
         // Reserve screen has no nextButton — allow manual
         // advance to Summary before the timer runs out.
 
         if (typeof reserveMode !== "undefined" && reserveMode) {
+
+            event.preventDefault();
 
             finishSpotter();
 
@@ -116,17 +131,27 @@ document.addEventListener("keydown", function (event) {
 
         const btn = document.getElementById("nextButton");
 
-        if (btn)
+        if (btn) {
+
+            event.preventDefault();
+
             btn.click();
+
+        }
 
     }
 
-    if (event.key === "ArrowLeft") {
+    if (PREVIOUS_KEYS.indexOf(event.key) !== -1) {
 
         const btn = document.getElementById("previousButton");
 
-        if (btn)
+        if (btn) {
+
+            event.preventDefault();
+
             btn.click();
+
+        }
 
     }
 
