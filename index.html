@@ -183,26 +183,32 @@
     <!-- Hidden container populated only when printing -->
     <div id="print-area"></div>
 
-    <!-- Restart control — shown only during the five exam sections
+    <!-- Home control — shown only during the five exam sections
          (js/ui.js toggles it), never on Home/Access/Admin/Summary.
-         Requires the checkbox to be ticked before RESTART is clickable,
-         mirroring the Exit widget's two-step confirmation. Restarts the
-         current run from its first section with the same selections. -->
-    <div id="examRestartWidget" class="exam-restart-widget" style="display:none;">
+         Requires the checkbox to be ticked before HOME is clickable,
+         mirroring the Exit widget's two-step confirmation. Returns to
+         the question-selection screen without ending the session —
+         Previous/arrow-key navigation already covers stepping back
+         through sections, so this is for abandoning the current
+         picks and choosing again, not undoing one step at a time. -->
+    <div id="examHomeWidget" class="exam-home-widget" style="display:none;">
 
-        <label class="exam-restart-confirm-label">
-            <input type="checkbox" id="examRestartConfirm">
-            Confirm Restart
+        <label class="exam-home-confirm-label">
+            <input type="checkbox" id="examHomeConfirm">
+            Confirm Home
         </label>
 
-        <button id="examRestartBtn" class="exam-restart-btn" disabled>RESTART</button>
+        <button id="examHomeBtn" class="exam-home-btn" disabled>HOME</button>
 
     </div>
 
     <!-- Exit control — shown only during the five exam sections
          (js/ui.js toggles it), never on Home/Access/Admin/Summary.
          Requires the checkbox to be ticked before EXIT is clickable, as
-         a deliberate two-step confirmation for aborting a live exam. -->
+         a deliberate two-step confirmation for ending the session —
+         attempts to close the tab, falling back to the Access screen
+         (re-locking the app behind the access code) if the browser
+         won't allow a script-driven close on this tab. -->
     <div id="examExitWidget" class="exam-exit-widget" style="display:none;">
 
         <label class="exam-exit-confirm-label">

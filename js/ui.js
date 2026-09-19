@@ -38,18 +38,21 @@ function renderPage(html) {
 
 
 // ------------------------------------------------------------
-// Exam Exit / Restart Widgets
+// Exam Exit / Home Widgets
 //
 // Two fixed, always-in-DOM controls (index.html) shown only while one
-// of the five exam sections is on screen: Exit (bottom-right) aborts a
-// live exam and returns to Home; Restart (bottom-left) resets the
-// current run back to its first section, keeping the same question/
-// spotter selections and sequence — for restarting after a mid-exam
-// hiccup without re-picking everything from Home. Both use the same
-// checkbox-gates-button two-step confirmation rather than a native
-// confirm() dialog, since either can be reached mid-timer during a
-// live exam, and both re-arm to unchecked/disabled on every screen
-// change so a stray tick never carries over to a different screen.
+// of the five exam sections is on screen. Home (bottom-left) returns
+// to the question-selection screen, abandoning the current picks —
+// Previous/arrow-key navigation already covers stepping back through
+// sections one at a time, so this is for choosing different questions
+// entirely. Exit (bottom-right) ends the session outright: it tries
+// window.close(), falling back to the Access screen (re-locking the
+// app behind the access code) if the browser won't allow a script-
+// driven close on this tab. Both use the same checkbox-gates-button
+// two-step confirmation rather than a native confirm() dialog, since
+// either can be reached mid-timer during a live exam, and both re-arm
+// to unchecked/disabled on every screen change so a stray tick never
+// carries over to a different screen.
 // ------------------------------------------------------------
 
 const EXAM_SECTION_VIEWS = [
@@ -89,13 +92,13 @@ function updateExamExitWidget() {
 
     armExamWidget("examExitWidget", "examExitConfirm", "examExitBtn");
 
-    armExamWidget("examRestartWidget", "examRestartConfirm", "examRestartBtn");
+    armExamWidget("examHomeWidget", "examHomeConfirm", "examHomeBtn");
 
 }
 
 // Each written section latches "timer already started" in its own
 // module-level variable and never clears it itself except when moving
-// on to the next section — exiting or restarting mid-exam can leave
+// on to the next section — exiting or going Home mid-exam can leave
 // one of these stuck true, which would silently stop that section's
 // timer from starting (it would just resume instead) on the run that
 // follows. Shared by both widgets below.
@@ -135,35 +138,46 @@ document.addEventListener("DOMContentLoaded", function(){
 
             resetSectionTimerLatches();
 
-            renderHome();
+            window.close();
+
+            // Browsers only allow script-driven window.close() on a
+            // tab/window that was itself opened by script; for a
+            // normally-navigated tab it's silently ignored, so fall
+            // back to the Access screen instead of a dead-end message —
+            // that re-locks the app behind the access code for whoever
+            // uses it next, rather than leaving the exam-in-progress
+            // screen sitting open.
+            setTimeout(function(){
+
+                renderPasswordScreen();
+
+            }, 200);
 
         });
 
     }
 
-    const restartCheckbox = document.getElementById("examRestartConfirm");
+    const homeCheckbox = document.getElementById("examHomeConfirm");
 
-    const restartButton = document.getElementById("examRestartBtn");
+    const homeButton = document.getElementById("examHomeBtn");
 
-    if (restartCheckbox && restartButton) {
+    if (homeCheckbox && homeButton) {
 
-        restartCheckbox.addEventListener("change", function(){
+        homeCheckbox.addEventListener("change", function(){
 
-            restartButton.disabled = !restartCheckbox.checked;
+            homeButton.disabled = !homeCheckbox.checked;
 
         });
 
-        restartButton.addEventListener("click", function(){
+        homeButton.addEventListener("click", function(){
 
-            if (!restartCheckbox.checked) return;
+            if (!homeCheckbox.checked) return;
+
+            resetTimers();
 
             resetSectionTimerLatches();
 
-            // Re-runs the same selections/sequence from the top —
-            // beginExamRun() (js/app.js) is exactly what the Sequence
-            // screen's BEGIN EXAM button calls, so this is a genuine
-            // restart, not a fresh setup.
-            beginExamRun();
+            renderHome();
 
         });
 

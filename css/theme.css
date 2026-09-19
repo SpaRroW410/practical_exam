@@ -492,11 +492,13 @@ button:hover {
     background: #f6c9c9;
 }
 
-/* Exam Restart Widget — fixed bottom-left (mirrors the Exit widget's
+/* Exam Home Widget — fixed bottom-left (mirrors the Exit widget's
    bottom-right), shown only during the five exam sections. Same
-   checkbox-gates-button two-step confirmation, but restarts the
-   current run from its first section instead of abandoning it. */
-.exam-restart-widget {
+   checkbox-gates-button two-step confirmation, but returns to the
+   question-selection screen (abandoning the current picks) rather
+   than ending the session — a lighter action than Exit, so it uses a
+   calmer blue tone instead of Exit's red. */
+.exam-home-widget {
     position: fixed;
     bottom: 16px;
     left: 16px;
@@ -511,7 +513,7 @@ button:hover {
     box-shadow: var(--shadow);
 }
 
-.exam-restart-confirm-label {
+.exam-home-confirm-label {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -521,23 +523,23 @@ button:hover {
     user-select: none;
 }
 
-.exam-restart-widget button {
+.exam-home-widget button {
     padding: 8px 16px;
     font-size: 15px;
-    background: var(--pastel-3);
-    border: 1px solid var(--pastel-border-3);
-    color: #7a5a1f;
+    background: var(--pastel-1);
+    border: 1px solid var(--pastel-border-1);
+    color: #1a3d6b;
 }
 
-.exam-restart-widget button:disabled {
+.exam-home-widget button:disabled {
     background: #f2f2f2;
     border-color: var(--border);
     color: #aaa;
     cursor: not-allowed;
 }
 
-.exam-restart-widget button:not(:disabled):hover {
-    background: #f6e4a6;
+.exam-home-widget button:not(:disabled):hover {
+    background: #c6dafc;
 }
 
 /* Summary */
