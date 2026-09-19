@@ -173,13 +173,8 @@
 
         <footer id="app-footer">
 
-            <div class="footer-left">
-                <small>Version 2.0</small>
-            </div>
-
-            <div class="footer-right">
-                <small>Developed by Dr. Mukul Maheshwari</small>
-            </div>
+            <small>Version 2.1</small>
+            <small>Developed by Dr. Mukul Maheshwari</small>
 
         </footer>
 
@@ -187,6 +182,22 @@
 
     <!-- Hidden container populated only when printing -->
     <div id="print-area"></div>
+
+    <!-- Restart control — shown only during the five exam sections
+         (js/ui.js toggles it), never on Home/Access/Admin/Summary.
+         Requires the checkbox to be ticked before RESTART is clickable,
+         mirroring the Exit widget's two-step confirmation. Restarts the
+         current run from its first section with the same selections. -->
+    <div id="examRestartWidget" class="exam-restart-widget" style="display:none;">
+
+        <label class="exam-restart-confirm-label">
+            <input type="checkbox" id="examRestartConfirm">
+            Confirm Restart
+        </label>
+
+        <button id="examRestartBtn" class="exam-restart-btn" disabled>RESTART</button>
+
+    </div>
 
     <!-- Exit control — shown only during the five exam sections
          (js/ui.js toggles it), never on Home/Access/Admin/Summary.

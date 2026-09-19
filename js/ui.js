@@ -38,14 +38,17 @@ function renderPage(html) {
 
 
 // ------------------------------------------------------------
-// Exam Exit Widget
+// Exam Exit / Restart Widgets
 //
-// A fixed, always-in-DOM control (index.html) shown only while one of
-// the five exam sections is on screen, letting an invigilator abort a
-// live exam and return to Home. The checkbox is a deliberate two-step
-// confirmation — the button stays disabled until it's ticked — rather
-// than a native confirm() dialog, since this can be reached mid-timer
-// during a live exam. Re-armed to unchecked/disabled on every screen
+// Two fixed, always-in-DOM controls (index.html) shown only while one
+// of the five exam sections is on screen: Exit (bottom-right) aborts a
+// live exam and returns to Home; Restart (bottom-left) resets the
+// current run back to its first section, keeping the same question/
+// spotter selections and sequence — for restarting after a mid-exam
+// hiccup without re-picking everything from Home. Both use the same
+// checkbox-gates-button two-step confirmation rather than a native
+// confirm() dialog, since either can be reached mid-timer during a
+// live exam, and both re-arm to unchecked/disabled on every screen
 // change so a stray tick never carries over to a different screen.
 // ------------------------------------------------------------
 
@@ -63,18 +66,18 @@ const EXAM_SECTION_VIEWS = [
 
 ];
 
-function updateExamExitWidget() {
+function armExamWidget(widgetId, checkboxId, buttonId) {
 
-    const widget = document.getElementById("examExitWidget");
+    const widget = document.getElementById(widgetId);
 
     if (!widget) return;
 
     widget.style.display =
         EXAM_SECTION_VIEWS.indexOf(appState.currentView) !== -1 ? "flex" : "none";
 
-    const checkbox = document.getElementById("examExitConfirm");
+    const checkbox = document.getElementById(checkboxId);
 
-    const button = document.getElementById("examExitBtn");
+    const button = document.getElementById(buttonId);
 
     if (checkbox) checkbox.checked = false;
 
@@ -82,45 +85,89 @@ function updateExamExitWidget() {
 
 }
 
+function updateExamExitWidget() {
+
+    armExamWidget("examExitWidget", "examExitConfirm", "examExitBtn");
+
+    armExamWidget("examRestartWidget", "examRestartConfirm", "examRestartBtn");
+
+}
+
+// Each written section latches "timer already started" in its own
+// module-level variable and never clears it itself except when moving
+// on to the next section — exiting or restarting mid-exam can leave
+// one of these stuck true, which would silently stop that section's
+// timer from starting (it would just resume instead) on the run that
+// follows. Shared by both widgets below.
+function resetSectionTimerLatches() {
+
+    clinicalTimerStarted = false;
+
+    epidemiologyTimerStarted = false;
+
+    biostatisticsTimerStarted = false;
+
+    ospeTimerStarted = false;
+
+    spotterTimerStarted = false;
+
+}
+
 document.addEventListener("DOMContentLoaded", function(){
 
-    const checkbox = document.getElementById("examExitConfirm");
+    const exitCheckbox = document.getElementById("examExitConfirm");
 
-    const button = document.getElementById("examExitBtn");
+    const exitButton = document.getElementById("examExitBtn");
 
-    if (!checkbox || !button) return;
+    if (exitCheckbox && exitButton) {
 
-    checkbox.addEventListener("change", function(){
+        exitCheckbox.addEventListener("change", function(){
 
-        button.disabled = !checkbox.checked;
+            exitButton.disabled = !exitCheckbox.checked;
 
-    });
+        });
 
-    button.addEventListener("click", function(){
+        exitButton.addEventListener("click", function(){
 
-        if (!checkbox.checked) return;
+            if (!exitCheckbox.checked) return;
 
-        resetTimers();
+            resetTimers();
 
-        // Each written section latches "timer already started" in its
-        // own module-level variable and never clears it itself except
-        // when moving on to the next section — exiting mid-exam can
-        // leave one of these stuck true, which would silently stop that
-        // section's timer from starting on a later exam run. Clear all
-        // five explicitly so the next run is unaffected.
-        clinicalTimerStarted = false;
+            resetSectionTimerLatches();
 
-        epidemiologyTimerStarted = false;
+            renderHome();
 
-        biostatisticsTimerStarted = false;
+        });
 
-        ospeTimerStarted = false;
+    }
 
-        spotterTimerStarted = false;
+    const restartCheckbox = document.getElementById("examRestartConfirm");
 
-        renderHome();
+    const restartButton = document.getElementById("examRestartBtn");
 
-    });
+    if (restartCheckbox && restartButton) {
+
+        restartCheckbox.addEventListener("change", function(){
+
+            restartButton.disabled = !restartCheckbox.checked;
+
+        });
+
+        restartButton.addEventListener("click", function(){
+
+            if (!restartCheckbox.checked) return;
+
+            resetSectionTimerLatches();
+
+            // Re-runs the same selections/sequence from the top —
+            // beginExamRun() (js/app.js) is exactly what the Sequence
+            // screen's BEGIN EXAM button calls, so this is a genuine
+            // restart, not a fresh setup.
+            beginExamRun();
+
+        });
+
+    }
 
 });
 
