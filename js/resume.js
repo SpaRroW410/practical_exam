@@ -198,6 +198,11 @@ function resumeExamRun(saved) {
 
     }
 
+    // Paint the restored value immediately — startOverallTimer()'s own
+    // first tick is up to 1s away, which would otherwise leave the
+    // header showing a stale "00:00" until then.
+    updateOverallTimer(formatTime(appState.timer.overall));
+
     startOverallTimer();
 
     renderCurrentSection();
