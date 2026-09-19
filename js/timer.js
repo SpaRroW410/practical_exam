@@ -58,6 +58,15 @@ function startOverallTimer() {
             formatTime(appState.timer.overall)
         );
 
+        // Keeps the resumable overall-timer value reasonably fresh
+        // without writing to localStorage twice a second for the whole
+        // exam — a crash loses at most a few seconds of accuracy here.
+        if (appState.timer.overall % 10 === 0) {
+
+            saveResumeState();
+
+        }
+
     }, 1000);
 
 }

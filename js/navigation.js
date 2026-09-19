@@ -18,6 +18,14 @@ function nextSection() {
 
         renderCurrentSection();
 
+        // Reaching Summary already clears the saved run (see
+        // renderSummary()) — re-saving here would immediately undo that.
+        if (currentSectionName() !== "summary") {
+
+            saveResumeState();
+
+        }
+
     }
 
 }
@@ -34,6 +42,8 @@ function previousSection() {
         appState.currentSection--;
 
         renderCurrentSection();
+
+        saveResumeState();
 
     }
 

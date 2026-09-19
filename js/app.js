@@ -178,6 +178,8 @@ function beginExamRun(){
 
     renderCurrentSection();
 
+    saveResumeState();
+
 }
 
 

@@ -11,6 +11,8 @@ function renderSummary() {
 
     stopOverallTimer();
 
+    clearResumeState();
+
     renderPage(`
 
         <section class="summary-screen">

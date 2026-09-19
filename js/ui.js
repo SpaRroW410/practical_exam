@@ -138,6 +138,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
             resetSectionTimerLatches();
 
+            clearResumeState();
+
             window.close();
 
             // Browsers only allow script-driven window.close() on a
@@ -176,6 +178,8 @@ document.addEventListener("DOMContentLoaded", function(){
             resetTimers();
 
             resetSectionTimerLatches();
+
+            clearResumeState();
 
             renderHome();
 

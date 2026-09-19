@@ -17,6 +17,11 @@ let spotterTimerStarted = false;
 
 let reserveMode = false;
 
+// Set by resumeExamRun() (js/resume.js) right before renderCurrentSection()
+// when restoring Spotter's exact slide/reserve position — a one-shot flag
+// so renderSpotter() jumps straight there instead of its normal Header entry.
+let skipSpotterHeaderOnResume = false;
+
 
 // ============================================================
 // Entry Point
@@ -25,6 +30,33 @@ let reserveMode = false;
 function renderSpotter() {
 
     appState.currentView = "spotter";
+
+    if (skipSpotterHeaderOnResume) {
+
+        // currentSpotterIndex/reserveMode were just restored by
+        // resumeExamRun() (js/resume.js) — land directly on that slide
+        // (or the reserve screen) instead of resetting to the start.
+        skipSpotterHeaderOnResume = false;
+
+        spotterTimerStarted = false;
+
+        loadSpotterSlides();
+
+        if (reserveMode) {
+
+            showReserveScreen();
+
+        }
+
+        else {
+
+            showSpotterSlide();
+
+        }
+
+        return;
+
+    }
 
     reserveMode = false;
 
@@ -787,6 +819,8 @@ function previousSpotterSlide() {
 
     showSpotterSlide();
 
+    saveResumeState();
+
 }
 
 
@@ -813,6 +847,8 @@ function nextSpotterSlide() {
 
     showSpotterSlide();
 
+    saveResumeState();
+
 }
 
 
@@ -824,6 +860,8 @@ function nextSpotterSlide() {
 function showReserveScreen() {
 
     reserveMode = true;
+
+    saveResumeState();
 
     renderPage(`
 

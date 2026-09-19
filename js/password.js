@@ -67,7 +67,19 @@ function renderPasswordScreen() {
 
         if (input.value === APP_CONFIG.ACCESS_CODE) {
 
-            renderHome();
+            const saved = loadResumeState();
+
+            if (saved) {
+
+                renderResumePrompt(saved);
+
+            }
+
+            else {
+
+                renderHome();
+
+            }
 
         }
 
