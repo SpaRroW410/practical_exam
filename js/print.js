@@ -334,6 +334,7 @@ function buildStandardSectionBlock(sectionKey, sectionLabel, questionNo) {
 
                 <strong>Plot Instruction:</strong>
                 ${nl2br(question.Plot_Instruction)}
+                <span class="print-marks">(${marks.Plot})</span>
 
             </div>
 

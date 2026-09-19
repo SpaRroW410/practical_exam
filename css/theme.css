@@ -290,6 +290,14 @@ body {
     margin: 0;
 }
 
+/* Image-based Biostatistics questions get a larger Plot Instruction
+   than the base 30px rule above (this more-specific selector wins) —
+   the no-image case's Plot Instruction isn't inside .scenario-plot-group
+   at all, so it keeps the original 30px untouched. */
+.scenario-plot-group .plot-instruction {
+    font-size: 34px;
+}
+
 /* Sub-questions side by side: auto-flow column gives one column per
    sub-question automatically — 3 for PG, 2 for UG — with no branching. */
 .question-subquestions {

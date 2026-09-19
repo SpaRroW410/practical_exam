@@ -1127,9 +1127,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Calculate the mean haemoglobin level of the school children.",
             "Marks_A": 3,
             "Sub_Question_B": "Calculate the standard deviation and comment on the variability of haemoglobin levels in this population.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss the public health significance of these haemoglobin levels for anaemia control in school children.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a histogram with frequency polygon on graph paper.",
             "Image_File": "BIO01_hb_frequency.png",
             "Image_Caption": null,
@@ -1139,7 +1139,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "In a school health check-up, haemoglobin level was estimated in 300 children",
             "Answer_Key_A": "Mean Hb = (150×7 + 140×10 + 10×13)/300 = 2,580/300 = 8.6 g% (using class midpoints 7, 10, 13).",
             "Answer_Key_B": "SD ≈ 1.69 g% (variance = Σf(x-mean)²/N = 852/300 = 2.84). Moderate variability; a sizeable proportion of children fall in the lower Hb range, indicating anaemia burden.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS002",
@@ -1152,9 +1153,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Calculate the mean, mean deviation, and standard deviation.",
             "Marks_A": 3,
             "Sub_Question_B": "Interpret the coefficient of variation for this dataset and comment on the spread of respiratory rate values.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss the clinical significance of variability in respiratory rate monitoring in asthma patients.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Draw a box-and-whisker plot marking median, Q1, Q3, and outliers.",
             "Image_File": null,
             "Image_Caption": null,
@@ -1164,7 +1165,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "Respiratory rate of 10 asthma patients",
             "Answer_Key_A": "Mean = 19.5 breaths/min. Mean Deviation = 2.05. Standard Deviation ≈ 2.72 (sample, n-1).",
             "Answer_Key_B": "CV = (2.72/19.5)×100 ≈ 13.9% — moderate relative variability, expected given individual variation in asthma severity.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS003",
@@ -1177,9 +1179,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Calculate the mean, mean deviation, SD, coefficient of variation, and range.",
             "Marks_A": 3,
             "Sub_Question_B": "Compare the coefficient of variation with the standard deviation and state which better describes relative variability.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss the normal physiological range of pulse rate and the significance of any outliers in this dataset.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Draw a box-and-whisker plot marking median, Q1, Q3, and outliers.",
             "Image_File": null,
             "Image_Caption": null,
@@ -1189,7 +1191,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "Pulse rate per minute of 12 normal individuals",
             "Answer_Key_A": "Mean = 72/min. Mean Deviation = 7. SD ≈ 8.38 (sample, n-1). CV ≈ 11.6%. Range = 86−59 = 27.",
             "Answer_Key_B": "CV (11.6%) and SD (8.38) both indicate moderate variability; CV is more useful for comparing relative variability across datasets with different units/means.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS004",
@@ -1202,9 +1205,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Test the difference in outcome between ORS and homemade fluid.",
             "Marks_A": 3,
             "Sub_Question_B": "State the appropriate test of significance for comparing these two proportions and the assumptions it requires.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss the public health implications for promoting ORS use over homemade fluids in diarrhoea management.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a component (stacked) bar chart showing the proportion recovered in the ORS and homemade fluid groups.",
             "Image_File": "BIO04_ors_outcome.png",
             "Image_Caption": null,
@@ -1214,7 +1217,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "Out of 250 diarrheal cases with dehydration, 150 treated with homemade fluid, 100 with ORS",
             "Answer_Key_A": "Recovered: Homemade fluid 120/150 = 80%; ORS 70/100 = 70%. Chi-square test ≈ 3.29 (df=1); not significant at 5% (critical value 3.84, p>0.05) in this sample.",
             "Answer_Key_B": "Chi-square test for two proportions; assumes independent observations, expected cell counts ≥5 (met here), and a 2×2 contingency table.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS005",
@@ -1227,9 +1231,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Test the association between eye colour and sex.",
             "Marks_A": 3,
             "Sub_Question_B": "State which test of significance is appropriate for this categorical data and why.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Comment on whether eye colour and sex are likely to be biologically associated, and the limitations of applying statistical tests here.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a grouped (dodged) bar chart showing eye colour distribution separately for males and females.",
             "Image_File": "BIO05_eye_colour_sex.png",
             "Image_Caption": null,
@@ -1239,7 +1243,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "Distribution of eye color by sex of 500 American children",
             "Answer_Key_A": "Chi-square test for association ≈ 3.97 (df=1); significant at 5% (critical value 3.84, p<0.05) in this sample.",
             "Answer_Key_B": "Chi-square test of independence is appropriate for two categorical variables (eye colour, sex) in a contingency table.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS006",
@@ -1252,9 +1257,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Calculate the mean difference and standard deviation of the differences.",
             "Marks_A": 3,
             "Sub_Question_B": "Apply the paired t-test and state whether the reduction in BP is statistically significant.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss the clinical significance of this BP reduction and its implications for non-pharmacological management of hypertension.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a paired dot plot (before–after plot) connecting each patient's pre- and post-intervention BP.",
             "Image_File": "BIO06_paired_bp",
             "Image_Caption": null,
@@ -1264,7 +1269,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "A screening test (PAP smear) was done for cervical cancer",
             "Answer_Key_A": "Mean difference = 12.2 mmHg. SD of differences ≈ 1.23 mmHg.",
             "Answer_Key_B": "Paired t = 12.2/(1.23/√10) ≈ 31.4, df=9; far exceeds the critical t-value (~2.26 at 5%) — statistically highly significant reduction in BP (p<0.001).",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS007",
@@ -1277,9 +1283,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Estimate the vaccine requirement for the birth cohort for a 1-year period and outline how you would organize the routine immunization programme.",
             "Marks_A": 3,
             "Sub_Question_B": "Calculate the expected number of infant deaths per year and comment on whether the IMR indicates a public health priority.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss immunization programme planning (cold chain, staffing, wastage factor) needed to meet the estimated vaccine requirement.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a component bar chart showing the vaccine dose requirement (net requirement plus wastage) for each UIP antigen.",
             "Image_File": null,
             "Image_Caption": null,
@@ -1289,7 +1295,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "A PHC covering 30,000 population has CBR 25/1000, IMR 70/1000",
             "Answer_Key_A": "Birth cohort = population × CBR = 30,000×(25/1,000) = 750 infants/year.",
             "Answer_Key_B": "Expected infant deaths = 750×(70/1,000) ≈ 53/year. An IMR of 70/1,000 is well above the current national average (~28/1,000), indicating this is a public health priority area.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS008",
@@ -1302,9 +1309,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Apply and interpret a test of significance at 95% CI.",
             "Marks_A": 3,
             "Sub_Question_B": "State the null hypothesis being tested and the appropriate statistical test for this 2×2 comparison.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss counselling points for OCP use in women with risk factors for hypertension.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a component (stacked) bar chart showing the proportion of hypertensive individuals among OCP users and non-users.",
             "Image_File": "BIO08_ocp_hypertension.png",
             "Image_Caption": null,
@@ -1314,7 +1321,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "In a study, out of 60 hypertensives, 30 used OCP; among 70 non-hypertensives, 25 used OCP",
             "Answer_Key_A": "Odds Ratio = (30×45)/(30×25) = 1,350/750 = 1.8.",
             "Answer_Key_B": "OR of 1.8 indicates a weak-to-moderate positive association — OCP users have about 1.8 times the odds of hypertension compared to non-users; clinically relevant enough to warrant BP monitoring.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS009",
@@ -1327,9 +1335,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Apply and interpret a test of significance at 95% CI.",
             "Marks_A": 3,
             "Sub_Question_B": "State the null hypothesis being tested and the appropriate statistical test for this 2×2 comparison.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss programmatic implications if treatment outcomes differ significantly between sexes under DOTS.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a component (stacked) bar chart showing cure rate (%) by sex.",
             "Image_File": "BIO09_dots_outcome.png",
             "Image_Caption": null,
@@ -1339,7 +1347,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "Outcome of DOTS therapy in males and females",
             "Answer_Key_A": "Chi-square ≈ 3.96 (df=1); significant at 5% (critical value 3.84, p<0.05). Cure rate: male 83/110=75.5%, female 78/90=86.7%.",
             "Answer_Key_B": "Null hypothesis: cure rate is independent of sex. Chi-square test for association in a 2×2 table is appropriate.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS010",
@@ -1352,9 +1361,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Apply and interpret a test of significance at 95% CI.",
             "Marks_A": 3,
             "Sub_Question_B": "State the null and alternative hypotheses for this trial and the test statistic used.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss the clinical significance of the result versus its statistical significance.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a component (stacked) bar chart showing the proportion with increased heart rate in each group.",
             "Image_File": "BIO10_drug_trial_hr.png",
             "Image_Caption": null,
@@ -1364,7 +1373,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "A drug trial showed following results",
             "Answer_Key_A": "Chi-square ≈ 3.42 (df=1); not significant at 5% (critical value 3.84, p>0.05) — borderline result.",
             "Answer_Key_B": "Null hypothesis: no difference in heart-rate-increase proportion between treated and untreated groups. Alternative: a difference exists. Chi-square test statistic used.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS011",
@@ -1377,9 +1387,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Apply and interpret a test of significance at 95% CI.",
             "Marks_A": 3,
             "Sub_Question_B": "State the appropriate test of significance for comparing these mortality figures and its underlying assumptions.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss the public health implications if the difference in mortality is found to be statistically significant.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a component (stacked) bar chart showing the proportion died/survived by disease status.",
             "Image_File": "BIO11_mortality_disease.png",
             "Image_Caption": null,
@@ -1389,7 +1399,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "A mortality study showed following data",
             "Answer_Key_A": "Chi-square ≈ 7.78 (df=1); significant at 1% (p<0.01). Mortality: diseased 10/35=28.6%, not diseased 5/65=7.7% (RR≈3.7).",
             "Answer_Key_B": "Chi-square test of significance for two proportions; assumes independent observations and adequate expected cell counts (met here).",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS012",
@@ -1402,9 +1413,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Apply and interpret a test of significance at 95% CI.",
             "Marks_A": 3,
             "Sub_Question_B": "State the null hypothesis being tested and the appropriate statistical test for this 2×2 comparison.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss tobacco control measures relevant to reducing this risk at the population level.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a component (stacked) bar chart showing the proportion with lung cancer among smokers and non-smokers.",
             "Image_File": "BIO12_smoking_lungcancer.png",
             "Image_Caption": null,
@@ -1414,7 +1425,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "Data on smoking and presence of lung cancer",
             "Answer_Key_A": "Chi-square ≈ 7.78 (df=1); significant at 1% (p<0.01). Odds Ratio = (10×60)/(25×5) = 600/125 = 4.8.",
             "Answer_Key_B": "OR of 4.8 indicates a strong positive association — smokers have nearly 5 times the odds of lung cancer compared to non-smokers.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS013",
@@ -1427,9 +1439,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Test and interpret whether the mean birth weights differ significantly.",
             "Marks_A": 3,
             "Sub_Question_B": "State the appropriate test for comparing these two means and the assumption of normality involved.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss the maternal and child health implications if the mean birth weights differ significantly between groups.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a box-and-whisker plot comparing birth weight distribution in Group A and Group B.",
             "Image_File": "BIO13_birthweight_groups.png",
             "Image_Caption": null,
@@ -1439,7 +1451,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "Birth weights in 2 groups of infants",
             "Answer_Key_A": "t ≈ 2.30; with large sample size, approximately significant at 5% (critical ≈1.96) — Group B's mean birth weight is significantly higher.",
             "Answer_Key_B": "Independent (unpaired) two-sample t-test (or Z-test given large n); assumes approximately normal distribution of birth weights in each group and independent samples.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS014",
@@ -1452,9 +1465,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Apply and interpret a test of significance at 95% CI.",
             "Marks_A": 3,
             "Sub_Question_B": "State the appropriate test of significance for comparing these two means and its assumptions.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss the public health implications of a significant difference in random blood sugar between the two populations.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a box-and-whisker plot comparing RBS distribution in Population A and Population B.",
             "Image_File": "BIO14_rbs_population.png",
             "Image_Caption": null,
@@ -1464,7 +1477,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "RBS sample from 2 populations",
             "Answer_Key_A": "Z ≈ 17.3; highly significant (p<0.001) — Population B has a significantly higher mean RBS than Population A.",
             "Answer_Key_B": "Z-test for comparing two independent means (large sample sizes); assumes approximately normal distribution and independent samples.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS015",
@@ -1477,9 +1491,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Apply and interpret a test of significance at 95% CI.",
             "Marks_A": 3,
             "Sub_Question_B": "State the appropriate test for comparing oil intake between the groups and its underlying assumptions.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss dietary counselling measures relevant to reducing excess oil/fat intake in the community.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a mean bar with error comparing oil intake distribution in Town X and Town Y.",
             "Image_File": "BIO15_oilintake_towns.png",
             "Image_Caption": null,
@@ -1489,7 +1503,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "A cross-sectional study showed oil intake per week",
             "Answer_Key_A": "Z ≈ 2.66; significant at 5% (p<0.01) — Town X has significantly higher oil intake than Town Y.",
             "Answer_Key_B": "Z-test for comparing two independent means (large sample sizes); assumes independent random samples and approximately normal distribution of intake.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS016",
@@ -1502,9 +1517,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Test and interpret whether the proportions differ significantly.",
             "Marks_A": 3,
             "Sub_Question_B": "State the appropriate test for comparing these two proportions and the conditions required for its validity.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss counselling and monitoring measures for hypertension risk in women using contraceptives.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a component (stacked) bar chart showing the proportion hypertensive among oral vs other contraceptive users.",
             "Image_File": "BIO16_contraceptives_hypertension.png",
             "Image_Caption": null,
@@ -1514,7 +1529,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "Study of contraceptives and hypertension",
             "Answer_Key_A": "Z ≈ 0.58; not significant (p>0.05) — no statistically significant difference in hypertension prevalence between contraceptive types in this sample.",
             "Answer_Key_B": "Z-test for comparing two independent proportions; requires adequately large sample sizes and independent groups (both satisfied here).",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS017",
@@ -1527,9 +1543,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Test and interpret whether the proportions differ significantly.",
             "Marks_A": 3,
             "Sub_Question_B": "State the appropriate test of significance for comparing these proportions and interpret the result.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss the implications for diabetes care/monitoring protocols at the clinic based on this finding.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a grouped (dodged) bar chart comparing diabetes prevalence (%) between males and females.",
             "Image_File": "BIO17_diabetes_prevalence.png",
             "Image_Caption": null,
@@ -1539,7 +1555,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "Data collected from diabetic clinic",
             "Answer_Key_A": "Z ≈ 2.65; significant at 5% (p<0.01) — male diabetes prevalence (18%) is significantly higher than female (12%).",
             "Answer_Key_B": "Z-test for two independent proportions; large samples in both groups satisfy the normal approximation assumption.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS018",
@@ -1552,9 +1569,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Test and interpret whether the proportions differ significantly.",
             "Marks_A": 3,
             "Sub_Question_B": "State the appropriate test of significance for comparing these incidence proportions and interpret the result.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss cardiovascular risk-reduction measures relevant to the population with higher incidence.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a grouped (dodged) bar chart comparing MI incidence (%) between males and females.",
             "Image_File": "BIO18_mi_incidence.png",
             "Image_Caption": null,
@@ -1564,7 +1581,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "Incidence of myocardial infarction",
             "Answer_Key_A": "Z ≈ 2.39; significant at 5% (p<0.05) — male MI incidence (42%) is significantly higher than female (38%).",
             "Answer_Key_B": "Z-test for two independent proportions; both groups are large, satisfying the normal approximation.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS019",
@@ -1577,9 +1595,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Calculate or interpret the Pearson correlation coefficient (r).",
             "Marks_A": 3,
             "Sub_Question_B": "Formulate the linear regression equation (Y = a + bX) and interpret the slope b.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Discuss the clinical implications of a strong positive correlation between BMI and SBP for cardiovascular risk screening.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Construct a scatter plot with a fitted linear regression trendline on graph paper.",
             "Image_File": null,
             "Image_Caption": null,
@@ -1589,7 +1607,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "Scatter Plot Correlation",
             "Answer_Key_A": "r = +0.78 indicates a strong positive linear correlation between BMI and SBP.",
             "Answer_Key_B": "Y = a + bX, where b (slope) would be positive given r=+0.78, meaning SBP increases as BMI increases; exact numeric value of b requires the standard deviations of BMI and SBP, which are not given here.",
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         },
         {
             "Question_ID": "BS020",
@@ -1602,9 +1621,9 @@ const EMBEDDED_APP_DATA = {
             "Sub_Question_A": "Define ROC curve coordinates (Y-axis = sensitivity, X-axis = 1 − specificity).",
             "Marks_A": 3,
             "Sub_Question_B": "Interpret the AUC value of 0.89 regarding diagnostic accuracy.",
-            "Marks_B": 4,
+            "Marks_B": 3,
             "Sub_Question_C": "Explain the Youden Index (sensitivity + specificity − 1) for choosing the optimal cut-off.",
-            "Marks_C": 3,
+            "Marks_C": 2,
             "Plot_Instruction": "Plot a ROC curve with a diagonal chance line (AUC = 0.5).",
             "Image_File": null,
             "Image_Caption": null,
@@ -1614,7 +1633,8 @@ const EMBEDDED_APP_DATA = {
             "Remarks": "ROC Curve Analysis",
             "Answer_Key_A": null,
             "Answer_Key_B": null,
-            "Answer_Key_C": null
+            "Answer_Key_C": null,
+            "Marks_Plot": 2
         }
     ],
     "ospe": [

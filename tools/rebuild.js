@@ -60,7 +60,7 @@ const WRITTEN_SECTION_FIELDS = [
     "Title", "Scenario_or_Stem", "Sub_Question_A", "Answer_Key_A",
     "Marks_A", "Sub_Question_B", "Answer_Key_B", "Marks_B",
     "Sub_Question_C", "Answer_Key_C", "Marks_C", "Plot_Instruction",
-    "Image_File", "Image_Caption", "Total_Marks", "Status",
+    "Marks_Plot", "Image_File", "Image_Caption", "Total_Marks", "Status",
     "Last_Updated", "Remarks"
 
 ];

@@ -396,6 +396,7 @@ function buildWrittenPreviewHTML(question) {
             <div class="plot-instruction">
                 <strong>Plot Instruction:</strong>
                 ${nl2br(question.Plot_Instruction)}
+                <span class="marks">(${question.Marks_Plot ?? ""})</span>
             </div>
         `;
 

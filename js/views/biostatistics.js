@@ -166,6 +166,9 @@ function showBiostatisticsQuestion() {
 
                 <strong>Plot Instruction:</strong>
                 ${nl2br(question.Plot_Instruction)}
+                <span class="marks">
+                    (${marks.Plot})
+                </span>
 
             </div>
 

@@ -313,28 +313,35 @@ function setBrandHeader() {
 
 
 // ------------------------------------------------------------
-// Display Marks (UG sees A+B only, redistributed to the full
-// section total; PG sees the curated A/B/C split)
+// Display Marks (UG sees A+B only, redistributed to whatever's left
+// after the Plot's own marks; PG sees the curated A/B/C split, plus
+// the same Plot marks). Marks_Plot only exists on Biostatistics rows
+// (every other section's question.Marks_Plot is undefined, so
+// plotMarks is 0 there and this behaves exactly as before).
 // ------------------------------------------------------------
 
 function getDisplayMarks(question) {
+
+    const plotMarks = question.Marks_Plot || 0;
 
     if (isPG()) {
 
         return {
             A: question.Marks_A,
             B: question.Marks_B,
-            C: question.Marks_C
+            C: question.Marks_C,
+            Plot: question.Marks_Plot ?? null
         };
 
     }
 
-    const half = question.Total_Marks / 2;
+    const half = (question.Total_Marks - plotMarks) / 2;
 
     return {
         A: half,
         B: half,
-        C: null
+        C: null,
+        Plot: question.Marks_Plot ?? null
     };
 
 }
@@ -664,7 +671,7 @@ function fitTwoBandLayout(hasImage) {
 
             topBand,
 
-            32
+            36
 
         );
 
