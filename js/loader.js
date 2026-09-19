@@ -37,44 +37,57 @@ async function loadApplicationData() {
 
             console.log(appData);
 
-            return;
+        }
+
+        else {
+
+
+            // ----------------------------
+            // Questions
+            // ----------------------------
+
+            const questionsResponse = await fetch("data/questions.json");
+
+            if (!questionsResponse.ok) {
+
+                throw new Error("Unable to load questions.json");
+
+            }
+
+            appData.questions = await questionsResponse.json();
+
+
+            // ----------------------------
+            // Settings
+            // ----------------------------
+
+            const settingsResponse = await fetch("data/settings.json");
+
+            if (!settingsResponse.ok) {
+
+                throw new Error("Unable to load settings.json");
+
+            }
+
+            appData.settings = await settingsResponse.json();
+
+
+            console.log("Application data loaded.");
+
+            console.log(appData);
 
         }
 
 
         // ----------------------------
-        // Questions
+        // "Previously Used" exclusion list — seeds only if this
+        // machine/profile has never had one (see usage-log.js). Tried
+        // in both branches above, not just the fetch() one, since it
+        // may still work here even when the main data came in via the
+        // embedded-script path.
         // ----------------------------
 
-        const questionsResponse = await fetch("data/questions.json");
-
-        if (!questionsResponse.ok) {
-
-            throw new Error("Unable to load questions.json");
-
-        }
-
-        appData.questions = await questionsResponse.json();
-
-
-        // ----------------------------
-        // Settings
-        // ----------------------------
-
-        const settingsResponse = await fetch("data/settings.json");
-
-        if (!settingsResponse.ok) {
-
-            throw new Error("Unable to load settings.json");
-
-        }
-
-        appData.settings = await settingsResponse.json();
-
-
-        console.log("Application data loaded.");
-
-        console.log(appData);
+        await seedUsageLogFromDataFolder();
 
     }
 

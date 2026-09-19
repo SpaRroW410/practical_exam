@@ -213,6 +213,61 @@ function importUsedLogFromObject(obj) {
 
 
 // ------------------------------------------------------------
+// Seed From data/ Folder
+//
+// Only runs when this machine/browser profile has no usage log yet at
+// all (the localStorage key is entirely absent) — a machine that
+// already has local exclusion state, even a deliberately-cleared one,
+// is never silently overwritten by a bundled file. So: drop an
+// updated data/used_questions.json onto the pendrive between exam
+// days and a machine that's never run this app before picks it up
+// automatically on first load; the Home screen's manual "IMPORT LIST
+// (JSON)" button still works exactly as before and always overrides
+// whatever this seeded, since it runs later (user-triggered) and
+// writes over the same key.
+//
+// Relies on fetch(), which works on the online (GitHub Pages/Netlify)
+// deployment and any local dev server, but browsers commonly block
+// fetch() for a bare file:// double-click — same limitation
+// data/data-embedded.js already works around for questions/settings.
+// A failed or missing fetch here is not an error: it just means no
+// exclusion list gets auto-applied, and the manual Import button
+// (which reads via FileReader, not fetch, so it always works offline
+// too) remains the reliable path for that case.
+// ------------------------------------------------------------
+
+async function seedUsageLogFromDataFolder() {
+
+    if (localStorage.getItem(USAGE_LOG_KEY) !== null) return;
+
+    // Skip outright under a bare file:// double-click — fetch() is
+    // guaranteed to fail there (logging a CORS error to the console on
+    // every single launch for no benefit), so there's nothing to try.
+    if (location.protocol === "file:") return;
+
+    try {
+
+        const response = await fetch("data/used_questions.json");
+
+        if (!response.ok) return;
+
+        const obj = await response.json();
+
+        importUsedLogFromObject(obj);
+
+    }
+
+    catch (error) {
+
+        // No file, unreachable, or not valid JSON — fine, just start
+        // with no exclusion list.
+
+    }
+
+}
+
+
+// ------------------------------------------------------------
 // Lookups
 // ------------------------------------------------------------
 

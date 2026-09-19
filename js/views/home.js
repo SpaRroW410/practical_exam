@@ -428,6 +428,22 @@ function getEligibleSpotterSetNumbers() {
 
 }
 
+// Already-used questions/sets are left out of these dropdowns entirely
+// (not just deprioritized, as RANDOM SET already did) — importing or
+// adding to the exclusion list previously updated the "Previously
+// Used" table but never actually kept those questions off the
+// selection dropdowns. If every eligible option in a section has
+// already been used, falls back to showing all of them rather than
+// leaving the dropdown empty — same graceful-fallback the RANDOM SET
+// button already used, now shared via unusedOrFallback() below.
+function unusedOrFallback(items, isUsedFn) {
+
+    const unused = items.filter(item => !isUsedFn(item));
+
+    return unused.length > 0 ? unused : items;
+
+}
+
 function populateQuestionDropdowns() {
 
     FILTERED_SECTIONS.forEach(function(section){
@@ -439,7 +455,15 @@ function populateQuestionDropdowns() {
 
         select.innerHTML = "";
 
-        getEligibleQuestions(section).forEach(function(question){
+        const questions = unusedOrFallback(
+
+            getEligibleQuestions(section),
+
+            question => isQuestionUsed(section, question.Question_No)
+
+        );
+
+        questions.forEach(function(question){
 
             const option =
                 document.createElement("option");
@@ -470,7 +494,15 @@ function populateQuestionDropdowns() {
 
         spotterSelect.appendChild(randomOption);
 
-        getEligibleSpotterSetNumbers().forEach(function(setNo){
+        const setNumbers = unusedOrFallback(
+
+            getEligibleSpotterSetNumbers(),
+
+            isSpotterSetUsed
+
+        );
+
+        setNumbers.forEach(function(setNo){
 
             const option =
                 document.createElement("option");
