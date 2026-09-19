@@ -201,17 +201,22 @@ function buildPrintPage(content) {
 
 function buildPrintableSummaryPage() {
 
-    const clinicalQuestion = getQuestion("clinical", appState.exam.clinical);
-    const epiQuestion = getQuestion("epidemiology", appState.exam.epidemiology);
-    const biostatQuestion = getQuestion("biostatistics", appState.exam.biostatistics);
-    const ospeQuestion = getQuestion("ospe", appState.exam.ospe);
+    function selectedLabel(sectionKey, questionNo) {
+
+        if (questionNo === null) return "Not Included";
+
+        const question = getQuestion(sectionKey, questionNo);
+
+        return question ? question.Question_No : "N/A";
+
+    }
 
     const selectedQuestions = `
         <ul>
-            <li>Clinical Case: ${clinicalQuestion ? clinicalQuestion.Question_No : "N/A"}</li>
-            <li>Epidemiology: ${epiQuestion ? epiQuestion.Question_No : "N/A"}</li>
-            <li>Biostatistics: ${biostatQuestion ? biostatQuestion.Question_No : "N/A"}</li>
-            <li>OSPE: ${ospeQuestion ? ospeQuestion.Question_No : "N/A"}</li>
+            <li>Clinical Case: ${selectedLabel("clinical", appState.exam.clinical)}</li>
+            <li>Epidemiology: ${selectedLabel("epidemiology", appState.exam.epidemiology)}</li>
+            <li>Biostatistics: ${selectedLabel("biostatistics", appState.exam.biostatistics)}</li>
+            <li>OSPE: ${selectedLabel("ospe", appState.exam.ospe)}</li>
             <li>Spotter Set: ${appState.exam.spotter}</li>
         </ul>
     `;
@@ -292,6 +297,23 @@ function buildAnswerKeyBlock(item) {
 // ------------------------------------------------------------
 
 function buildStandardSectionBlock(sectionKey, sectionLabel, questionNo) {
+
+    // A "None" section (see js/app.js's applySelectionToState()) has no
+    // question to look up at all — distinct from a genuine data error
+    // below (a set questionNo that doesn't resolve to an actual question).
+    if (questionNo === null) {
+
+        return `
+
+            <div class="print-section">
+
+                <h2>${sectionLabel} — Not Included</h2>
+
+            </div>
+
+        `;
+
+    }
 
     const question =
         getQuestion(sectionKey, questionNo);

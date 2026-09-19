@@ -254,6 +254,19 @@ function renderHome() {
 
             downloadJSONFile("used_questions.json", exportUsedLogJSON());
 
+            // A second automatic download fired in the same click can be
+            // throttled by the browser as a "multiple downloads" prompt —
+            // a short delay avoids that.
+            setTimeout(function(){
+
+                downloadFile(
+                    "used-questions-embedded.js",
+                    buildEmbeddedUsedQuestionsJS(loadUsedLog()),
+                    "application/javascript"
+                );
+
+            }, 300);
+
         });
 
     document
@@ -369,9 +382,9 @@ function renderUsedQuestionsTable() {
 // tools/rebuild.js's downloadFile() for the offline rebuild tool).
 // ------------------------------------------------------------
 
-function downloadJSONFile(filename, content) {
+function downloadFile(filename, content, mimeType) {
 
-    const blob = new Blob([content], { type: "application/json" });
+    const blob = new Blob([content], { type: mimeType || "text/plain" });
 
     const url = URL.createObjectURL(blob);
 
@@ -388,6 +401,12 @@ function downloadJSONFile(filename, content) {
     document.body.removeChild(a);
 
     URL.revokeObjectURL(url);
+
+}
+
+function downloadJSONFile(filename, content) {
+
+    downloadFile(filename, content, "application/json");
 
 }
 
@@ -469,6 +488,15 @@ function populateQuestionDropdowns() {
 
         select.innerHTML = "";
 
+        const noneOption =
+            document.createElement("option");
+
+        noneOption.value = "none";
+
+        noneOption.textContent = "None (Exclude Section)";
+
+        select.appendChild(noneOption);
+
         const questions = unusedOrFallback(
 
             getEligibleQuestions(section),
@@ -489,6 +517,15 @@ function populateQuestionDropdowns() {
             select.appendChild(option);
 
         });
+
+        // "None" is listed first for visibility, but a real question
+        // stays the default so behaviour is unchanged unless it is
+        // deliberately chosen — same pattern as Spotter's "Random" below.
+        if (select.options.length > 1) {
+
+            select.selectedIndex = 1;
+
+        }
 
     });
 
@@ -568,11 +605,19 @@ function pickUnusedOrFallbackIndex(select, isUsedFn) {
 
     for (let i = 0; i < select.options.length; i++) {
 
+        // RANDOM SET never lands on "None" — that's an explicit,
+        // deliberate choice, not something to pick for the coordinator.
+        if (select.options[i].value === "none") continue;
+
         if (!isUsedFn(select.options[i].value)) eligible.push(i);
 
     }
 
-    const pool = eligible.length > 0 ? eligible : randomIndexPool(select.options.length);
+    const pool = eligible.length > 0
+        ? eligible
+        : randomIndexPool(select.options.length).filter(
+            i => select.options[i].value !== "none"
+        );
 
     return pool[Math.floor(Math.random() * pool.length)];
 

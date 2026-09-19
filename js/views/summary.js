@@ -53,7 +53,11 @@ function renderSummary() {
 
                         <td>
 
-                            ${appState.exam.clinical}
+                            ${
+                                appState.exam.clinical === null
+                                    ? "Not Included"
+                                    : appState.exam.clinical
+                            }
 
                         </td>
 
@@ -69,7 +73,11 @@ function renderSummary() {
 
                         <td>
 
-                            ${appState.exam.epidemiology}
+                            ${
+                                appState.exam.epidemiology === null
+                                    ? "Not Included"
+                                    : appState.exam.epidemiology
+                            }
 
                         </td>
 
@@ -85,7 +93,11 @@ function renderSummary() {
 
                         <td>
 
-                            ${appState.exam.biostatistics}
+                            ${
+                                appState.exam.biostatistics === null
+                                    ? "Not Included"
+                                    : appState.exam.biostatistics
+                            }
 
                         </td>
 
@@ -101,7 +113,11 @@ function renderSummary() {
 
                         <td>
 
-                            ${appState.exam.ospe}
+                            ${
+                                appState.exam.ospe === null
+                                    ? "Not Included"
+                                    : appState.exam.ospe
+                            }
 
                         </td>
 

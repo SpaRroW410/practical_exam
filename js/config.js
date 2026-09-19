@@ -159,10 +159,34 @@ const SPOTTER_SEQUENCE = {
 // regardless of what order the rest were set to.
 // ------------------------------------------------------------
 
+// Written sections whose Home dropdown was set to "None" hold a null
+// in appState.exam[section] (see js/app.js's applySelectionToState())
+// and are left out here — Spotter has no "None" option, so it's never
+// excluded.
+function includedSections(){
+
+    return SECTION_ORDER.slice(0, -1).filter(
+        key => appState.exam[key] !== null
+    );
+
+}
+
 function activeSectionOrder(){
 
-    return (appState.sectionSequence || SECTION_ORDER.slice(0, -1))
-        .concat(["summary"]);
+    const included = includedSections();
+
+    const sticky = appState.sectionSequence;
+
+    // A sticky custom order (js/views/sequence.js) is only reused when
+    // it still matches the currently-included set — toggling a
+    // section's exclusion between runs must not leave a stale/
+    // mismatched permutation in place.
+    const stickyValid =
+        sticky &&
+        sticky.length === included.length &&
+        sticky.every(key => included.includes(key));
+
+    return (stickyValid ? sticky : included).concat(["summary"]);
 
 }
 

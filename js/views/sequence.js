@@ -20,9 +20,18 @@ function renderSequenceSelection() {
 
     appState.currentView = "sequence";
 
-    const defaultSections = SECTION_ORDER.slice(0, -1);
+    // Sections set to "None" on Home (js/config.js's includedSections())
+    // never appear here as a position or as a pickable option.
+    const defaultSections = includedSections();
 
-    const current = appState.sectionSequence || defaultSections;
+    const sticky = appState.sectionSequence;
+
+    const stickyValid =
+        sticky &&
+        sticky.length === defaultSections.length &&
+        sticky.every(key => defaultSections.includes(key));
+
+    const current = stickyValid ? sticky : defaultSections;
 
     renderPage(`
 

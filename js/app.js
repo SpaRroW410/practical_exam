@@ -62,22 +62,34 @@ async function initializeApplication() {
 // a printed paper always matches what starting the exam would give.
 // ------------------------------------------------------------
 
+// A written section's dropdown offers "None" (see js/views/home.js's
+// populateQuestionDropdowns()) to exclude that section from the run —
+// same sentinel-value pattern as Spotter's "random" below, just null
+// instead of a string, since these are otherwise plain question numbers.
+function readSectionValue(id){
+
+    const value = document.getElementById(id).value;
+
+    return value === "none" ? null : Number(value);
+
+}
+
 function applySelectionToState(){
 
     appState.examLevel =
         document.getElementById("examLevel").value;
 
     appState.exam.clinical =
-        Number(document.getElementById("clinical").value);
+        readSectionValue("clinical");
 
     appState.exam.epidemiology =
-        Number(document.getElementById("epidemiology").value);
+        readSectionValue("epidemiology");
 
     appState.exam.biostatistics =
-        Number(document.getElementById("biostatistics").value);
+        readSectionValue("biostatistics");
 
     appState.exam.ospe =
-        Number(document.getElementById("ospe").value);
+        readSectionValue("ospe");
 
     const spotterChoice =
         document.getElementById("spotter").value;
@@ -112,6 +124,14 @@ function applySelectionToState(){
 function startExam(){
 
     applySelectionToState();
+
+    if (includedSections().filter(section => section !== "spotter").length === 0) {
+
+        alert("At least one section must be included to start the exam.");
+
+        return;
+
+    }
 
     renderSequenceSelection();
 
