@@ -334,6 +334,18 @@ function renderUsedQuestionsTable() {
 
     }
 
+    // One check covers every reason the log could be empty — nothing
+    // used yet, an auto-seed that found no file/unsupported fetch/ran
+    // under file://, or a deliberate REFRESH EXCLUSION LIST clear —
+    // without needing to track which one happened.
+    const isEmpty =
+
+        USAGE_LOG_SECTIONS.every(section => log[section].length === 0) &&
+
+        log.spotterSets.length === 0 &&
+
+        log.spotterSlides.length === 0;
+
     container.innerHTML = `
 
         <table class="used-questions-table">
@@ -345,6 +357,8 @@ function renderUsedQuestionsTable() {
             <tr><td>Spotter Sets</td><td>${formatList(log.spotterSets)}</td></tr>
             <tr><td>Spotter Slides</td><td>${formatStringList(log.spotterSlides)}</td></tr>
         </table>
+
+        ${isEmpty ? `<p class="used-questions-empty-note">No exclusion data present.</p>` : ""}
 
     `;
 

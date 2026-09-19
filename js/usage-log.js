@@ -229,11 +229,16 @@ function importUsedLogFromObject(obj) {
 // Relies on fetch(), which works on the online (GitHub Pages/Netlify)
 // deployment and any local dev server, but browsers commonly block
 // fetch() for a bare file:// double-click — same limitation
-// data/data-embedded.js already works around for questions/settings.
-// A failed or missing fetch here is not an error: it just means no
-// exclusion list gets auto-applied, and the manual Import button
-// (which reads via FileReader, not fetch, so it always works offline
-// too) remains the reliable path for that case.
+// data/data-embedded.js already works around for questions/settings —
+// and a browser without fetch() at all is guarded explicitly below
+// too. None of these are errors: a missing file (404), an unreachable
+// one, invalid JSON, file:// itself, or fetch() not existing all end
+// the same way — no exclusion list gets auto-applied, silently. The
+// manual Import button (which reads via FileReader, not fetch, so it
+// always works offline too) remains the reliable path in every case;
+// the Home screen's "Previously Used" table (js/views/home.js) shows
+// "No exclusion data present" whenever the resulting log is empty,
+// regardless of which of these reasons caused it.
 // ------------------------------------------------------------
 
 async function seedUsageLogFromDataFolder() {
@@ -244,6 +249,12 @@ async function seedUsageLogFromDataFolder() {
     // guaranteed to fail there (logging a CORS error to the console on
     // every single launch for no benefit), so there's nothing to try.
     if (location.protocol === "file:") return;
+
+    // Explicit guard rather than relying on the catch below to absorb a
+    // ReferenceError — an ancient/unusual browser without fetch() is
+    // exactly the "no exclusion list, carry on" case, spelled out
+    // instead of falling into that path by accident.
+    if (typeof fetch !== "function") return;
 
     try {
 

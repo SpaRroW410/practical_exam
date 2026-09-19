@@ -280,6 +280,15 @@
 
 }
 
+.used-questions-empty-note{
+
+    margin-top:10px;
+    font-size:14px;
+    color:#888;
+    font-style:italic;
+
+}
+
 
 @media(max-width:768px){
 
