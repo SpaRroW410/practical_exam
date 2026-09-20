@@ -323,11 +323,14 @@
     background: #44525f;
 }
 
-/* Live Preview — full-viewport overlay above the whole Rebuild Data
-   screen (not just .home-card), so it gets genuine real estate for
-   fitTwoBandLayout()/fitQuestionLayout()'s sizing to work against,
-   the same as it does for a real exam screen. */
-.admin-rebuild-screen .editor-preview-modal {
+/* Live Preview — full-viewport overlay above whatever Admin screen is
+   showing (not just .home-card), so it gets genuine real estate for
+   fitTwoBandLayout()/fitQuestionLayout()'s sizing to work against, the
+   same as it does for a real exam screen. Shared (not scoped to
+   .admin-rebuild-screen) — js/views/admin-ui-settings.js's "PREVIEW
+   SAMPLE QUESTION" reuses this exact markup/CSS shape, just with its
+   own element id, since only one Admin screen is ever on-page at once. */
+.editor-preview-modal {
     position: fixed;
     inset: 0;
     z-index: 5000;
@@ -336,7 +339,7 @@
     flex-direction: column;
 }
 
-.admin-rebuild-screen .editor-preview-modal-header {
+.editor-preview-modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -345,20 +348,20 @@
     flex-shrink: 0;
 }
 
-.admin-rebuild-screen .editor-preview-level-toggle {
+.editor-preview-level-toggle {
     display: flex;
     gap: 18px;
     font-size: 15px;
     color: #333;
 }
 
-.admin-rebuild-screen .editor-preview-level-toggle label {
+.editor-preview-level-toggle label {
     display: flex;
     align-items: center;
     gap: 6px;
     cursor: pointer;
 }
 
-.admin-rebuild-screen #editorPreviewContent {
+.editor-preview-modal #editorPreviewContent {
     padding: 35px;
 }

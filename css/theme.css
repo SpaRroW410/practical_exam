@@ -271,7 +271,7 @@ body {
 }
 
 .plot-instruction {
-    font-size: 30px;
+    font-size: var(--plot-instruction-size, 30px);
     line-height: 1.2;
 }
 
@@ -316,7 +316,7 @@ body {
    the no-image case's Plot Instruction isn't inside .scenario-plot-group
    at all, so it keeps the original 30px untouched. */
 .scenario-plot-group .plot-instruction {
-    font-size: 34px;
+    font-size: var(--plot-instruction-size-image, 34px);
 }
 
 /* Sub-questions side by side: auto-flow column gives one column per

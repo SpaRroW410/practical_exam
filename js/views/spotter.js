@@ -771,7 +771,7 @@ function showSpotterSlide() {
 
         document.querySelector(".spotter-layout .question-subquestions"),
 
-        64
+        getUISetting("spotterSubQuestionMax")
 
     );
 

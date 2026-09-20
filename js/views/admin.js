@@ -188,6 +188,22 @@ function renderAdminScreen() {
 
                 </div>
 
+                <div class="admin-group">
+
+                    <h3 class="admin-group-title">UI Settings</h3>
+
+                    <p>Adjust how large exam text is allowed to grow, for this machine/projector only.</p>
+
+                    <button
+                        id="adminUISettings"
+                        class="start-button print-button">
+
+                        UI SETTINGS
+
+                    </button>
+
+                </div>
+
                 <button
                     id="adminBackToAccess"
                     class="start-button print-button admin-back-button">
@@ -329,6 +345,10 @@ function renderAdminScreen() {
     document
         .getElementById("adminRebuildData")
         .onclick = renderAdminRebuild;
+
+    document
+        .getElementById("adminUISettings")
+        .onclick = renderAdminUISettings;
 
     document
         .getElementById("adminBackToAccess")

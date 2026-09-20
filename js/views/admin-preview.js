@@ -318,7 +318,7 @@ function showAdminPreviewItem() {
 
             document.querySelector(".spotter-layout .question-subquestions"),
 
-            64
+            getUISetting("spotterSubQuestionMax")
 
         );
 

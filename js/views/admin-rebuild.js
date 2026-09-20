@@ -48,6 +48,11 @@ function renderAdminRebuild() {
 
     let previewDraftRow = null;
 
+    // File System Access API directory handle for the images/ folder,
+    // picked once per visit (see copyImageIntoFolder() below) and reused
+    // for every image chosen afterward in this same visit.
+    let imagesDirHandle = null;
+
     const SECTION_LABELS = {
         clinical: "Clinical",
         epidemiology: "Epidemiology",
@@ -890,9 +895,11 @@ function renderAdminRebuild() {
                 "\" placeholder=\"e.g. clinical_003_01.jpg\">" +
                 "<button type=\"button\" id=\"chooseImageBtn\">Choose File…</button>" +
                 "</div>" +
-                "<div class=\"editor-field-hint\">Filename only — goes in <code>" +
-                SECTION_IMAGE_FOLDER[sectionKey] + "</code>. The actual image file still has to be copied " +
-                "there by hand; this tool never reads or embeds the image itself.</div>" +
+                "<div class=\"editor-field-hint\">Goes in <code>" + SECTION_IMAGE_FOLDER[sectionKey] +
+                "</code>. On Chrome/Edge, choosing a file also copies it there automatically " +
+                "(you'll be asked to pick your images/ folder once per visit). On other browsers, " +
+                "or if that's declined, copy the file there by hand.</div>" +
+                "<div class=\"editor-field-hint\" id=\"imageCopyStatus\"></div>" +
                 "</div>"
 
             );
@@ -1233,7 +1240,7 @@ function renderAdminRebuild() {
 
                 document.querySelector("#editorPreviewContent .spotter-layout .question-subquestions"),
 
-                64
+                getUISetting("spotterSubQuestionMax")
 
             );
 
@@ -1274,7 +1281,7 @@ function renderAdminRebuild() {
     // own local `panel`/field lookups via the DOM, so a stale listener
     // from a previous visit would still work, but only one should ever
     // be live at a time).
-    hiddenImagePicker.onchange = function(){
+    hiddenImagePicker.onchange = async function(){
 
         const file = hiddenImagePicker.files[0];
 
@@ -1286,7 +1293,71 @@ function renderAdminRebuild() {
 
         if (imageInput) imageInput.value = file.name;
 
+        await copyImageIntoFolder(currentSectionKey, file);
+
     };
+
+    // Writes the chosen file's actual bytes into images/<sectionKey>/,
+    // so the coordinator never has to separately open a file explorer
+    // and copy it there by hand. Only possible on browsers with the
+    // File System Access API (Chrome/Edge) — a page can never get raw
+    // filesystem write access without this, so unsupported browsers
+    // (Firefox/Safari) silently keep today's filename-only behavior;
+    // the row can always still be saved either way.
+    async function copyImageIntoFolder(sectionKey, file) {
+
+        const statusEl = document.getElementById("imageCopyStatus");
+
+        if (typeof window.showDirectoryPicker !== "function") return;
+
+        try {
+
+            if (!imagesDirHandle) {
+
+                imagesDirHandle = await window.showDirectoryPicker();
+
+            }
+
+            const sectionDirHandle =
+                await imagesDirHandle.getDirectoryHandle(sectionKey, { create: true });
+
+            await writeFileToDirectory(sectionDirHandle, file.name, file);
+
+            if (statusEl) {
+
+                statusEl.textContent = "Copied " + file.name + " into images/" + sectionKey + "/.";
+
+            }
+
+        }
+
+        catch (error) {
+
+            // AbortError: the coordinator cancelled the folder picker —
+            // not a failure, just try again (re-prompt) next time rather
+            // than remembering a permanent "gave up" state.
+            if (error.name === "AbortError") {
+
+                imagesDirHandle = null;
+
+                return;
+
+            }
+
+            console.error(error);
+
+            if (statusEl) {
+
+                statusEl.textContent =
+                    "Could not copy the image automatically (" + error.message + ") — " +
+                    "the filename above is still filled in; copy the file into images/" +
+                    sectionKey + "/ by hand.";
+
+            }
+
+        }
+
+    }
 
 
     // ------------------------------------------------------------

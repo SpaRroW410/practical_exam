@@ -861,7 +861,7 @@ function fitTwoBandLayout(hasImage) {
 
     if (!hasImage) {
 
-        fitQuestionLayout(null);
+        fitQuestionLayout(null, undefined, getUISetting("scenarioMaxNoImage"));
 
         return;
 
@@ -883,7 +883,7 @@ function fitTwoBandLayout(hasImage) {
 
             topBand,
 
-            36
+            getUISetting("scenarioMaxWithImage")
 
         );
 
@@ -893,7 +893,7 @@ function fitTwoBandLayout(hasImage) {
 
             subBand,
 
-            44
+            getUISetting("subQuestionMax")
 
         );
 

@@ -212,6 +212,7 @@ practical_exam/
 │   ├── timer.js                  Overall + section timer engine, beep, warning state
 │   ├── password.js               Access-code and admin-code gate screens
 │   ├── usage-log.js              "Previously used" exclusion log (localStorage)
+│   ├── ui-settings.js            Font-size ceiling settings (localStorage), getUISetting()/applyUISettingsToCSS()
 │   ├── print.js                  Browser print/PDF generation for the question paper + admin export
 │   ├── app.js                    initializeApplication(), applySelectionToState(), startExam()
 │   │
@@ -219,6 +220,7 @@ practical_exam/
 │       ├── home.js                 Setup/selection screen, RANDOM SET, exclusion UI
 │       ├── admin.js                Admin question-bank export screen
 │       ├── admin-rebuild.js        Admin > Rebuild Data (Excel <-> JSON, ported from the former standalone tool)
+│       ├── admin-ui-settings.js    Admin > UI Settings (live font-size tuning, per machine)
 │       ├── clinical.js             Clinical Case section
 │       ├── epidemiology.js         Epidemiology section
 │       ├── biostatistics.js        Biostatistics section
