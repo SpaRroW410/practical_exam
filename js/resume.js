@@ -183,6 +183,8 @@ function resumeExamRun(saved) {
 
     appState.timer.running = false;
 
+    resumeExamTimers();
+
     // Written sections resume to their Header screen (the normal
     // renderCurrentSection() entry point) — only Spotter's exact
     // slide/reserve position needs restoring here, since losing

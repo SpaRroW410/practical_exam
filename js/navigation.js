@@ -124,6 +124,9 @@ document.addEventListener("keydown", function (event) {
     if (appState.currentView === "home")
         return;
 
+    if (examPaused)
+        return;
+
     if (NEXT_KEYS.indexOf(event.key) !== -1) {
 
         // Reserve screen has no nextButton — allow manual

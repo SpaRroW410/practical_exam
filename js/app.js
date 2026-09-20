@@ -164,6 +164,8 @@ function beginExamRun(){
 
     appState.timer.running = false;
 
+    resumeExamTimers();
+
 
     // -----------------------------
     // Start Overall Timer

@@ -1,0 +1,1235 @@
+// ============================================================
+// Community Medicine Examination System
+// Admin — Rebuild Data
+//
+// Ported from the former standalone Rebuild Data.html into the Admin
+// panel (see js/views/admin.js's "Rebuild Data" group). Reads
+// QuestionBank.xlsx directly in the browser via the vendored SheetJS
+// copy (tools/vendor/xlsx.full.min.js, no CDN/network dependency) and
+// regenerates questions.json/settings.json/data-embedded.js through
+// the shared parse/build/diff logic in tools/rebuild.js, unchanged
+// from the standalone tool.
+//
+// All state and helper functions below live entirely inside
+// renderAdminRebuild() — the standalone page could keep them as
+// page-lifetime globals (DOM elements fetched once, when the page
+// first loaded); here the same markup is rebuilt by renderPage() on
+// every visit to this screen, so everything is scoped as locals /
+// nested functions instead. That also means every visit starts fresh
+// (an in-progress edit is not preserved across a "BACK TO ADMIN" and
+// back), matching what re-opening the standalone page would have
+// given anyway.
+// ============================================================
+
+function renderAdminRebuild() {
+
+    appState.currentView = "admin-rebuild";
+
+    // ------------------------------------------------------------
+    // State
+    // ------------------------------------------------------------
+
+    let parsedData = null;      // result of parseWorkbook(), mutated in place by the editor
+
+    let lastOutputs = null;     // { filename: content } for the three generated files
+
+    let currentSectionKey = "clinical";
+
+    let editingIndex = null;    // index being edited, or null while adding a new row
+
+    let diffOldQuestions = null;
+
+    let diffOldSettings = null;
+
+    const SECTION_LABELS = {
+        clinical: "Clinical",
+        epidemiology: "Epidemiology",
+        biostatistics: "Biostatistics",
+        ospe: "OSPE",
+        spotter: "Spotter"
+    };
+
+    const TEXTAREA_FIELDS = new Set([
+        "Title", "Scenario_or_Stem", "Sub_Question_A", "Sub_Question_B",
+        "Sub_Question_C", "Answer_Key_A", "Answer_Key_B", "Answer_Key_C",
+        "Plot_Instruction", "Image_Caption", "Remarks"
+    ]);
+
+    const NUMBER_FIELDS = new Set(["Marks_A", "Marks_B", "Marks_C", "Marks_Plot", "Total_Marks"]);
+
+    const DIFFICULTY_OPTIONS = ["", "Easy", "Moderate", "Difficult"];
+
+
+    // ------------------------------------------------------------
+    // Markup
+    // ------------------------------------------------------------
+
+    renderPage(`
+
+        <section class="home-screen admin-rebuild-screen">
+
+            <div class="home-card" style="max-width: 900px;">
+
+                <button
+                    id="adminRebuildBack"
+                    class="start-button print-button admin-back-button">
+
+                    BACK TO ADMIN
+
+                </button>
+
+                <h2>Rebuild Data</h2>
+
+                <p>
+
+                    Reads <strong>QuestionBank.xlsx</strong> directly in this
+                    browser — no server, no R, no internet connection — and
+                    regenerates the files the app uses.
+
+                </p>
+
+                <div class="selector">
+
+                    <label>QuestionBank.xlsx</label>
+
+                    <input type="file" id="xlsxFile" accept=".xlsx">
+
+                </div>
+
+                <div id="rebuildStatus" class="rebuild-status rebuild-status--idle">
+                    Choose the workbook above to begin.
+                </div>
+
+                <!-- Step 2: after a successful parse, choose auto vs interactive -->
+                <div id="rebuildChoice">
+
+                    <table class="rebuild-summary" id="rebuildSummaryTable"></table>
+
+                    <div class="rebuild-choice-actions">
+
+                        <button id="generateNowBtn" class="start-button">
+                            GENERATE FILES NOW
+                        </button>
+
+                        <button id="reviewEditBtn" class="start-button print-button">
+                            REVIEW &amp; EDIT FIRST
+                        </button>
+
+                    </div>
+
+                    <div class="home-actions home-actions--print">
+
+                        <button type="button" id="showDiffBtn" class="start-button print-button">
+                            SHOW CHANGES FROM CURRENT DATA
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Step 2c: diff against the currently committed data files -->
+                <div id="rebuildDiff">
+
+                    <div id="diffLoadStatus" class="rebuild-status rebuild-status--idle">
+                        Loading data/questions.json and data/settings.json …
+                    </div>
+
+                    <div id="diffFallbackPickers" style="display:none;">
+
+                        <div class="selector">
+                            <label>Current data/questions.json</label>
+                            <input type="file" id="diffQuestionsFile" accept=".json">
+                        </div>
+
+                        <div class="selector">
+                            <label>Current data/settings.json</label>
+                            <input type="file" id="diffSettingsFile" accept=".json">
+                        </div>
+
+                    </div>
+
+                    <div id="diffResults"></div>
+
+                    <div class="home-actions home-actions--print">
+
+                        <button type="button" id="diffBackBtn" class="start-button print-button">
+                            BACK
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Step 2b: interactive editor (only shown if "Review & edit first" chosen) -->
+                <div id="rebuildEditor">
+
+                    <div class="section-tabs" id="sectionTabs"></div>
+
+                    <div class="editor-toolbar">
+
+                        <span id="sectionRowCount"></span>
+
+                        <button type="button" id="addRowBtn" class="editor-add-btn">+ Add New</button>
+
+                    </div>
+
+                    <div class="editor-table-wrap">
+                        <table class="editor-table" id="editorTable"></table>
+                    </div>
+
+                    <div class="editor-form-panel" id="editorFormPanel"></div>
+
+                    <div class="editor-done-actions">
+
+                        <button type="button" id="doneEditingBtn" class="start-button">
+                            DONE — GENERATE FILES
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Step 3: output files -->
+                <div id="rebuildOutputs">
+
+                    <div class="output-actions">
+
+                        <button id="saveOutputsBtn" class="start-button">
+                            SAVE TO data/ FOLDER
+                        </button>
+
+                        <button id="downloadOutputsBtn" class="start-button print-button">
+                            DOWNLOAD 3 FILES INSTEAD
+                        </button>
+
+                        <button id="downloadXlsxBtn" class="start-button xlsx-download-button">
+                            DOWNLOAD UPDATED QuestionBank.xlsx
+                        </button>
+
+                    </div>
+
+                    <p style="font-size: 16px; color: #666; margin-top: 14px;">
+
+                        <strong>For the offline pendrive copy:</strong> the three
+                        files (<code>questions.json</code>, <code>settings.json</code>,
+                        <code>data-embedded.js</code>) go into this app's
+                        <code>data/</code> folder, overwriting what's there. If
+                        your browser supports it, "Save to data/ folder" does
+                        this in one step — otherwise use the download button and
+                        move the three files into <code>data/</code> yourself.
+
+                        <br><br>
+
+                        <strong>For the online (Netlify) deployment:</strong> commit
+                        and push <code>questions.json</code> and
+                        <code>settings.json</code> only — <code>data-embedded.js</code>
+                        is only used by the offline copy and should not be committed.
+
+                        <br><br>
+
+                        <strong>Keeping QuestionBank.xlsx up to date:</strong> if you
+                        edited or added questions above, download the updated workbook
+                        and save it over your working copy of
+                        <code>QuestionBank.xlsx</code> — that keeps it the source of
+                        truth for the next time you (or someone else) opens this tool.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    `);
+
+
+    // ------------------------------------------------------------
+    // Element references (fetched fresh — this markup is rebuilt on
+    // every visit to this screen, unlike the standalone page's
+    // load-once DOM)
+    // ------------------------------------------------------------
+
+    const statusEl = document.getElementById("rebuildStatus");
+
+    const choiceEl = document.getElementById("rebuildChoice");
+
+    const editorEl = document.getElementById("rebuildEditor");
+
+    const outputsEl = document.getElementById("rebuildOutputs");
+
+    const diffEl = document.getElementById("rebuildDiff");
+
+    const summaryTableEl = document.getElementById("rebuildSummaryTable");
+
+    document
+        .getElementById("adminRebuildBack")
+        .onclick = renderAdminScreen;
+
+
+    // ------------------------------------------------------------
+    // Small helpers
+    // ------------------------------------------------------------
+
+    function setStatus(kind, text) {
+
+        statusEl.className = "rebuild-status rebuild-status--" + kind;
+
+        statusEl.textContent = text;
+
+    }
+
+    function escapeHtml(value) {
+
+        return String(value ?? "").replace(/[&<>"']/g, function(ch){
+
+            return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[ch];
+
+        });
+
+    }
+
+    // Named to avoid any ambiguity with js/views/summary.js's real
+    // end-of-exam renderSummary() now that both share one global scope.
+    function renderRebuildSummary(counts) {
+
+        let html =
+            "<tr><th>Section</th><th>Items</th><th>Header rows</th><th>Total rows</th></tr>";
+
+        Object.keys(counts).forEach(function(sectionKey){
+
+            const c = counts[sectionKey];
+
+            html +=
+
+                "<tr><td>" + sectionKey + "</td>" +
+                "<td>" + c.items + "</td>" +
+                "<td>" + c.headers + "</td>" +
+                "<td>" + c.total + "</td></tr>";
+
+        });
+
+        summaryTableEl.innerHTML = html;
+
+    }
+
+
+    // ------------------------------------------------------------
+    // Step 1: pick + parse the workbook
+    // ------------------------------------------------------------
+
+    document
+
+        .getElementById("xlsxFile")
+
+        .addEventListener("change", async function(event){
+
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            choiceEl.style.display = "none";
+
+            editorEl.style.display = "none";
+
+            outputsEl.style.display = "none";
+
+            diffEl.style.display = "none";
+
+            parsedData = null;
+
+            lastOutputs = null;
+
+            setStatus("idle", "Reading " + file.name + " …");
+
+            try {
+
+                const arrayBuffer = await file.arrayBuffer();
+
+                parsedData = parseWorkbook(arrayBuffer);
+
+                renderRebuildSummary(parsedData.counts);
+
+                choiceEl.style.display = "block";
+
+                setStatus(
+
+                    "ok",
+
+                    "Parsed successfully. Review the counts below, then choose how to proceed."
+
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                setStatus("error", "Could not read this workbook:\n" + error.message);
+
+            }
+
+        });
+
+
+    // ------------------------------------------------------------
+    // Step 2: auto vs interactive choice
+    // ------------------------------------------------------------
+
+    document.getElementById("generateNowBtn").addEventListener("click", function(){
+
+        choiceEl.style.display = "none";
+
+        finalizeAndShowOutputs();
+
+    });
+
+    document.getElementById("reviewEditBtn").addEventListener("click", function(){
+
+        choiceEl.style.display = "none";
+
+        currentSectionKey = "clinical";
+
+        renderSectionTabs();
+
+        renderEditorTable(currentSectionKey);
+
+        editorEl.style.display = "block";
+
+    });
+
+
+    // ------------------------------------------------------------
+    // Step 2c: diff against the currently committed data files
+    //
+    // Tries fetch() first (works when this app is served over
+    // http(s), e.g. Netlify/GitHub Pages — no extra step needed).
+    // fetch() is blocked by CORS when the app is opened directly via
+    // file:// with no server, so that failure falls back to two plain
+    // file pickers for the offline case.
+    // ------------------------------------------------------------
+
+    document.getElementById("showDiffBtn").addEventListener("click", async function(){
+
+        choiceEl.style.display = "none";
+
+        diffEl.style.display = "block";
+
+        document.getElementById("diffFallbackPickers").style.display = "none";
+
+        document.getElementById("diffResults").innerHTML = "";
+
+        const diffStatusEl = document.getElementById("diffLoadStatus");
+
+        diffStatusEl.className = "rebuild-status rebuild-status--idle";
+
+        diffStatusEl.textContent = "Loading data/questions.json and data/settings.json …";
+
+        try {
+
+            const [questionsResponse, settingsResponse] = await Promise.all([
+
+                fetch("data/questions.json"),
+
+                fetch("data/settings.json")
+
+            ]);
+
+            if (!questionsResponse.ok || !settingsResponse.ok) {
+
+                throw new Error("fetch did not return ok");
+
+            }
+
+            diffOldQuestions = await questionsResponse.json();
+
+            diffOldSettings = await settingsResponse.json();
+
+            diffStatusEl.className = "rebuild-status rebuild-status--ok";
+
+            diffStatusEl.textContent = "Loaded current data/questions.json and data/settings.json automatically.";
+
+            renderDiffResults();
+
+        }
+
+        catch (error) {
+
+            diffStatusEl.className = "rebuild-status rebuild-status--idle";
+
+            diffStatusEl.textContent =
+
+                "Could not load automatically (expected when opening this app " +
+                "directly via file:// with no server). Pick the two current files by hand:";
+
+            document.getElementById("diffFallbackPickers").style.display = "block";
+
+        }
+
+    });
+
+    function maybeRenderManualDiff() {
+
+        if (diffOldQuestions && diffOldSettings) renderDiffResults();
+
+    }
+
+    document.getElementById("diffQuestionsFile").addEventListener("change", async function(event){
+
+        const file = event.target.files[0];
+
+        if (!file) return;
+
+        try {
+
+            diffOldQuestions = JSON.parse(await file.text());
+
+            maybeRenderManualDiff();
+
+        }
+
+        catch (error) {
+
+            alert("Could not read this file as JSON:\n" + error.message);
+
+        }
+
+    });
+
+    document.getElementById("diffSettingsFile").addEventListener("change", async function(event){
+
+        const file = event.target.files[0];
+
+        if (!file) return;
+
+        try {
+
+            diffOldSettings = JSON.parse(await file.text());
+
+            maybeRenderManualDiff();
+
+        }
+
+        catch (error) {
+
+            alert("Could not read this file as JSON:\n" + error.message);
+
+        }
+
+    });
+
+    document.getElementById("diffBackBtn").addEventListener("click", function(){
+
+        diffEl.style.display = "none";
+
+        choiceEl.style.display = "block";
+
+    });
+
+    function diffRowIdOf(sectionKey, row) {
+
+        return sectionKey === "spotter" ? row.Spotter_ID : row.Question_ID;
+
+    }
+
+    function renderDiffResults() {
+
+        const sectionDiffs = diffAllSections(diffOldQuestions, parsedData.questions);
+
+        const settingsDiff = diffSettingsData(diffOldSettings, parsedData.settings);
+
+        let summaryHtml =
+
+            "<table class=\"diff-summary-table\">" +
+            "<tr><th>Section</th><th>Added</th><th>Removed</th><th>Modified</th></tr>";
+
+        let detailHtml = "";
+
+        Object.keys(SECTION_SHEETS).forEach(function(sectionKey){
+
+            const diff = sectionDiffs[sectionKey];
+
+            summaryHtml +=
+
+                "<tr><td>" + SECTION_LABELS[sectionKey] + "</td>" +
+                "<td>" + diff.added.length + "</td>" +
+                "<td>" + diff.removed.length + "</td>" +
+                "<td>" + diff.modified.length + "</td></tr>";
+
+            if (diff.added.length === 0 && diff.removed.length === 0 && diff.modified.length === 0) {
+
+                return;
+
+            }
+
+            detailHtml += "<h4 class=\"diff-section-heading\">" + SECTION_LABELS[sectionKey] + "</h4>";
+
+            diff.added.forEach(function(row){
+
+                detailHtml +=
+
+                    "<div class=\"diff-added\">+ Added " + escapeHtml(diffRowIdOf(sectionKey, row)) +
+                    " — " + escapeHtml(row.Title) + "</div>";
+
+            });
+
+            diff.removed.forEach(function(row){
+
+                detailHtml +=
+
+                    "<div class=\"diff-removed\">− Removed " + escapeHtml(diffRowIdOf(sectionKey, row)) +
+                    " — " + escapeHtml(row.Title) + "</div>";
+
+            });
+
+            diff.modified.forEach(function(entry){
+
+                let fieldsHtml = "<ul>";
+
+                entry.changedFields.forEach(function(cf){
+
+                    fieldsHtml +=
+
+                        "<li><strong>" + escapeHtml(cf.field) + "</strong>: \"" +
+                        escapeHtml(cf.oldVal) + "\" &rarr; \"" + escapeHtml(cf.newVal) + "\"</li>";
+
+                });
+
+                fieldsHtml += "</ul>";
+
+                detailHtml +=
+
+                    "<div class=\"diff-modified\">" + escapeHtml(entry.id) + " changed:" +
+                    fieldsHtml + "</div>";
+
+            });
+
+        });
+
+        summaryHtml += "</table>";
+
+        if (settingsDiff.added.length || settingsDiff.removed.length || settingsDiff.modified.length) {
+
+            detailHtml += "<h4 class=\"diff-section-heading\">Settings</h4>";
+
+            settingsDiff.added.forEach(function(key){
+
+                detailHtml += "<div class=\"diff-added\">+ Added " + escapeHtml(key) + "</div>";
+
+            });
+
+            settingsDiff.removed.forEach(function(key){
+
+                detailHtml += "<div class=\"diff-removed\">− Removed " + escapeHtml(key) + "</div>";
+
+            });
+
+            settingsDiff.modified.forEach(function(entry){
+
+                detailHtml +=
+
+                    "<div class=\"diff-modified\">" + escapeHtml(entry.key) + ": \"" +
+                    escapeHtml(entry.oldVal) + "\" &rarr; \"" + escapeHtml(entry.newVal) + "\"</div>";
+
+            });
+
+        }
+
+        if (!detailHtml) {
+
+            detailHtml = "<p>No differences found — this workbook matches the current data files exactly.</p>";
+
+        }
+
+        document.getElementById("diffResults").innerHTML = summaryHtml + detailHtml;
+
+    }
+
+
+    // ------------------------------------------------------------
+    // Step 2b: interactive editor
+    // ------------------------------------------------------------
+
+    function renderSectionTabs() {
+
+        let html = "";
+
+        Object.keys(SECTION_LABELS).forEach(function(key){
+
+            html +=
+                "<button type=\"button\" class=\"section-tab" +
+                (key === currentSectionKey ? " active" : "") + "\" data-section=\"" + key + "\">" +
+                SECTION_LABELS[key] + " (" + parsedData.questions[key].length + ")</button>";
+
+        });
+
+        document.getElementById("sectionTabs").innerHTML = html;
+
+    }
+
+    document.getElementById("sectionTabs").addEventListener("click", function(event){
+
+        const btn = event.target.closest(".section-tab");
+
+        if (!btn) return;
+
+        closeForm();
+
+        currentSectionKey = btn.dataset.section;
+
+        renderSectionTabs();
+
+        renderEditorTable(currentSectionKey);
+
+    });
+
+    function rowNumberLabel(sectionKey, row) {
+
+        return sectionKey === "spotter"
+            ? (row.Set_No ?? "") + " / " + (row.Spotter_No ?? "")
+            : String(row.Question_No ?? "");
+
+    }
+
+    function renderEditorTable(sectionKey) {
+
+        const rows = parsedData.questions[sectionKey];
+
+        let html = "<tr><th>No.</th><th>Title</th><th>Topic</th><th>Difficulty</th><th>Item Type</th><th></th></tr>";
+
+        rows.forEach(function(row, index){
+
+            html +=
+
+                "<tr>" +
+                "<td>" + escapeHtml(rowNumberLabel(sectionKey, row)) + "</td>" +
+                "<td>" + escapeHtml(row.Title) + "</td>" +
+                "<td>" + escapeHtml(row.Topic) + "</td>" +
+                "<td>" + escapeHtml(row.Difficulty) + "</td>" +
+                "<td>" + escapeHtml(row.Item_Type) + "</td>" +
+                "<td><button type=\"button\" class=\"editor-edit-btn\" data-index=\"" +
+                index + "\">Edit</button></td>" +
+                "</tr>";
+
+        });
+
+        document.getElementById("editorTable").innerHTML = html;
+
+        document.getElementById("sectionRowCount").textContent =
+            rows.length + " row(s) in " + SECTION_LABELS[sectionKey];
+
+    }
+
+    document.getElementById("editorTable").addEventListener("click", function(event){
+
+        const btn = event.target.closest(".editor-edit-btn");
+
+        if (!btn) return;
+
+        openForm(currentSectionKey, Number(btn.dataset.index));
+
+    });
+
+    document.getElementById("addRowBtn").addEventListener("click", function(){
+
+        openForm(currentSectionKey, null);
+
+    });
+
+    document.getElementById("doneEditingBtn").addEventListener("click", function(){
+
+        closeForm();
+
+        editorEl.style.display = "none";
+
+        finalizeAndShowOutputs();
+
+    });
+
+
+    // ---- Detail form ----
+
+    function fieldLabel(fieldName) {
+
+        return fieldName.replace(/_/g, " ");
+
+    }
+
+    function itemTypeOptions(sectionKey) {
+
+        return sectionKey === "spotter"
+            ? ["Spotter_Slide", "Section_Header"]
+            : ["Question", "Section_Header"];
+
+    }
+
+    function selectFieldHtml(fieldName, options, value) {
+
+        let html =
+            "<div class=\"editor-field\"><label>" + fieldLabel(fieldName) + "</label><select id=\"field_" +
+            fieldName + "\">";
+
+        options.forEach(function(opt){
+
+            html +=
+                "<option value=\"" + escapeHtml(opt) + "\"" +
+                (opt === String(value ?? "") ? " selected" : "") + ">" +
+                (opt || "—") + "</option>";
+
+        });
+
+        html += "</select></div>";
+
+        return html;
+
+    }
+
+    function renderFormField(sectionKey, fieldName, value) {
+
+        if (fieldName === "Image_File") {
+
+            return (
+
+                "<div class=\"editor-field editor-field--wide\">" +
+                "<label>" + fieldLabel(fieldName) + "</label>" +
+                "<div class=\"editor-image-row\">" +
+                "<input type=\"text\" id=\"field_" + fieldName + "\" value=\"" + escapeHtml(value) +
+                "\" placeholder=\"e.g. clinical_003_01.jpg\">" +
+                "<button type=\"button\" id=\"chooseImageBtn\">Choose File…</button>" +
+                "</div>" +
+                "<div class=\"editor-field-hint\">Filename only — goes in <code>" +
+                SECTION_IMAGE_FOLDER[sectionKey] + "</code>. The actual image file still has to be copied " +
+                "there by hand; this tool never reads or embeds the image itself.</div>" +
+                "</div>"
+
+            );
+
+        }
+
+        if (fieldName === "Item_Type") {
+
+            return selectFieldHtml(fieldName, itemTypeOptions(sectionKey), value);
+
+        }
+
+        if (fieldName === "Difficulty") {
+
+            return selectFieldHtml(fieldName, DIFFICULTY_OPTIONS, value);
+
+        }
+
+        if (TEXTAREA_FIELDS.has(fieldName)) {
+
+            return (
+
+                "<div class=\"editor-field editor-field--wide\">" +
+                "<label>" + fieldLabel(fieldName) + "</label>" +
+                "<textarea id=\"field_" + fieldName + "\">" + escapeHtml(value) + "</textarea>" +
+                "</div>"
+
+            );
+
+        }
+
+        const inputType = NUMBER_FIELDS.has(fieldName) ? "number" : "text";
+
+        return (
+
+            "<div class=\"editor-field\">" +
+            "<label>" + fieldLabel(fieldName) + "</label>" +
+            "<input type=\"" + inputType + "\" id=\"field_" + fieldName + "\" value=\"" + escapeHtml(value) +
+            "\">" +
+            "</div>"
+
+        );
+
+    }
+
+    function nextQuestionNumber(sectionKey) {
+
+        let max = 0;
+
+        parsedData.questions[sectionKey].forEach(function(row){
+
+            const n = parseInt(row.Question_No, 10);
+
+            if (!isNaN(n) && n > max) max = n;
+
+        });
+
+        return max + 1;
+
+    }
+
+    function openForm(sectionKey, index) {
+
+        editingIndex = index;
+
+        const isNew = index === null;
+
+        const row = isNew ? {} : parsedData.questions[sectionKey][index];
+
+        const fields = fieldsForSection(sectionKey);
+
+        const defaults = {};
+
+        if (isNew) {
+
+            defaults.Item_Type = itemTypeForSection(sectionKey);
+
+            if (sectionKey !== "spotter") {
+
+                defaults.Question_No = String(nextQuestionNumber(sectionKey));
+
+            }
+
+        }
+
+        let html =
+            "<h3>" + (isNew ? "Add New " + SECTION_LABELS[sectionKey] + " Row" : "Edit Row") + "</h3>";
+
+        html += "<div class=\"editor-form-grid\">";
+
+        fields.forEach(function(fieldName){
+
+            const value = isNew
+                ? (defaults[fieldName] !== undefined ? defaults[fieldName] : "")
+                : (row[fieldName] ?? "");
+
+            html += renderFormField(sectionKey, fieldName, value);
+
+        });
+
+        html += "</div>";
+
+        if (isNew && sectionKey === "spotter") {
+
+            const example =
+                parsedData.questions.spotter.find(r => r.Item_Type === "Spotter_Slide");
+
+            html +=
+
+                "<div class=\"editor-field-hint\" style=\"margin-top:10px;\">" +
+                "Spotter numbering is two-axis (Set × position), so it isn't auto-suggested — " +
+                (example
+                    ? "existing example: Set_No \"" + example.Set_No + "\", Spotter_No \"" +
+                      example.Spotter_No + "\"."
+                    : "enter Set_No and Spotter_No matching the existing pattern in this workbook.") +
+                "</div>";
+
+        }
+
+        html += "<div class=\"editor-warning\" id=\"editorWarning\"></div>";
+
+        html +=
+
+            "<div class=\"editor-form-actions\">" +
+            "<button type=\"button\" id=\"saveRowBtn\" class=\"editor-save-btn\">Save</button>" +
+            "<button type=\"button\" id=\"cancelRowBtn\" class=\"editor-cancel-btn\">Cancel</button>" +
+            "</div>";
+
+        const panel = document.getElementById("editorFormPanel");
+
+        panel.innerHTML = html;
+
+        panel.style.display = "block";
+
+        const chooseBtn = document.getElementById("chooseImageBtn");
+
+        if (chooseBtn) {
+
+            chooseBtn.addEventListener("click", function(){
+
+                hiddenImagePicker.value = "";
+
+                hiddenImagePicker.click();
+
+            });
+
+        }
+
+        document.getElementById("saveRowBtn").addEventListener("click", function(){
+
+            saveRow(sectionKey);
+
+        });
+
+        document.getElementById("cancelRowBtn").addEventListener("click", closeForm);
+
+        panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+    }
+
+    function closeForm() {
+
+        editingIndex = null;
+
+        const panel = document.getElementById("editorFormPanel");
+
+        panel.innerHTML = "";
+
+        panel.style.display = "none";
+
+    }
+
+    function duplicateLabel(sectionKey) {
+
+        return sectionKey === "spotter" ? "Set_No + Spotter_No combination" : "Question_No";
+
+    }
+
+    function findDuplicateIndex(sectionKey, candidateRow, ignoreIndex) {
+
+        const rows = parsedData.questions[sectionKey];
+
+        for (let i = 0; i < rows.length; i++) {
+
+            if (i === ignoreIndex) continue;
+
+            const existing = rows[i];
+
+            const isDuplicate = sectionKey === "spotter"
+                ? (String(existing.Set_No) === String(candidateRow.Set_No) &&
+                   String(existing.Spotter_No) === String(candidateRow.Spotter_No))
+                : (String(existing.Question_No) === String(candidateRow.Question_No));
+
+            if (isDuplicate) return i;
+
+        }
+
+        return -1;
+
+    }
+
+    function saveRow(sectionKey) {
+
+        const fields = fieldsForSection(sectionKey);
+
+        const newRow = {};
+
+        fields.forEach(function(fieldName){
+
+            const el = document.getElementById("field_" + fieldName);
+
+            const value = el.value;
+
+            if (NUMBER_FIELDS.has(fieldName)) {
+
+                newRow[fieldName] = value === "" ? null : Number(value);
+
+            } else {
+
+                newRow[fieldName] = value === "" ? null : value;
+
+            }
+
+        });
+
+        const rows = parsedData.questions[sectionKey];
+
+        const duplicateIndex = findDuplicateIndex(sectionKey, newRow, editingIndex);
+
+        if (duplicateIndex !== -1) {
+
+            const proceed = confirm(
+
+                "A row with that " + duplicateLabel(sectionKey) + " already exists (row " +
+                (duplicateIndex + 1) + "). Overwrite it instead of adding a new one?"
+
+            );
+
+            if (!proceed) {
+
+                const warningEl = document.getElementById("editorWarning");
+
+                warningEl.style.display = "block";
+
+                warningEl.textContent =
+                    "Not saved — change the " + duplicateLabel(sectionKey) +
+                    " to something that doesn't already exist, or confirm the overwrite.";
+
+                return;
+
+            }
+
+            rows[duplicateIndex] = newRow;
+
+        } else if (editingIndex !== null) {
+
+            rows[editingIndex] = newRow;
+
+        } else {
+
+            rows.push(newRow);
+
+        }
+
+        closeForm();
+
+        renderSectionTabs();
+
+        renderEditorTable(sectionKey);
+
+    }
+
+    // Hidden file input used only to read a chosen image's NAME — the
+    // File object (and its bytes) is discarded immediately after.
+    // Appended to document.body (outside #app-content), so it must be
+    // created only once across visits to this screen, not recreated
+    // (and leaked) on every renderAdminRebuild() call.
+    let hiddenImagePicker = document.getElementById("adminRebuildHiddenImagePicker");
+
+    if (!hiddenImagePicker) {
+
+        hiddenImagePicker = document.createElement("input");
+
+        hiddenImagePicker.type = "file";
+
+        hiddenImagePicker.id = "adminRebuildHiddenImagePicker";
+
+        hiddenImagePicker.accept = "image/*";
+
+        hiddenImagePicker.style.display = "none";
+
+        document.body.appendChild(hiddenImagePicker);
+
+    }
+
+    // Re-bound each visit (the "change" handler closes over this call's
+    // own local `panel`/field lookups via the DOM, so a stale listener
+    // from a previous visit would still work, but only one should ever
+    // be live at a time).
+    hiddenImagePicker.onchange = function(){
+
+        const file = hiddenImagePicker.files[0];
+
+        hiddenImagePicker.value = "";
+
+        if (!file) return;
+
+        const imageInput = document.getElementById("field_Image_File");
+
+        if (imageInput) imageInput.value = file.name;
+
+    };
+
+
+    // ------------------------------------------------------------
+    // Step 3: generate + save output files
+    // ------------------------------------------------------------
+
+    function finalizeAndShowOutputs() {
+
+        choiceEl.style.display = "none";
+
+        editorEl.style.display = "none";
+
+        lastOutputs = {
+
+            "questions.json": buildQuestionsJSON(parsedData),
+
+            "settings.json": buildSettingsJSON(parsedData),
+
+            "data-embedded.js": buildEmbeddedJS(parsedData)
+
+        };
+
+        outputsEl.style.display = "block";
+
+        setStatus("ok", "Ready. Save the files below.");
+
+    }
+
+    document
+
+        .getElementById("saveOutputsBtn")
+
+        .addEventListener("click", async function(){
+
+            if (!lastOutputs) return;
+
+            try {
+
+                const result = await saveOutputs(lastOutputs);
+
+                setStatus(
+
+                    "ok",
+
+                    result === "written"
+                        ? "Saved directly into the folder you chose."
+                        : "Downloaded — move the 3 files into data/ yourself."
+
+                );
+
+            }
+
+            catch (error) {
+
+                // AbortError: the user cancelled the folder picker — not a failure.
+                if (error.name === "AbortError") return;
+
+                console.error(error);
+
+                setStatus("error", "Could not save the files:\n" + error.message);
+
+            }
+
+        });
+
+    document
+
+        .getElementById("downloadOutputsBtn")
+
+        .addEventListener("click", function(){
+
+            if (!lastOutputs) return;
+
+            for (const filename in lastOutputs) {
+
+                downloadFile(filename, lastOutputs[filename]);
+
+            }
+
+            setStatus("ok", "Downloaded — move the 3 files into data/ yourself.");
+
+        });
+
+    document
+
+        .getElementById("downloadXlsxBtn")
+
+        .addEventListener("click", function(){
+
+            if (!parsedData) return;
+
+            try {
+
+                const updated = buildUpdatedWorkbook(parsedData);
+
+                downloadFile(
+
+                    "QuestionBank.xlsx",
+
+                    updated,
+
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+                );
+
+                setStatus("ok", "Downloaded updated QuestionBank.xlsx — save it over your working copy.");
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                setStatus("error", "Could not build the updated workbook:\n" + error.message);
+
+            }
+
+        });
+
+}

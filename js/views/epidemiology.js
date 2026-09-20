@@ -234,7 +234,9 @@ function showEpidemiologyQuestion() {
 
             Number(appData.settings.Epidemiology_Time_Min) * 60,
 
-            Number(appData.settings.Warning_Normal_Sec)
+            Number(appData.settings.Warning_Normal_Sec),
+
+            epidemiologyNext
 
         );
 
@@ -260,14 +262,19 @@ function showEpidemiologyQuestion() {
 
     document
         .getElementById("nextButton")
-        .onclick = function () {
+        .onclick = epidemiologyNext;
 
-            stopSectionTimer();
+}
 
-            epidemiologyTimerStarted = false;
+// Shared by the Next button and by startSectionTimer()'s onComplete —
+// see clinical.js's clinicalNext() for why this auto-advances instead
+// of leaving the candidate stuck on a 00:00 countdown forever.
+function epidemiologyNext() {
 
-            nextSection();
+    stopSectionTimer();
 
-        };
+    epidemiologyTimerStarted = false;
+
+    nextSection();
 
 }

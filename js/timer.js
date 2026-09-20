@@ -22,6 +22,25 @@ let sectionCallback = null;
 
 let sectionPaused = false;
 
+// A coordinator-triggered pause of the whole exam clock (both timers),
+// distinct from sectionPaused above — that flag is flipped internally
+// on every Header<->Question transition within a section and must not
+// be able to silently un-pause an exam the coordinator explicitly
+// stopped. See js/ui.js's #examPauseBtn handler.
+let examPaused = false;
+
+function pauseExamTimers() {
+
+    examPaused = true;
+
+}
+
+function resumeExamTimers() {
+
+    examPaused = false;
+
+}
+
 
 // ------------------------------------------------------------
 // Format Time
@@ -51,6 +70,8 @@ function startOverallTimer() {
     stopOverallTimer();
 
     overallInterval = setInterval(function () {
+
+        if (examPaused) return;
 
         appState.timer.overall++;
 
@@ -114,7 +135,7 @@ function startSectionTimer(seconds, warningSeconds, onComplete = null) {
 
 function runSectionTimer() {
 
-    if (sectionPaused)
+    if (sectionPaused || examPaused)
         return;
 
     sectionRemaining--;

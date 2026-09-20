@@ -94,6 +94,28 @@ function updateExamExitWidget() {
 
     armExamWidget("examHomeWidget", "examHomeConfirm", "examHomeBtn");
 
+    armPauseWidget();
+
+}
+
+// A plain single-click toggle rather than armExamWidget()'s checkbox
+// pattern — pausing is reversible/non-destructive, unlike Exit/Home.
+// Every render (i.e. every section change, which can't happen while
+// actually paused since navigation is blocked) resets it to "not
+// paused" as a safety net, same spirit as resetSectionTimerLatches().
+function armPauseWidget() {
+
+    const btn = document.getElementById("examPauseBtn");
+
+    if (!btn) return;
+
+    btn.style.display =
+        EXAM_SECTION_VIEWS.indexOf(appState.currentView) !== -1 ? "inline-block" : "none";
+
+    resumeExamTimers();
+
+    btn.textContent = "PAUSE";
+
 }
 
 // Each written section latches "timer already started" in its own
@@ -140,6 +162,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
             clearResumeState();
 
+            resumeExamTimers();
+
             window.close();
 
             // Browsers only allow script-driven window.close() on a
@@ -181,7 +205,78 @@ document.addEventListener("DOMContentLoaded", function(){
 
             clearResumeState();
 
+            resumeExamTimers();
+
             renderHome();
+
+        });
+
+    }
+
+    // ----------------------------------------------------------
+    // Pause / Resume
+    //
+    // Freezes both timers (examPaused, js/timer.js) and blocks
+    // Previous/Next — both the on-screen buttons (native `disabled`
+    // suppresses even a programmatic .click()) and, as a second line
+    // of defense covering paths that don't go through those buttons
+    // (e.g. Spotter's Reserve-screen auto-advance), the keyboard
+    // shortcuts (js/navigation.js's keydown listener checks
+    // examPaused directly). Each button's disabled state is restored
+    // on resume rather than force-enabled, since Previous/Next aren't
+    // always both enabled to begin with (isFirstSection(), Spotter's
+    // image-preload gate, etc).
+    // ----------------------------------------------------------
+
+    const pauseButton = document.getElementById("examPauseBtn");
+
+    if (pauseButton) {
+
+        let pausedPreviousDisabled = false;
+
+        let pausedNextDisabled = false;
+
+        pauseButton.addEventListener("click", function(){
+
+            const previousButton = document.getElementById("previousButton");
+
+            const nextButton = document.getElementById("nextButton");
+
+            if (!examPaused) {
+
+                pauseExamTimers();
+
+                if (previousButton) {
+
+                    pausedPreviousDisabled = previousButton.disabled;
+
+                    previousButton.disabled = true;
+
+                }
+
+                if (nextButton) {
+
+                    pausedNextDisabled = nextButton.disabled;
+
+                    nextButton.disabled = true;
+
+                }
+
+                pauseButton.textContent = "RESUME";
+
+            }
+
+            else {
+
+                resumeExamTimers();
+
+                if (previousButton) previousButton.disabled = pausedPreviousDisabled;
+
+                if (nextButton) nextButton.disabled = pausedNextDisabled;
+
+                pauseButton.textContent = "PAUSE";
+
+            }
 
         });
 

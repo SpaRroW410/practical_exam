@@ -16,8 +16,9 @@ async function loadApplicationData() {
         // ----------------------------
         // Offline / pendrive path
         //
-        // "Rebuild Data.html" can generate data/data-embedded.js, which
-        // defines EMBEDDED_APP_DATA as a plain <script> global. When
+        // Admin > Rebuild Data (js/views/admin-rebuild.js) can generate
+        // data/data-embedded.js, which defines EMBEDDED_APP_DATA as a
+        // plain <script> global. When
         // present, use it directly — no fetch() at all, so the app
         // works from a bare file:// double-click with no server.
         //

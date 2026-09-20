@@ -51,7 +51,7 @@ touching code.
 - Manual and random question/Spotter-set selection, including a
   cross-day "previously used" exclusion mechanism.
 - Excel-to-JSON data pipeline with an in-browser review/edit/diff tool
-  (`Rebuild Data.html`) that needs no server, R, or internet connection.
+  (Admin > Rebuild Data) that needs no server, R, or internet connection.
 - Browser print-to-PDF of the assembled question paper, with an optional
   answer key, and a separate admin-only full question-bank export.
 - Dual deployment: static web hosting (Netlify/GitHub Pages) and an
@@ -70,7 +70,7 @@ touching code.
 |---|---|
 | **Invigilator / faculty running the exam** | Selects or randomizes a question set on the Home screen, starts the exam, operates Previous/Next (or lets timers auto-advance where they do), and reads the Summary at the end. Primary day-to-day user. |
 | **Candidates (UG/PG students)** | View the presented content on a shared screen or projector; do not interact with the application directly. |
-| **Question-bank maintainer** | A faculty member who edits `QuestionBank.xlsx` (directly, or via `Rebuild Data.html`'s in-browser editor) and regenerates `data/questions.json` / `data/settings.json`, keeping the exam content current. |
+| **Question-bank maintainer** | A faculty member who edits `QuestionBank.xlsx` (directly, or via the Admin > Rebuild Data in-browser editor) and regenerates `data/questions.json` / `data/settings.json`, keeping the exam content current. |
 | **Administrator** | Uses the separate admin-code-gated screen to export the full question bank (filtered by UG/PG) as a printable reference document. |
 | **IT / lab staff** | Deploys the pendrive copy (double-click `Start Exam System.bat`) or the hosted copy (push to the Netlify/GitHub Pages branch); not expected to edit code. |
 
@@ -122,12 +122,14 @@ A single entry point, `index.html`, defines the application shell
 used only when printing. All screen content beyond that shell is injected
 into `#app-content` at runtime as HTML strings built from JavaScript
 template literals — there is no server-side templating and no separate
-`.html` file per screen. `Rebuild Data.html` is a second, independent
-entry point (the maintenance tool), self-contained in the same style.
+`.html` file per screen, including the maintenance tool, which now lives
+inside the app itself as the Admin > Rebuild Data screen
+(`js/views/admin-rebuild.js`) rather than a second standalone entry
+point.
 
 ### CSS3
 
-Four stylesheets, loaded in this order and layering cleanly on top of one
+Five stylesheets, loaded in this order and layering cleanly on top of one
 another:
 
 | File | Responsibility |
@@ -136,6 +138,7 @@ another:
 | `css/main.css` | Base reset and body-level layout (header/content/footer flex shell). |
 | `css/home.css` | Home/selection-screen grid, buttons, and the "Previously Used" exclusion table. |
 | `css/exam.css` | The `.exam-screen` flex container itself. |
+| `css/admin-rebuild.css` | Admin > Rebuild Data's editor/diff/status UI, scoped under `.admin-rebuild-screen`. |
 
 No CSS framework or preprocessor is used. Layout relies on plain
 flexbox and CSS Grid, with `flex-grow` ratios (e.g. `6.5 : 3.5`) used
@@ -175,12 +178,12 @@ The primary editor used for day-to-day development on the codebase.
 ### Supporting tools (not in the original list, included for completeness)
 
 - **SheetJS** (`tools/vendor/xlsx.full.min.js`, vendored, Apache-2.0):
-  the in-browser Excel parser/writer behind `Rebuild Data.html` and
+  the in-browser Excel parser/writer behind Admin > Rebuild Data and
   `tools/rebuild.js`.
 - **GitHub Actions**: the "pages build and deployment" workflow that
   serves the online copy from `main`.
 - **R** (`tools/build.R`): the original, now-deprecated Excel→JSON
-  converter, kept only as a fallback; superseded by `Rebuild Data.html`.
+  converter, kept only as a fallback; superseded by Admin > Rebuild Data.
 
 ---
 
@@ -189,7 +192,6 @@ The primary editor used for day-to-day development on the codebase.
 ```
 practical_exam/
 ├── index.html                  Application entry point (the exam itself)
-├── Rebuild Data.html           Standalone data-maintenance tool (Excel <-> JSON)
 ├── Start Exam System.bat       Windows kiosk-mode launcher for the offline copy
 ├── QuestionBank.xlsx           The single authoritative source of exam content
 ├── .nojekyll                   Disables GitHub Pages' Jekyll build step (plain static site)
@@ -199,7 +201,8 @@ practical_exam/
 │   ├── theme.css                Design tokens + exam-screen layout primitives
 │   ├── main.css                 Base reset + page shell layout
 │   ├── home.css                 Home/selection screen + exclusion table
-│   └── exam.css                 .exam-screen flex container
+│   ├── exam.css                 .exam-screen flex container
+│   └── admin-rebuild.css        Admin > Rebuild Data editor/diff/status UI
 │
 ├── js/
 │   ├── config.js                 APP_CONFIG (access codes), appState, appData, section order/names
@@ -215,6 +218,7 @@ practical_exam/
 │   └── views/                    One renderer module per screen
 │       ├── home.js                 Setup/selection screen, RANDOM SET, exclusion UI
 │       ├── admin.js                Admin question-bank export screen
+│       ├── admin-rebuild.js        Admin > Rebuild Data (Excel <-> JSON, ported from the former standalone tool)
 │       ├── clinical.js             Clinical Case section
 │       ├── epidemiology.js         Epidemiology section
 │       ├── biostatistics.js        Biostatistics section
@@ -236,7 +240,7 @@ practical_exam/
 │   └── beep.mp3                  Warning-threshold beep sound
 │
 ├── tools/
-│   ├── rebuild.js                 Shared parse/build/diff logic used by Rebuild Data.html
+│   ├── rebuild.js                 Shared parse/build/diff logic used by Admin > Rebuild Data
 │   ├── build.R                    Deprecated R fallback for the same conversion
 │   └── vendor/
 │       └── xlsx.full.min.js       Vendored SheetJS library
@@ -286,7 +290,7 @@ through three stages:
 ```
 
 **Stage 1 — Workbook.** `QuestionBank.xlsx` is hand-maintained in Excel
-(directly, or through `Rebuild Data.html`'s interactive editor, which
+(directly, or through Admin > Rebuild Data's interactive editor, which
 writes the same shape back out as an updated `.xlsx`). It holds ten
 sheets: five question sheets (`Clinical_Case`, `Epidemiology`,
 `Biostatistics`, `OSPE`, `Spotter`), `Settings`, and four
@@ -294,9 +298,9 @@ maintenance-only sheets (`Dashboard`, `Lists`, `Index`, `Instructions`)
 that the conversion step reads or writes for human reference but the
 running application never sees.
 
-**Stage 2 — Conversion.** `tools/rebuild.js` (run inside
-`Rebuild Data.html`, entirely client-side via the vendored SheetJS
-library) parses the five question sheets into one JSON object keyed by
+**Stage 2 — Conversion.** `tools/rebuild.js` (run inside the app's
+Admin > Rebuild Data screen, entirely client-side via the vendored
+SheetJS library) parses the five question sheets into one JSON object keyed by
 section, and the `Settings` sheet into a flat key/value map — reproducing
 exactly what the now-deprecated `tools/build.R` used to do, including its
 one real quirk: R's `readxl` forces an entire settings column to text the
@@ -386,8 +390,8 @@ section's item type (`"Question"` for the written sections,
 
 ```
 Question_ID          string   e.g. "CL001" — not read by the app; used only
-                               by the maintenance tooling (Rebuild Data.html's
-                               auto-generated Index sheet)
+                               by the maintenance tooling (Admin > Rebuild
+                               Data's auto-generated Index sheet)
 Item_Type             string   "Section_Header" | "Question"
 Question_No           string   the number selected in the Home screen dropdown
 Topic                 string   free-text; not read by the app today
@@ -905,7 +909,7 @@ scope isn't duplicated:
 | Password | **Implemented.** Two-tier access code (`APP_CONFIG.ACCESS_CODE` for the exam, a separate `ADMIN_CODE` for the question-bank export), `js/password.js`. |
 | PDF export | **Implemented**, via the browser's own print-to-PDF (`js/print.js`) — both a candidate-facing question paper and an admin-only full question-bank export, UG/PG filtered. Not a programmatic PDF library (e.g. no `jsPDF`), which is the one respect in which this could still grow (see below). |
 | Online version | **Implemented.** Static hosting on both Netlify and GitHub Pages from the same `main` branch, with a dual-mode data loader so the identical codebase also runs fully offline. |
-| Question editor | **Implemented.** `Rebuild Data.html`'s interactive Review & Edit screen — add/edit questions, an image-filename picker, duplicate guards, and a diff view against the currently committed data files. |
+| Question editor | **Implemented.** Admin > Rebuild Data's interactive Review & Edit screen — add/edit questions, an image-filename picker, duplicate guards, and a diff view against the currently committed data files. |
 
 Genuinely outstanding:
 

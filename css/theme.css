@@ -96,6 +96,27 @@ body {
     color: var(--danger) !important;
 }
 
+/* Pause / Resume — sits next to the timer boxes in the header, shown
+   only during the five exam sections (js/ui.js's armPauseWidget()).
+   A plain single-click toggle, not a checkbox-confirmed action like
+   Exit/Home, since pausing is reversible and non-destructive; the
+   amber pastel tone reads as "caution/hold" without borrowing Exit's
+   red or Home's blue. */
+.pause-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    background: var(--pastel-3);
+    border: 1px solid var(--pastel-border-3);
+    border-radius: 8px;
+    color: #7a5b00;
+    cursor: pointer;
+}
+
+.pause-btn:hover {
+    background: #fce8a6;
+}
+
 /* Section Header: margin auto on all sides centres the block in the
    space .exam-screen leaves above the navigation buttons. */
 .section-header {

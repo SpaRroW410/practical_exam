@@ -1,0 +1,324 @@
+/* ============================================================
+   Community Medicine Examination System
+   Admin — Rebuild Data
+   Ported from the former standalone Rebuild Data.html's inline
+   <style> block. Scoped under .admin-rebuild-screen so nothing here
+   can bleed into any other screen now that it shares one stylesheet
+   set with the rest of the app.
+   ============================================================ */
+
+.admin-rebuild-screen .rebuild-status {
+    margin: 16px 0;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 20px;
+    white-space: pre-wrap;
+}
+
+.admin-rebuild-screen .rebuild-status--idle {
+    background: #f2f7fd;
+    color: #444;
+}
+
+.admin-rebuild-screen .rebuild-status--error {
+    background: var(--pastel-4);
+    border: 1px solid var(--pastel-border-4);
+    color: #7a1f1f;
+}
+
+.admin-rebuild-screen .rebuild-status--ok {
+    background: var(--pastel-2);
+    border: 1px solid var(--pastel-border-2);
+    color: #1e4d2b;
+}
+
+.admin-rebuild-screen .rebuild-summary {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.admin-rebuild-screen .rebuild-summary th,
+.admin-rebuild-screen .rebuild-summary td {
+    text-align: left;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-rebuild-screen #xlsxFile {
+    width: 100%;
+    font-size: 16px;
+}
+
+.admin-rebuild-screen #rebuildChoice,
+.admin-rebuild-screen #rebuildEditor,
+.admin-rebuild-screen #rebuildOutputs,
+.admin-rebuild-screen #rebuildDiff {
+    display: none;
+}
+
+.admin-rebuild-screen .diff-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 20px;
+    font-size: 17px;
+}
+
+.admin-rebuild-screen .diff-summary-table th,
+.admin-rebuild-screen .diff-summary-table td {
+    text-align: left;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-rebuild-screen .diff-section-heading {
+    margin: 20px 0 8px;
+    color: var(--primary);
+}
+
+.admin-rebuild-screen .diff-added,
+.admin-rebuild-screen .diff-removed,
+.admin-rebuild-screen .diff-modified {
+    padding: 8px 12px;
+    margin: 6px 0;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.admin-rebuild-screen .diff-added {
+    background: var(--pastel-2);
+    border: 1px solid var(--pastel-border-2);
+}
+
+.admin-rebuild-screen .diff-removed {
+    background: var(--pastel-4);
+    border: 1px solid var(--pastel-border-4);
+}
+
+.admin-rebuild-screen .diff-modified {
+    background: var(--pastel-1);
+    border: 1px solid var(--pastel-border-1);
+}
+
+.admin-rebuild-screen .diff-modified ul {
+    margin: 6px 0 0 20px;
+}
+
+.admin-rebuild-screen .rebuild-choice-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.admin-rebuild-screen .section-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 18px 0 14px;
+}
+
+.admin-rebuild-screen .section-tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #f2f7fd;
+    color: #333;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.admin-rebuild-screen .section-tab.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.admin-rebuild-screen .editor-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.admin-rebuild-screen .editor-toolbar span {
+    font-size: 15px;
+    color: #555;
+}
+
+.admin-rebuild-screen .editor-add-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: #2e7d4f;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.admin-rebuild-screen .editor-table-wrap {
+    max-height: 360px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.admin-rebuild-screen .editor-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+.admin-rebuild-screen .editor-table th {
+    position: sticky;
+    top: 0;
+    background: #eef4fb;
+    text-align: left;
+    padding: 8px 10px;
+}
+
+.admin-rebuild-screen .editor-table td {
+    padding: 6px 10px;
+    border-top: 1px solid var(--border);
+}
+
+.admin-rebuild-screen .editor-table tr:hover {
+    background: #f7fbff;
+}
+
+.admin-rebuild-screen .editor-edit-btn {
+    padding: 4px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+}
+
+.admin-rebuild-screen .editor-form-panel {
+    display: none;
+    margin-top: 16px;
+    padding: 18px;
+    border-radius: 10px;
+    background: var(--pastel-3);
+    border: 1px solid var(--pastel-border-3);
+}
+
+.admin-rebuild-screen .editor-form-panel h3 {
+    margin-top: 0;
+}
+
+.admin-rebuild-screen .editor-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.admin-rebuild-screen .editor-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-rebuild-screen .editor-field--wide {
+    grid-column: 1 / -1;
+}
+
+.admin-rebuild-screen .editor-field label {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+
+.admin-rebuild-screen .editor-field input,
+.admin-rebuild-screen .editor-field select,
+.admin-rebuild-screen .editor-field textarea {
+    font-size: 15px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-family: inherit;
+    background: white;
+}
+
+.admin-rebuild-screen .editor-field textarea {
+    resize: vertical;
+    min-height: 44px;
+}
+
+.admin-rebuild-screen .editor-field-hint {
+    font-size: 12px;
+    color: #666;
+    margin-top: 3px;
+}
+
+.admin-rebuild-screen .editor-image-row {
+    display: flex;
+    gap: 8px;
+}
+
+.admin-rebuild-screen .editor-image-row input[type="text"] {
+    flex: 1;
+}
+
+.admin-rebuild-screen .editor-image-row button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.admin-rebuild-screen .editor-warning {
+    display: none;
+    color: #7a1f1f;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.admin-rebuild-screen .editor-form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.admin-rebuild-screen .editor-form-actions button {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.admin-rebuild-screen .editor-save-btn {
+    background: var(--primary);
+    color: white;
+}
+
+.admin-rebuild-screen .editor-cancel-btn {
+    background: #ccc;
+    color: #333;
+}
+
+.admin-rebuild-screen .editor-done-actions {
+    margin-top: 22px;
+}
+
+.admin-rebuild-screen .output-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 22px;
+}
+
+.admin-rebuild-screen .xlsx-download-button {
+    background: #5a6b7d;
+}
+
+.admin-rebuild-screen .xlsx-download-button:hover {
+    background: #44525f;
+}

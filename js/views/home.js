@@ -377,33 +377,9 @@ function renderUsedQuestionsTable() {
 
 }
 
-// ------------------------------------------------------------
-// Small download helper (Blob + anchor-click, same pattern used by
-// tools/rebuild.js's downloadFile() for the offline rebuild tool).
-// ------------------------------------------------------------
-
-function downloadFile(filename, content, mimeType) {
-
-    const blob = new Blob([content], { type: mimeType || "text/plain" });
-
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-
-    a.href = url;
-
-    a.download = filename;
-
-    document.body.appendChild(a);
-
-    a.click();
-
-    document.body.removeChild(a);
-
-    URL.revokeObjectURL(url);
-
-}
-
+// downloadFile() itself now lives in tools/rebuild.js, loaded app-wide
+// for the Admin > Rebuild Data screen (js/views/admin-rebuild.js) — this
+// just wraps it with the JSON mime type this file's callers want.
 function downloadJSONFile(filename, content) {
 
     downloadFile(filename, content, "application/json");

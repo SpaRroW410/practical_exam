@@ -274,7 +274,9 @@ function showBiostatisticsQuestion() {
 
             Number(appData.settings.Biostatistics_Time_Min) * 60,
 
-            Number(appData.settings.Warning_Normal_Sec)
+            Number(appData.settings.Warning_Normal_Sec),
+
+            biostatisticsNext
 
         );
 
@@ -297,15 +299,19 @@ function showBiostatisticsQuestion() {
 
         };
 
-    document.getElementById("nextButton").onclick =
-        function () {
+    document.getElementById("nextButton").onclick = biostatisticsNext;
 
-            stopSectionTimer();
+}
 
-            biostatisticsTimerStarted = false;
+// Shared by the Next button and by startSectionTimer()'s onComplete —
+// see clinical.js's clinicalNext() for why this auto-advances instead
+// of leaving the candidate stuck on a 00:00 countdown forever.
+function biostatisticsNext() {
 
-            nextSection();
+    stopSectionTimer();
 
-        };
+    biostatisticsTimerStarted = false;
+
+    nextSection();
 
 }

@@ -172,6 +172,22 @@ function renderAdminScreen() {
 
                 </div>
 
+                <div class="admin-group">
+
+                    <h3 class="admin-group-title">Data Maintenance</h3>
+
+                    <p>Regenerate questions.json / settings.json / data-embedded.js from an updated QuestionBank.xlsx.</p>
+
+                    <button
+                        id="adminRebuildData"
+                        class="start-button print-button">
+
+                        REBUILD DATA
+
+                    </button>
+
+                </div>
+
                 <button
                     id="adminBackToAccess"
                     class="start-button print-button admin-back-button">
@@ -309,6 +325,10 @@ function renderAdminScreen() {
             );
 
         };
+
+    document
+        .getElementById("adminRebuildData")
+        .onclick = renderAdminRebuild;
 
     document
         .getElementById("adminBackToAccess")

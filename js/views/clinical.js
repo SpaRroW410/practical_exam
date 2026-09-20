@@ -247,7 +247,9 @@ function showClinicalQuestion() {
 
             Number(appData.settings.Clinical_Time_Min) * 60,
 
-            Number(appData.settings.Warning_Normal_Sec)
+            Number(appData.settings.Warning_Normal_Sec),
+
+            clinicalNext
 
         );
 
@@ -281,14 +283,20 @@ function showClinicalQuestion() {
 
     document
         .getElementById("nextButton")
-        .onclick = function () {
+        .onclick = clinicalNext;
 
-            stopSectionTimer();
+}
 
-            clinicalTimerStarted = false;
+// Shared by the Next button and by startSectionTimer()'s onComplete —
+// stopSectionTimer() is idempotent, so reusing this as the timeout
+// callback (same pattern as Spotter's nextSpotterSlide) auto-advances
+// instead of leaving the candidate stuck on a 00:00 countdown forever.
+function clinicalNext() {
 
-            nextSection();
+    stopSectionTimer();
 
-        };
+    clinicalTimerStarted = false;
+
+    nextSection();
 
 }

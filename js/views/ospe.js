@@ -239,7 +239,9 @@ function showOSPEQuestion() {
 
             Number(appData.settings.OSPE_Time_Min) * 60,
 
-            Number(appData.settings.Warning_Normal_Sec)
+            Number(appData.settings.Warning_Normal_Sec),
+
+            ospeNext
 
         );
 
@@ -262,15 +264,19 @@ function showOSPEQuestion() {
 
         };
 
-    document.getElementById("nextButton").onclick =
-        function () {
+    document.getElementById("nextButton").onclick = ospeNext;
 
-            stopSectionTimer();
+}
 
-            ospeTimerStarted = false;
+// Shared by the Next button and by startSectionTimer()'s onComplete —
+// see clinical.js's clinicalNext() for why this auto-advances instead
+// of leaving the candidate stuck on a 00:00 countdown forever.
+function ospeNext() {
 
-            nextSection();
+    stopSectionTimer();
 
-        };
+    ospeTimerStarted = false;
+
+    nextSection();
 
 }
