@@ -128,11 +128,11 @@ document.addEventListener("keydown", function (event) {
     // too long, is known to send "b" instead of its usual key on some
     // models (PowerPoint's own black-screen shortcut) — rather than
     // let that land as a stray, meaningless keystroke, treat it as
-    // intentional: hide the screen entirely (audience-facing black,
-    // like a genuine pause in proceedings) until "b" is pressed again.
-    // Purely visual — doesn't touch timers/state — so it works even
-    // while examPaused, and isn't limited by the Previous/Next guard
-    // below it.
+    // intentional: hide the screen AND pause (a black screen with the
+    // exam clock silently still running would be worse than either
+    // alone) until "b" is pressed again. Checked ahead of the
+    // Previous/Next guard below, since it needs to work regardless of
+    // whether the exam is already paused.
     if (
         (event.key === "b" || event.key === "B") &&
         EXAM_SECTION_VIEWS.indexOf(appState.currentView) !== -1
@@ -140,7 +140,7 @@ document.addEventListener("keydown", function (event) {
 
         event.preventDefault();
 
-        toggleBlackoutOverlay();
+        toggleBlackoutAndPause();
 
         return;
 

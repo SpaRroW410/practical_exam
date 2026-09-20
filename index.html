@@ -239,10 +239,12 @@
     <!-- Black screen — toggled by pressing "b" during an exam section
          (js/navigation.js), not by any button; a physical slide-
          changer clicker's Down/Previous button is known to send "b"
-         on a long press on some models. Purely visual (timers keep
-         running underneath); js/ui.js's renderPage() clears it on any
-         screen change so it can never follow a candidate into a
-         different section, Home, Summary, or Admin. -->
+         on a long press on some models. "b" also pauses both timers
+         in sync (js/ui.js's toggleBlackoutAndPause()), so the exam
+         clock never keeps running silently behind a black screen.
+         js/ui.js's renderPage() clears it on any screen change so it
+         can never follow a candidate into a different section, Home,
+         Summary, or Admin. -->
     <div id="examBlackoutOverlay" class="exam-blackout-overlay" style="display:none;">
         <div class="exam-blackout-hint">Screen Hidden — Press B to Resume</div>
     </div>

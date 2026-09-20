@@ -56,14 +56,47 @@ function hideBlackoutOverlay() {
 
 }
 
-function toggleBlackoutOverlay() {
+function isBlackoutVisible() {
 
     const overlay = document.getElementById("examBlackoutOverlay");
 
-    if (!overlay) return;
+    return Boolean(overlay) && overlay.style.display === "flex";
 
-    overlay.style.display =
-        overlay.style.display === "flex" ? "none" : "flex";
+}
+
+function showBlackoutOverlay() {
+
+    const overlay = document.getElementById("examBlackoutOverlay");
+
+    if (overlay) overlay.style.display = "flex";
+
+}
+
+// Pressing "b" both blacks the screen AND pauses (js/navigation.js's
+// keydown listener) — a black screen with the exam clock still
+// silently running behind it would be a worse trap than either
+// control alone. Driven by the overlay's own current visibility
+// (not examPaused) so it still does the right thing if the two were
+// ever pried apart by the separate PAUSE button — e.g. paused via the
+// button, then "b" pressed: syncs the screen to black rather than
+// fighting the button's pause.
+function toggleBlackoutAndPause() {
+
+    if (isBlackoutVisible()) {
+
+        hideBlackoutOverlay();
+
+        resumeExam();
+
+    }
+
+    else {
+
+        showBlackoutOverlay();
+
+        pauseExam();
+
+    }
 
 }
 
@@ -247,73 +280,101 @@ document.addEventListener("DOMContentLoaded", function(){
     // ----------------------------------------------------------
     // Pause / Resume
     //
-    // Freezes both timers (examPaused, js/timer.js) and blocks
-    // Previous/Next — both the on-screen buttons (native `disabled`
-    // suppresses even a programmatic .click()) and, as a second line
-    // of defense covering paths that don't go through those buttons
-    // (e.g. Spotter's Reserve-screen auto-advance), the keyboard
-    // shortcuts (js/navigation.js's keydown listener checks
-    // examPaused directly). Each button's disabled state is restored
-    // on resume rather than force-enabled, since Previous/Next aren't
-    // always both enabled to begin with (isFirstSection(), Spotter's
-    // image-preload gate, etc).
+    // pauseExam()/resumeExam() (below) do the actual work and are
+    // shared with js/navigation.js's "b" handler (toggleBlackoutAndPause()
+    // in this file), so pausing via the button and pausing via a black
+    // screen stay in sync rather than fighting each other.
     // ----------------------------------------------------------
 
     const pauseButton = document.getElementById("examPauseBtn");
 
     if (pauseButton) {
 
-        let pausedPreviousDisabled = false;
-
-        let pausedNextDisabled = false;
-
         pauseButton.addEventListener("click", function(){
 
-            const previousButton = document.getElementById("previousButton");
+            if (!examPaused) pauseExam();
 
-            const nextButton = document.getElementById("nextButton");
-
-            if (!examPaused) {
-
-                pauseExamTimers();
-
-                if (previousButton) {
-
-                    pausedPreviousDisabled = previousButton.disabled;
-
-                    previousButton.disabled = true;
-
-                }
-
-                if (nextButton) {
-
-                    pausedNextDisabled = nextButton.disabled;
-
-                    nextButton.disabled = true;
-
-                }
-
-                pauseButton.textContent = "RESUME";
-
-            }
-
-            else {
-
-                resumeExamTimers();
-
-                if (previousButton) previousButton.disabled = pausedPreviousDisabled;
-
-                if (nextButton) nextButton.disabled = pausedNextDisabled;
-
-                pauseButton.textContent = "PAUSE";
-
-            }
+            else resumeExam();
 
         });
 
     }
 
 });
+
+
+// Freezes both timers (examPaused, js/timer.js) and blocks Previous/
+// Next — both the on-screen buttons (native `disabled` suppresses even
+// a programmatic .click()) and, as a second line of defense covering
+// paths that don't go through those buttons (e.g. Spotter's Reserve-
+// screen auto-advance), the keyboard shortcuts (js/navigation.js's
+// keydown listener checks examPaused directly). Each button's disabled
+// state is restored on resume rather than force-enabled, since
+// Previous/Next aren't always both enabled to begin with
+// (isFirstSection(), Spotter's image-preload gate, etc). Guarded by
+// examPaused itself so calling either twice in a row (e.g. the button
+// AND "b" both used) can't clobber the remembered disabled state with
+// the already-paused values.
+
+let pausedPreviousDisabled = false;
+
+let pausedNextDisabled = false;
+
+function pauseExam() {
+
+    if (examPaused) return;
+
+    pauseExamTimers();
+
+    const previousButton = document.getElementById("previousButton");
+
+    const nextButton = document.getElementById("nextButton");
+
+    if (previousButton) {
+
+        pausedPreviousDisabled = previousButton.disabled;
+
+        previousButton.disabled = true;
+
+    }
+
+    if (nextButton) {
+
+        pausedNextDisabled = nextButton.disabled;
+
+        nextButton.disabled = true;
+
+    }
+
+    const pauseButton = document.getElementById("examPauseBtn");
+
+    if (pauseButton) pauseButton.textContent = "RESUME";
+
+}
+
+function resumeExam() {
+
+    if (!examPaused) return;
+
+    resumeExamTimers();
+
+    const previousButton = document.getElementById("previousButton");
+
+    const nextButton = document.getElementById("nextButton");
+
+    if (previousButton) previousButton.disabled = pausedPreviousDisabled;
+
+    if (nextButton) nextButton.disabled = pausedNextDisabled;
+
+    const pauseButton = document.getElementById("examPauseBtn");
+
+    if (pauseButton) pauseButton.textContent = "PAUSE";
+
+    // Safety net: resuming (by any path) never leaves the screen
+    // black while the exam is actually running again.
+    hideBlackoutOverlay();
+
+}
 
 
 // ------------------------------------------------------------
