@@ -401,7 +401,12 @@ Scenario_or_Stem       string   the question's narrative/setup text
 Sub_Question_A/B/C     string   the three graded parts (C is PG-only on screen
                                and omitted from UG print output)
 Answer_Key_A/B/C       string   printed only via the admin/answer-key print path
-Marks_A/B/C             number   per sub-question marks
+Marks_A/B/C             number   per sub-question marks, shown to PG candidates
+                               as-is (getDisplayMarks(), js/ui.js)
+Marks_A_UG/B_UG         number   UG's own curated A/B split (UG never sees C);
+                               falls back to an even split of Total_Marks when
+                               absent, so older rows keep displaying exactly
+                               as before this field existed
 Plot_Instruction       string   Biostatistics-specific graphing instruction;
                                rendered at a fixed size, independent of the
                                scenario text (see Chapter 9)

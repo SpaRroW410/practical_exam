@@ -41,6 +41,13 @@ function renderAdminRebuild() {
 
     let diffOldSettings = null;
 
+    // Remembers what the open Live Preview is currently showing, so
+    // switching the UG/PG toggle can re-render without re-collecting
+    // the form (the form panel stays open underneath the modal).
+    let previewSectionKey = null;
+
+    let previewDraftRow = null;
+
     const SECTION_LABELS = {
         clinical: "Clinical",
         epidemiology: "Epidemiology",
@@ -55,7 +62,7 @@ function renderAdminRebuild() {
         "Plot_Instruction", "Image_Caption", "Remarks"
     ]);
 
-    const NUMBER_FIELDS = new Set(["Marks_A", "Marks_B", "Marks_C", "Marks_Plot", "Total_Marks"]);
+    const NUMBER_FIELDS = new Set(["Marks_A", "Marks_B", "Marks_C", "Marks_A_UG", "Marks_B_UG", "Marks_Plot", "Total_Marks"]);
 
     const DIFFICULTY_OPTIONS = ["", "Easy", "Moderate", "Difficult"];
 
@@ -239,6 +246,30 @@ function renderAdminRebuild() {
 
             </div>
 
+            <!-- Live exam-accurate preview — reuses js/views/admin-preview.js's
+                 buildWrittenPreviewHTML()/buildSpotterPreviewHTML() (Display
+                 Testing's own renderers) against the form's current,
+                 unsaved values, so a formatting/layout mistake is caught
+                 before ever generating files. A full-viewport overlay
+                 (not a renderPage() navigation) so the in-progress edit
+                 form underneath is never lost. -->
+            <div id="editorPreviewModal" class="editor-preview-modal" style="display:none;">
+
+                <div class="editor-preview-modal-header">
+
+                    <div class="editor-preview-level-toggle">
+                        <label><input type="radio" name="previewLevel" value="pg" checked> PG</label>
+                        <label><input type="radio" name="previewLevel" value="ug"> UG</label>
+                    </div>
+
+                    <button type="button" id="closePreviewBtn" class="start-button print-button">CLOSE PREVIEW</button>
+
+                </div>
+
+                <section class="exam-screen" id="editorPreviewContent"></section>
+
+            </div>
+
         </section>
 
     `);
@@ -265,6 +296,35 @@ function renderAdminRebuild() {
     document
         .getElementById("adminRebuildBack")
         .onclick = renderAdminScreen;
+
+    // ----------------------------------------------------------
+    // Live Preview modal controls (content itself is built by
+    // showEditorPreview(), triggered from each row's form — see openForm())
+    // ----------------------------------------------------------
+
+    const previewModal = document.getElementById("editorPreviewModal");
+
+    document
+        .getElementById("closePreviewBtn")
+        .onclick = function(){
+
+            previewModal.style.display = "none";
+
+        };
+
+    Array.from(document.querySelectorAll('input[name="previewLevel"]')).forEach(function(radio){
+
+        radio.addEventListener("change", function(){
+
+            if (previewModal.style.display !== "none") {
+
+                refreshEditorPreview();
+
+            }
+
+        });
+
+    });
 
 
     // ------------------------------------------------------------
@@ -708,8 +768,10 @@ function renderAdminRebuild() {
                 "<td>" + escapeHtml(row.Topic) + "</td>" +
                 "<td>" + escapeHtml(row.Difficulty) + "</td>" +
                 "<td>" + escapeHtml(row.Item_Type) + "</td>" +
-                "<td><button type=\"button\" class=\"editor-edit-btn\" data-index=\"" +
-                index + "\">Edit</button></td>" +
+                "<td>" +
+                "<button type=\"button\" class=\"editor-edit-btn\" data-index=\"" + index + "\">Edit</button> " +
+                "<button type=\"button\" class=\"editor-delete-btn\" data-index=\"" + index + "\">Delete</button>" +
+                "</td>" +
                 "</tr>";
 
         });
@@ -723,11 +785,41 @@ function renderAdminRebuild() {
 
     document.getElementById("editorTable").addEventListener("click", function(event){
 
-        const btn = event.target.closest(".editor-edit-btn");
+        const editBtn = event.target.closest(".editor-edit-btn");
 
-        if (!btn) return;
+        if (editBtn) {
 
-        openForm(currentSectionKey, Number(btn.dataset.index));
+            openForm(currentSectionKey, Number(editBtn.dataset.index));
+
+            return;
+
+        }
+
+        const deleteBtn = event.target.closest(".editor-delete-btn");
+
+        if (deleteBtn) {
+
+            const index = Number(deleteBtn.dataset.index);
+
+            const row = parsedData.questions[currentSectionKey][index];
+
+            const label = rowNumberLabel(currentSectionKey, row) || "this row";
+
+            if (!confirm("Delete row " + label + " (" + (row.Title || "untitled") + ")? This can't be undone within this session.")) {
+
+                return;
+
+            }
+
+            parsedData.questions[currentSectionKey].splice(index, 1);
+
+            closeForm();
+
+            renderSectionTabs();
+
+            renderEditorTable(currentSectionKey);
+
+        }
 
     });
 
@@ -926,6 +1018,7 @@ function renderAdminRebuild() {
 
             "<div class=\"editor-form-actions\">" +
             "<button type=\"button\" id=\"saveRowBtn\" class=\"editor-save-btn\">Save</button>" +
+            "<button type=\"button\" id=\"previewRowBtn\" class=\"editor-cancel-btn\">Preview</button>" +
             "<button type=\"button\" id=\"cancelRowBtn\" class=\"editor-cancel-btn\">Cancel</button>" +
             "</div>";
 
@@ -955,6 +1048,12 @@ function renderAdminRebuild() {
 
         });
 
+        document.getElementById("previewRowBtn").addEventListener("click", function(){
+
+            showEditorPreview(sectionKey);
+
+        });
+
         document.getElementById("cancelRowBtn").addEventListener("click", closeForm);
 
         panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -970,6 +1069,12 @@ function renderAdminRebuild() {
         panel.innerHTML = "";
 
         panel.style.display = "none";
+
+        // A stale preview (of a row that's now saved/discarded) should
+        // never linger once its form closes.
+        previewDraftRow = null;
+
+        document.getElementById("editorPreviewModal").style.display = "none";
 
     }
 
@@ -1002,11 +1107,12 @@ function renderAdminRebuild() {
 
     }
 
-    function saveRow(sectionKey) {
+    // Reads the form's CURRENT field values into a plain row object —
+    // shared by saveRow() (the committed write) and showEditorPreview()
+    // (a live look at the same values before they're saved).
+    function collectFormValues(fields) {
 
-        const fields = fieldsForSection(sectionKey);
-
-        const newRow = {};
+        const row = {};
 
         fields.forEach(function(fieldName){
 
@@ -1016,15 +1122,25 @@ function renderAdminRebuild() {
 
             if (NUMBER_FIELDS.has(fieldName)) {
 
-                newRow[fieldName] = value === "" ? null : Number(value);
+                row[fieldName] = value === "" ? null : Number(value);
 
             } else {
 
-                newRow[fieldName] = value === "" ? null : value;
+                row[fieldName] = value === "" ? null : value;
 
             }
 
         });
+
+        return row;
+
+    }
+
+    function saveRow(sectionKey) {
+
+        const fields = fieldsForSection(sectionKey);
+
+        const newRow = collectFormValues(fields);
 
         const rows = parsedData.questions[sectionKey];
 
@@ -1070,6 +1186,64 @@ function renderAdminRebuild() {
         renderSectionTabs();
 
         renderEditorTable(sectionKey);
+
+    }
+
+    // ------------------------------------------------------------
+    // Live Preview — the form's current (unsaved) values, rendered
+    // through the SAME builders js/views/admin-preview.js's Display
+    // Testing uses, so this is genuinely exam-accurate rather than a
+    // bespoke approximation.
+    // ------------------------------------------------------------
+
+    function showEditorPreview(sectionKey) {
+
+        previewSectionKey = sectionKey;
+
+        previewDraftRow = collectFormValues(fieldsForSection(sectionKey));
+
+        document.getElementById("editorPreviewModal").style.display = "flex";
+
+        refreshEditorPreview();
+
+    }
+
+    function refreshEditorPreview() {
+
+        if (!previewDraftRow) return;
+
+        const level =
+            document.querySelector('input[name="previewLevel"]:checked').value;
+
+        const content = document.getElementById("editorPreviewContent");
+
+        content.innerHTML =
+            previewSectionKey === "spotter"
+                ? buildSpotterPreviewHTML(previewDraftRow, level)
+                : buildWrittenPreviewHTML(previewDraftRow, previewSectionKey, level);
+
+        // Same fitting pass js/views/admin-preview.js's showAdminPreviewItem()
+        // already uses — pure layout code, safe to reuse as-is, and gives
+        // this preview the same real sizing behavior as the actual exam.
+        if (previewSectionKey === "spotter") {
+
+            fitQuestionLayout(
+
+                null,
+
+                document.querySelector("#editorPreviewContent .spotter-layout .question-subquestions"),
+
+                64
+
+            );
+
+        }
+
+        else {
+
+            fitTwoBandLayout(!!content.querySelector(".question-image"));
+
+        }
 
     }
 

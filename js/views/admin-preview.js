@@ -248,8 +248,8 @@ function showAdminPreviewItem() {
         adminPreviewSectionKey === "spotter" ? row.Spotter_ID : row.Question_ID;
 
     const html = adminPreviewSectionKey === "spotter"
-        ? buildSpotterPreviewHTML(row)
-        : buildWrittenPreviewHTML(row);
+        ? buildSpotterPreviewHTML(row, adminPreviewLevel)
+        : buildWrittenPreviewHTML(row, adminPreviewSectionKey, adminPreviewLevel);
 
     renderPage(`
 
@@ -346,12 +346,20 @@ function escapeAdminPreviewHtml(value) {
 // ------------------------------------------------------------
 // Written sections (Clinical / Epidemiology / Biostatistics / OSPE)
 // Mirrors the markup shape of js/views/clinical.js etc. Includes
-// Sub_Question_C when present, unless adminPreviewLevel is "ug" (then
-// it's hidden, matching what a real UG candidate would see). Never
-// shows Answer_Key_*.
+// Sub_Question_C when present, unless level is "ug" (then it's
+// hidden, matching what a real UG candidate would see). Never shows
+// Answer_Key_*.
+//
+// sectionKey/level are passed explicitly (rather than read off the
+// module-level adminPreviewSectionKey/adminPreviewLevel) so this is
+// reusable from js/views/admin-rebuild.js's live preview, which has
+// its own independent section/level context — see showAdminPreviewItem()
+// below for this screen's own call, and getDisplayMarks() (js/ui.js)
+// for why the marks values (not just C's visibility) now depend on
+// level too: UG's real Marks_A/B differ from PG's curated columns.
 // ------------------------------------------------------------
 
-function buildWrittenPreviewHTML(question) {
+function buildWrittenPreviewHTML(question, sectionKey, level) {
 
     const hasImage = !!(question.Image_File && question.Image_File !== "");
 
@@ -362,7 +370,7 @@ function buildWrittenPreviewHTML(question) {
     // sizing group so it scales together with the sub-questions instead
     // of leaving them to balloon on their own.
     const emphasize =
-        hasImage && ["epidemiology", "biostatistics", "ospe"].indexOf(adminPreviewSectionKey) !== -1;
+        hasImage && ["epidemiology", "biostatistics", "ospe"].indexOf(sectionKey) !== -1;
 
     let html = `${hasImage ? `<div class="question-top">` : ""}`;
 
@@ -381,7 +389,7 @@ function buildWrittenPreviewHTML(question) {
 
         html += `
             <div class="question-image">
-                <img src="images/${adminPreviewSectionKey}/${question.Image_File}" alt="Question Image">
+                <img src="images/${sectionKey}/${question.Image_File}" alt="Question Image">
                 <div class="image-caption">${nl2br(question.Image_Caption ?? "")}</div>
             </div>
             <div class="scenario-plot-group">
@@ -408,13 +416,16 @@ function buildWrittenPreviewHTML(question) {
 
     html += `<div class="question-subquestions">`;
 
-    const previewLetters = adminPreviewLevel === "ug" ? ["A", "B"] : ["A", "B", "C"];
+    const previewLetters = level === "ug" ? ["A", "B"] : ["A", "B", "C"];
+
+    // PG-style (raw Marks_A/B/C) for "all"/"pg"; UG-aware (curated
+    // override, falling back to the even-split) only for "ug" — matches
+    // previewLetters' own gate exactly.
+    const marks = getDisplayMarks(question, level !== "ug");
 
     previewLetters.forEach(function(letter){
 
         const sub = question["Sub_Question_" + letter];
-
-        const marks = question["Marks_" + letter];
 
         if (!sub) return;
 
@@ -422,7 +433,7 @@ function buildWrittenPreviewHTML(question) {
             <div class="question">
                 <strong>${letter}.</strong>
                 ${nl2br(sub)}
-                <span class="marks">(${marks ?? ""})</span>
+                <span class="marks">(${marks[letter] ?? ""})</span>
             </div>
         `;
 
@@ -437,14 +448,17 @@ function buildWrittenPreviewHTML(question) {
 
 // ------------------------------------------------------------
 // Spotter — mirrors js/views/spotter.js's showSpotterSlide() markup.
-// Includes Sub_Question_C when present, unless adminPreviewLevel is "ug".
+// Includes Sub_Question_C when present, unless level is "ug". Spotter's
+// marks are always raw Marks_A/B/C (js/views/spotter.js never routes
+// them through getDisplayMarks() — no UG/PG split concept there),
+// unaffected by Part 1's curated-UG-marks change.
 // ------------------------------------------------------------
 
-function buildSpotterPreviewHTML(slide) {
+function buildSpotterPreviewHTML(slide, level) {
 
     let subHtml = "";
 
-    const previewLetters = adminPreviewLevel === "ug" ? ["A", "B"] : ["A", "B", "C"];
+    const previewLetters = level === "ug" ? ["A", "B"] : ["A", "B", "C"];
 
     previewLetters.forEach(function(letter){
 

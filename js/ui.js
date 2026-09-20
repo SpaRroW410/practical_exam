@@ -511,17 +511,38 @@ function setBrandHeader() {
 // plotMarks is 0 there and this behaves exactly as before).
 // ------------------------------------------------------------
 
-function getDisplayMarks(question) {
+// isPGOverride lets a caller ask "what would PG/UG see" independently
+// of the real running exam's level (js/views/admin-preview.js's
+// Display Testing and js/views/admin-rebuild.js's live preview both
+// have their own, unrelated level pickers) — omitted, it falls back
+// to the real isPG(), unchanged for every other call site.
+function getDisplayMarks(question, isPGOverride) {
+
+    const pg = isPGOverride !== undefined ? isPGOverride : isPG();
 
     const plotMarks = question.Marks_Plot || 0;
 
-    if (isPG()) {
+    if (pg) {
 
         return {
             A: question.Marks_A,
             B: question.Marks_B,
             C: question.Marks_C,
             Plot: question.Marks_Plot ?? null
+        };
+
+    }
+
+    // UG: use the curated override when present (set via Admin >
+    // Rebuild Data); fall back to the historical even-split of
+    // (Total_Marks - Plot) for any row not yet migrated/curated.
+    if (question.Marks_A_UG != null && question.Marks_B_UG != null) {
+
+        return {
+            A: question.Marks_A_UG,
+            B: question.Marks_B_UG,
+            C: null,
+            Plot: plotMarks || null
         };
 
     }

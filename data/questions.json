@@ -48,7 +48,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Case 1 – Delayed Immunization (Catch-up Vaccination)"
+      "Remarks": "Case 1 – Delayed Immunization (Catch-up Vaccination)",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL002",
@@ -73,7 +75,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Case 2 – IMNCI: Diarrhoea with Some Dehydration"
+      "Remarks": "Case 2 – IMNCI: Diarrhoea with Some Dehydration",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL003",
@@ -98,7 +102,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Case 3 – IMNCI: Severe Dehydration"
+      "Remarks": "Case 3 – IMNCI: Severe Dehydration",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL004",
@@ -123,7 +129,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Case 4 – IMNCI: Pneumonia"
+      "Remarks": "Case 4 – IMNCI: Pneumonia",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL005",
@@ -148,7 +156,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Case 5 – High-Risk Antenatal Mother"
+      "Remarks": "Case 5 – High-Risk Antenatal Mother",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL006",
@@ -173,7 +183,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Case 6 – Delayed Breastfeeding & Top Feeding"
+      "Remarks": "Case 6 – Delayed Breastfeeding & Top Feeding",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL007",
@@ -198,7 +210,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Case 7 – Uncontrolled Hypertension"
+      "Remarks": "Case 7 – Uncontrolled Hypertension",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL008",
@@ -223,7 +237,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Case 8 – Uncontrolled Diabetes Mellitus"
+      "Remarks": "Case 8 – Uncontrolled Diabetes Mellitus",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL009",
@@ -248,7 +264,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Case 9 – Dog Bite (Category III)"
+      "Remarks": "Case 9 – Dog Bite (Category III)",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL010",
@@ -273,7 +291,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Case 10 – Pulmonary Tuberculosis"
+      "Remarks": "Case 10 – Pulmonary Tuberculosis",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL011",
@@ -298,7 +318,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Case 11- Severe Anaemia"
+      "Remarks": "Case 11- Severe Anaemia",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL012",
@@ -323,7 +345,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Leprosy MDT Case"
+      "Remarks": "Leprosy MDT Case",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL013",
@@ -348,7 +372,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "SAM NRC Case"
+      "Remarks": "SAM NRC Case",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL014",
@@ -373,7 +399,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "OP Poisoning Case"
+      "Remarks": "OP Poisoning Case",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL015",
@@ -398,7 +426,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Falciparum Malaria Case"
+      "Remarks": "Falciparum Malaria Case",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL016",
@@ -423,7 +453,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "RKSK Adolescent Case"
+      "Remarks": "RKSK Adolescent Case",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL017",
@@ -448,7 +480,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Stroke NCD Case"
+      "Remarks": "Stroke NCD Case",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL018",
@@ -473,7 +507,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Geriatric NPHCE Case"
+      "Remarks": "Geriatric NPHCE Case",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL019",
@@ -498,7 +534,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Scrub Typhus Case"
+      "Remarks": "Scrub Typhus Case",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     },
     {
       "Question_ID": "CL020",
@@ -523,7 +561,9 @@
       "Total_Marks": 20,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Silicosis Case"
+      "Remarks": "Silicosis Case",
+      "Marks_A_UG": 10,
+      "Marks_B_UG": 10
     }
   ],
   "epidemiology": [
@@ -575,7 +615,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "In a town with mid-year population of 150,000"
+      "Remarks": "In a town with mid-year population of 150,000",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP002",
@@ -600,7 +642,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "From the given data of a town for the year 2014"
+      "Remarks": "From the given data of a town for the year 2014",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP003",
@@ -625,7 +669,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Data from cohort study on blood lipid profile and cardiovascular disease"
+      "Remarks": "Data from cohort study on blood lipid profile and cardiovascular disease",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP004",
@@ -650,7 +696,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Data from study on helmet use and head injury following RTA"
+      "Remarks": "Data from study on helmet use and head injury following RTA",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP005",
@@ -675,7 +723,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "The following data of an outbreak of acute gastroenteritis during birthday party"
+      "Remarks": "The following data of an outbreak of acute gastroenteritis during birthday party",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP006",
@@ -700,7 +750,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Data from case control study on HPV vaccination & cervical cancer"
+      "Remarks": "Data from case control study on HPV vaccination & cervical cancer",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP007",
@@ -725,7 +777,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Results of a Rapid diagnostic test for pulmonary tuberculosis compared with gold standard"
+      "Remarks": "Results of a Rapid diagnostic test for pulmonary tuberculosis compared with gold standard",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP008",
@@ -750,7 +804,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "In a particular community, 120 persons in a population of 4,000 became ill"
+      "Remarks": "In a particular community, 120 persons in a population of 4,000 became ill",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP009",
@@ -775,7 +831,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Results of a new diagnostic test for cancer compared with gold standard"
+      "Remarks": "Results of a new diagnostic test for cancer compared with gold standard",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP010",
@@ -800,7 +858,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Fertility Rates"
+      "Remarks": "Fertility Rates",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP011",
@@ -825,7 +885,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Perinatal Rates"
+      "Remarks": "Perinatal Rates",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP012",
@@ -850,7 +912,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Proportional Mortality"
+      "Remarks": "Proportional Mortality",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP013",
@@ -875,7 +939,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "RCT NNT Calculation"
+      "Remarks": "RCT NNT Calculation",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP014",
@@ -900,7 +966,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Epidemic Curve"
+      "Remarks": "Epidemic Curve",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP015",
@@ -925,7 +993,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "SMR Standardization"
+      "Remarks": "SMR Standardization",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP016",
@@ -950,7 +1020,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Cross Sectional POR"
+      "Remarks": "Cross Sectional POR",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP017",
@@ -975,7 +1047,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Confounding Analysis"
+      "Remarks": "Confounding Analysis",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP018",
@@ -1000,7 +1074,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "R0 Herd Immunity"
+      "Remarks": "R0 Herd Immunity",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP019",
@@ -1025,7 +1101,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "IDSP Surveillance"
+      "Remarks": "IDSP Surveillance",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP020",
@@ -1050,7 +1128,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": "2026-08-01",
-      "Remarks": "Life Table Analysis"
+      "Remarks": "Life Table Analysis",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "EP021",
@@ -1075,7 +1155,9 @@
       "Total_Marks": 10,
       "Status": "Active",
       "Last_Updated": 46282,
-      "Remarks": "Malaria"
+      "Remarks": "Malaria",
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     }
   ],
   "biostatistics": [
@@ -1128,7 +1210,9 @@
       "Answer_Key_A": "Mean Hb = (150×7 + 140×10 + 10×13)/300 = 2,580/300 = 8.6 g% (using class midpoints 7, 10, 13).",
       "Answer_Key_B": "SD ≈ 1.69 g% (variance = Σf(x-mean)²/N = 852/300 = 2.84). Moderate variability; a sizeable proportion of children fall in the lower Hb range, indicating anaemia burden.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS002",
@@ -1154,7 +1238,9 @@
       "Answer_Key_A": "Mean = 19.5 breaths/min. Mean Deviation = 2.05. Standard Deviation ≈ 2.72 (sample, n-1).",
       "Answer_Key_B": "CV = (2.72/19.5)×100 ≈ 13.9% — moderate relative variability, expected given individual variation in asthma severity.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS003",
@@ -1180,7 +1266,9 @@
       "Answer_Key_A": "Mean = 72/min. Mean Deviation = 7. SD ≈ 8.38 (sample, n-1). CV ≈ 11.6%. Range = 86−59 = 27.",
       "Answer_Key_B": "CV (11.6%) and SD (8.38) both indicate moderate variability; CV is more useful for comparing relative variability across datasets with different units/means.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS004",
@@ -1206,7 +1294,9 @@
       "Answer_Key_A": "Recovered: Homemade fluid 120/150 = 80%; ORS 70/100 = 70%. Chi-square test ≈ 3.29 (df=1); not significant at 5% (critical value 3.84, p>0.05) in this sample.",
       "Answer_Key_B": "Chi-square test for two proportions; assumes independent observations, expected cell counts ≥5 (met here), and a 2×2 contingency table.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS005",
@@ -1232,7 +1322,9 @@
       "Answer_Key_A": "Chi-square test for association ≈ 3.97 (df=1); significant at 5% (critical value 3.84, p<0.05) in this sample.",
       "Answer_Key_B": "Chi-square test of independence is appropriate for two categorical variables (eye colour, sex) in a contingency table.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS006",
@@ -1258,7 +1350,9 @@
       "Answer_Key_A": "Mean difference = 12.2 mmHg. SD of differences ≈ 1.23 mmHg.",
       "Answer_Key_B": "Paired t = 12.2/(1.23/√10) ≈ 31.4, df=9; far exceeds the critical t-value (~2.26 at 5%) — statistically highly significant reduction in BP (p<0.001).",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS007",
@@ -1284,7 +1378,9 @@
       "Answer_Key_A": "Birth cohort = population × CBR = 30,000×(25/1,000) = 750 infants/year.",
       "Answer_Key_B": "Expected infant deaths = 750×(70/1,000) ≈ 53/year. An IMR of 70/1,000 is well above the current national average (~28/1,000), indicating this is a public health priority area.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS008",
@@ -1310,7 +1406,9 @@
       "Answer_Key_A": "Odds Ratio = (30×45)/(30×25) = 1,350/750 = 1.8.",
       "Answer_Key_B": "OR of 1.8 indicates a weak-to-moderate positive association — OCP users have about 1.8 times the odds of hypertension compared to non-users; clinically relevant enough to warrant BP monitoring.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS009",
@@ -1336,7 +1434,9 @@
       "Answer_Key_A": "Chi-square ≈ 3.96 (df=1); significant at 5% (critical value 3.84, p<0.05). Cure rate: male 83/110=75.5%, female 78/90=86.7%.",
       "Answer_Key_B": "Null hypothesis: cure rate is independent of sex. Chi-square test for association in a 2×2 table is appropriate.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS010",
@@ -1362,7 +1462,9 @@
       "Answer_Key_A": "Chi-square ≈ 3.42 (df=1); not significant at 5% (critical value 3.84, p>0.05) — borderline result.",
       "Answer_Key_B": "Null hypothesis: no difference in heart-rate-increase proportion between treated and untreated groups. Alternative: a difference exists. Chi-square test statistic used.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS011",
@@ -1388,7 +1490,9 @@
       "Answer_Key_A": "Chi-square ≈ 7.78 (df=1); significant at 1% (p<0.01). Mortality: diseased 10/35=28.6%, not diseased 5/65=7.7% (RR≈3.7).",
       "Answer_Key_B": "Chi-square test of significance for two proportions; assumes independent observations and adequate expected cell counts (met here).",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS012",
@@ -1414,7 +1518,9 @@
       "Answer_Key_A": "Chi-square ≈ 7.78 (df=1); significant at 1% (p<0.01). Odds Ratio = (10×60)/(25×5) = 600/125 = 4.8.",
       "Answer_Key_B": "OR of 4.8 indicates a strong positive association — smokers have nearly 5 times the odds of lung cancer compared to non-smokers.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS013",
@@ -1440,7 +1546,9 @@
       "Answer_Key_A": "t ≈ 2.30; with large sample size, approximately significant at 5% (critical ≈1.96) — Group B's mean birth weight is significantly higher.",
       "Answer_Key_B": "Independent (unpaired) two-sample t-test (or Z-test given large n); assumes approximately normal distribution of birth weights in each group and independent samples.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS014",
@@ -1466,7 +1574,9 @@
       "Answer_Key_A": "Z ≈ 17.3; highly significant (p<0.001) — Population B has a significantly higher mean RBS than Population A.",
       "Answer_Key_B": "Z-test for comparing two independent means (large sample sizes); assumes approximately normal distribution and independent samples.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS015",
@@ -1492,7 +1602,9 @@
       "Answer_Key_A": "Z ≈ 2.66; significant at 5% (p<0.01) — Town X has significantly higher oil intake than Town Y.",
       "Answer_Key_B": "Z-test for comparing two independent means (large sample sizes); assumes independent random samples and approximately normal distribution of intake.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS016",
@@ -1518,7 +1630,9 @@
       "Answer_Key_A": "Z ≈ 0.58; not significant (p>0.05) — no statistically significant difference in hypertension prevalence between contraceptive types in this sample.",
       "Answer_Key_B": "Z-test for comparing two independent proportions; requires adequately large sample sizes and independent groups (both satisfied here).",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS017",
@@ -1544,7 +1658,9 @@
       "Answer_Key_A": "Z ≈ 2.65; significant at 5% (p<0.01) — male diabetes prevalence (18%) is significantly higher than female (12%).",
       "Answer_Key_B": "Z-test for two independent proportions; large samples in both groups satisfy the normal approximation assumption.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS018",
@@ -1570,7 +1686,9 @@
       "Answer_Key_A": "Z ≈ 2.39; significant at 5% (p<0.05) — male MI incidence (42%) is significantly higher than female (38%).",
       "Answer_Key_B": "Z-test for two independent proportions; both groups are large, satisfying the normal approximation.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS019",
@@ -1596,7 +1714,9 @@
       "Answer_Key_A": "r = +0.78 indicates a strong positive linear correlation between BMI and SBP.",
       "Answer_Key_B": "Y = a + bX, where b (slope) would be positive given r=+0.78, meaning SBP increases as BMI increases; exact numeric value of b requires the standard deviations of BMI and SBP, which are not given here.",
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     },
     {
       "Question_ID": "BS020",
@@ -1622,7 +1742,9 @@
       "Answer_Key_A": null,
       "Answer_Key_B": null,
       "Answer_Key_C": null,
-      "Marks_Plot": 2
+      "Marks_Plot": 2,
+      "Marks_A_UG": 4,
+      "Marks_B_UG": 4
     }
   ],
   "ospe": [
@@ -1674,7 +1796,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS002",
@@ -1699,7 +1823,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS003",
@@ -1724,7 +1850,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS004",
@@ -1749,7 +1877,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS005",
@@ -1774,7 +1904,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS006",
@@ -1799,7 +1931,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS007",
@@ -1824,7 +1958,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS008",
@@ -1849,7 +1985,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS009",
@@ -1874,7 +2012,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS010",
@@ -1899,7 +2039,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS011",
@@ -1924,7 +2066,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS012",
@@ -1949,7 +2093,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS013",
@@ -1974,7 +2120,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS014",
@@ -1999,7 +2147,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS015",
@@ -2024,7 +2174,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS016",
@@ -2049,7 +2201,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS017",
@@ -2074,7 +2228,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS018",
@@ -2099,7 +2255,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS019",
@@ -2124,7 +2282,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     },
     {
       "Question_ID": "OS020",
@@ -2149,7 +2309,9 @@
       "Status": "Active",
       "Last_Updated": "2026-08-01",
       "Remarks": null,
-      "Answer_Key_C": null
+      "Answer_Key_C": null,
+      "Marks_A_UG": 5,
+      "Marks_B_UG": 5
     }
   ],
   "spotter": [

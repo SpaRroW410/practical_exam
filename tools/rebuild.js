@@ -59,9 +59,9 @@ const WRITTEN_SECTION_FIELDS = [
     "Question_ID", "Item_Type", "Question_No", "Topic", "Difficulty",
     "Title", "Scenario_or_Stem", "Sub_Question_A", "Answer_Key_A",
     "Marks_A", "Sub_Question_B", "Answer_Key_B", "Marks_B",
-    "Sub_Question_C", "Answer_Key_C", "Marks_C", "Plot_Instruction",
-    "Marks_Plot", "Image_File", "Image_Caption", "Total_Marks", "Status",
-    "Last_Updated", "Remarks"
+    "Sub_Question_C", "Answer_Key_C", "Marks_C", "Marks_A_UG", "Marks_B_UG",
+    "Plot_Instruction", "Marks_Plot", "Image_File", "Image_Caption",
+    "Total_Marks", "Status", "Last_Updated", "Remarks"
 
 ];
 
