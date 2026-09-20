@@ -34,6 +34,37 @@ function renderPage(html) {
 
     updateExamExitWidget();
 
+    // Any screen change (including navigating away entirely) clears a
+    // black screen left on from the previous section — it's a purely
+    // visual, per-screen toggle (js/navigation.js's "b" handler), not
+    // state that should follow the candidate into Home/Summary/Admin.
+    hideBlackoutOverlay();
+
+}
+
+
+// ------------------------------------------------------------
+// Black Screen (toggled by pressing "b" during an exam section —
+// see js/navigation.js's keydown listener)
+// ------------------------------------------------------------
+
+function hideBlackoutOverlay() {
+
+    const overlay = document.getElementById("examBlackoutOverlay");
+
+    if (overlay) overlay.style.display = "none";
+
+}
+
+function toggleBlackoutOverlay() {
+
+    const overlay = document.getElementById("examBlackoutOverlay");
+
+    if (!overlay) return;
+
+    overlay.style.display =
+        overlay.style.display === "flex" ? "none" : "flex";
+
 }
 
 

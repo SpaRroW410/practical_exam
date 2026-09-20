@@ -571,6 +571,28 @@ button:hover {
     background: #c6dafc;
 }
 
+/* Black Screen — full-viewport, above everything (including the Exit/
+   Home widgets at z-index:1000) so it's a genuine blackout, not just a
+   content overlay. Toggled by pressing "b" (js/navigation.js); the
+   hint text is deliberately dim rather than hidden entirely, so a
+   truly blank projector reads as intentional rather than a fault. */
+.exam-blackout-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 24px;
+}
+
+.exam-blackout-hint {
+    color: #333;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
 /* Summary */
 .summary-card {
     max-width: 800px;
